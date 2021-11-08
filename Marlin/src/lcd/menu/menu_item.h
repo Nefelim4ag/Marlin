@@ -337,7 +337,8 @@ class MenuItem_bool : public MenuEditItemBase {
   constexpr int m = 20;                        \
   char msg[m+1];                               \
   msg[0] = ':'; msg[1] = ' ';                  \
-  strncpy_P(msg+2, PSTR(PVAL), m-2);           \
+  /* strncpy_P(msg+2, PSTR(PVAL), m-2); */           \
+  utf8_strncpy(msg+2, PSTR(PVAL), m-2);           \
   if (msg[m-1] & 0x80) msg[m-1] = '\0';        \
   STATIC_ITEM_P(PLABEL, STYL, msg);            \
 }while(0)

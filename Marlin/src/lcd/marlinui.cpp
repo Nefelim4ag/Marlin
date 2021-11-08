@@ -1374,6 +1374,7 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
     // At this point, we have the proper cut point. Use it
     uint8_t maxLen = pend - message;
     strncpy(status_message, message, maxLen);
+    // strncpy(status_message, "set_status_", maxLen);
     status_message[maxLen] = '\0';
 
     finish_status(persist);
@@ -1431,8 +1432,10 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
     // Since the message is encoded in UTF8 it must
     // only be cut on a character boundary.
 
-    // Get a pointer to the null terminator
-    PGM_P pend = message + strlen_P(message);
+
+/*     // Get a pointer to the null terminator
+    // PGM_P pend = message + strlen_P(message);
+    PGM_P pend = message + utf8_strlen(message);
 
     // If length of supplied UTF8 string is greater than
     // the buffer size, start cutting whole UTF8 chars
@@ -1445,7 +1448,11 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
     uint8_t maxLen = pend - message;
     strncpy_P(status_message, message, maxLen);
     status_message[maxLen] = '\0';
+*/
 
+    uint8_t maxLen = MAX_MESSAGE_LENGTH;
+    utf8_strncpy(status_message, message, maxLen);
+    
     finish_status(level > 0);
   }
 
@@ -1529,6 +1536,7 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
   void MarlinUI::abort_print() {
     #if ENABLED(SDSUPPORT)
       wait_for_heatup = wait_for_user = false;
+      print_job_timer.heating_stop();
       card.abortFilePrintSoon();
     #endif
     #ifdef ACTION_ON_CANCEL
@@ -1581,6 +1589,10 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
   void MarlinUI::resume_print() {
     reset_status();
     TERN_(PARK_HEAD_ON_PAUSE, wait_for_heatup = wait_for_user = false);
+    if (wait_for_heatup)
+      print_job_timer.heating_start();
+    else
+      print_job_timer.heating_stop();
     TERN_(SDSUPPORT, if (IS_SD_PAUSED()) queue.inject_P(M24_STR));
     #ifdef ACTION_ON_RESUME
       host_action_resume();

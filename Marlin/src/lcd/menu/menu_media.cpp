@@ -30,6 +30,7 @@
 
 #include "menu_item.h"
 #include "../../sd/cardreader.h"
+#include "../tft/tft.h"
 
 void lcd_sd_updir() {
   ui.encoderPosition = card.cdup() ? ENCODER_STEPS_PER_MENU_ITEM : 0;
@@ -72,17 +73,28 @@ class MenuItem_sdfile : public MenuItem_sdbase {
         sd_items = screen_items;
       #endif
       #if ENABLED(SD_MENU_CONFIRM_START)
-        MenuItem_submenu::action(pstr, []{
-          char * const longest = card.longest_filename();
-          char buffer[strlen(longest) + 2];
-          buffer[0] = ' ';
-          strcpy(buffer + 1, longest);
-          MenuItem_confirm::select_screen(
-            GET_TEXT(MSG_BUTTON_PRINT), GET_TEXT(MSG_BUTTON_CANCEL),
-            sdcard_start_selected_file, ui.goto_previous_screen,
-            GET_TEXT(MSG_START_PRINT), buffer, PSTR("?")
-          );
-        });
+        #if ENABLED(RS_STYLE_COLOR_UI)
+          MenuItem_submenu::action(pstr, []{
+            char * const longest = card.longest_filename();
+            char buffer[strlen(longest) + 2];
+            buffer[0] = ' ';
+            strcpy(buffer + 1, longest);
+            MenuItem_fileconfirm::select_screen(sdcard_start_selected_file, ui.goto_previous_screen, buffer);
+          });
+        #else   // ENABLED(RS_STYLE_COLOR_UI)
+
+          MenuItem_submenu::action(pstr, []{
+            char * const longest = card.longest_filename();
+            char buffer[strlen(longest) + 2];
+            buffer[0] = ' ';
+            strcpy(buffer + 1, longest);
+            MenuItem_confirm::select_screen(
+              GET_TEXT(MSG_BUTTON_PRINT), GET_TEXT(MSG_BUTTON_CANCEL),
+              sdcard_start_selected_file, ui.goto_previous_screen,
+              GET_TEXT(MSG_START_PRINT), buffer, PSTR("?")
+            );
+          });
+        #endif  // ENABLED(RS_STYLE_COLOR_UI)
       #else
         sdcard_start_selected_file();
         UNUSED(pstr);
@@ -129,16 +141,19 @@ void menu_media_filelist() {
   else if (card.isMounted())
     ACTION_ITEM_P(PSTR(LCD_STR_FOLDER " .."), lcd_sd_updir);
 
-  if (ui.should_draw()) for (uint16_t i = 0; i < fileCnt; i++) {
-    if (_menuLineNr == _thisItemNr) {
-      card.getfilename_sorted(SD_ORDER(i, fileCnt));
-      if (card.flag.filenameIsDir)
-        MENU_ITEM(sdfolder, MSG_MEDIA_MENU, card);
+  if (ui.should_draw())
+  {
+    for (uint16_t i = 0; i < fileCnt; i++) {
+      if (_menuLineNr == _thisItemNr) {
+        card.getfilename_sorted(SD_ORDER(i, fileCnt));
+        if (card.flag.filenameIsDir)
+          MENU_ITEM(sdfolder, MSG_MEDIA_MENU, card);
+        else
+          MENU_ITEM(sdfile, MSG_MEDIA_MENU, card);
+      }
       else
-        MENU_ITEM(sdfile, MSG_MEDIA_MENU, card);
+        SKIP_ITEM();
     }
-    else
-      SKIP_ITEM();
   }
   END_MENU();
 }

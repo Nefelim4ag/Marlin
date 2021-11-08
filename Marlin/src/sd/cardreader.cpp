@@ -212,6 +212,7 @@ bool CardReader::is_dir_or_gcode(const dir_t &p) {
   return (
     flag.filenameIsDir                                  // All Directories are ok
     || (p.name[8] == 'G' && p.name[9] != '~')           // Non-backup *.G* files are accepted
+    || (p.name[8] == 'C' && p.name[9] == 'F' && p.name[10] == 'G')           // *.CFG* files are accepted
   );
 }
 
@@ -277,6 +278,11 @@ void CardReader::printListing(
   OPTARG(LONG_FILENAME_HOST_SUPPORT, const char * const prependLong/*=nullptr*/)
 ) {
   dir_t p;
+
+  #if ENABLED(MKS_WIFI)
+  serial_index_t port = queue.ring_buffer.command_port();
+  #endif
+  
   while (parent.readDir(&p, longFilename) > 0) {
     if (DIR_IS_SUBDIR(&p)) {
 
@@ -321,23 +327,33 @@ void CardReader::printListing(
         SERIAL_ECHO(prepend);
         SERIAL_CHAR('/');
       }
-      SERIAL_ECHO(createFilename(filename, p));
-      SERIAL_CHAR(' ');
-      #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
-        if (!includeLongNames)
-      #endif
-          SERIAL_ECHOLN(p.fileSize);
-      #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
-        else {
-          SERIAL_ECHO(p.fileSize);
-          SERIAL_CHAR(' ');
-          if (prependLong) {
-            SERIAL_ECHO(prependLong);
-            SERIAL_CHAR('/');
+      #if ENABLED(MKS_WIFI)
+        if (port.index == MKS_WIFI_SERIAL_NUM){
+          printLongPath(createFilename(filename, p));
+        }else{
+        SERIAL_ECHO(createFilename(filename, p));
+        SERIAL_CHAR(' ');
+        SERIAL_ECHOLN(p.fileSize);
+      }
+      #else
+        SERIAL_ECHO(createFilename(filename, p));
+        SERIAL_CHAR(' ');
+        #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
+          if (!includeLongNames)
+        #endif
+            SERIAL_ECHOLN(p.fileSize);
+        #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
+          else {
+            SERIAL_ECHO(p.fileSize);
+            SERIAL_CHAR(' ');
+            if (prependLong) {
+              SERIAL_ECHO(prependLong);
+              SERIAL_CHAR('/');
+            }
+            SERIAL_ECHOLN(longFilename[0] ? longFilename : "???");
           }
-          SERIAL_ECHOLN(longFilename[0] ? longFilename : "???");
-        }
-      #endif
+        #endif
+      #endif  // ENABLED(MKS_WIFI)
     }
   }
 }
@@ -358,6 +374,11 @@ void CardReader::ls(TERN_(LONG_FILENAME_HOST_SUPPORT, bool includeLongNames/*=fa
   // Get a long pretty path based on a DOS 8.3 path
   //
   void CardReader::printLongPath(char * const path) {
+
+    #if ENABLED(MKS_WIFI)
+      serial_index_t port = queue.ring_buffer.command_port();
+      char f_name_buf[100];
+    #endif
 
     int i, pathLen = strlen(path);
 
@@ -383,10 +404,21 @@ void CardReader::ls(TERN_(LONG_FILENAME_HOST_SUPPORT, bool includeLongNames/*=fa
 
       // Find the item, setting the long filename
       diveDir.rewind();
-      selectByName(diveDir, segment);
+      #if ENABLED(MKS_WIFI)
+        strcpy(f_name_buf,segment);
+        selectByName(diveDir, f_name_buf);
+      #else
+        selectByName(diveDir, segment);
+      #endif
 
       // Print /LongNamePart to serial output
-      SERIAL_CHAR('/');
+      #if ENABLED(MKS_WIFI)
+        if(port.index != MKS_WIFI_SERIAL_NUM){
+        SERIAL_CHAR('/');
+        };
+      #else
+        SERIAL_CHAR('/');
+      #endif
       SERIAL_ECHO(longFilename[0] ? longFilename : "???");
 
       // If the filename was printed then that's it
@@ -626,6 +658,7 @@ void announceOpen(const uint8_t doing, const char * const path) {
 //   - 1 : (file open) Opening a new sub-procedure.
 //   - 1 : (no file open) Opening a macro (M98).
 //   - 2 : Resuming from a sub-procedure
+//   - 9 : Just open file
 //
 void CardReader::openFileRead(const char * const path, const uint8_t subcall_type/*=0*/) {
   if (!isMounted()) return;
@@ -682,8 +715,11 @@ void CardReader::openFileRead(const char * const path, const uint8_t subcall_typ
       SERIAL_ECHOLNPGM(STR_SD_FILE_SELECTED);
     }
 
-    selectFileByName(fname);
-    ui.set_status(longFilename[0] ? longFilename : fname);
+    if (subcall_type < 9)
+    {
+      selectFileByName(fname);
+      ui.set_status(longFilename[0] ? longFilename : fname);
+    }
   }
   else
     openFailed(fname);

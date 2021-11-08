@@ -86,6 +86,23 @@
 #endif
 
 //
+// Check for additional used endstop pins
+//
+#if HAS_EXTRA_ENDSTOPS
+  #define _ENDSTOP_IS_ANY(ES) X2_USE_ENDSTOP == ES || Y2_USE_ENDSTOP == ES || Z2_USE_ENDSTOP == ES || Z3_USE_ENDSTOP == ES || Z4_USE_ENDSTOP == ES
+  #if _ENDSTOP_IS_ANY(_XMIN_) || _ENDSTOP_IS_ANY(_XMAX_)
+    #define NEEDS_X_MINMAX 1
+  #endif
+  #if _ENDSTOP_IS_ANY(_YMIN_) || _ENDSTOP_IS_ANY(_YMAX_)
+    #define NEEDS_Y_MINMAX 1
+  #endif
+  #if _ENDSTOP_IS_ANY(_ZMIN_) || _ENDSTOP_IS_ANY(_ZMAX_)
+    #define NEEDS_Z_MINMAX 1
+  #endif
+  #undef _ENDSTOP_IS_ANY
+#endif
+
+//
 // Limit Switches
 //
 #ifdef X_STALL_SENSITIVITY

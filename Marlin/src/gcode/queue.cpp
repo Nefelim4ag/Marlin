@@ -433,7 +433,18 @@ void GCodeQueue::get_serial_commands() {
       hadData = true;
 
       const int c = read_serial(p);
-      if (c < 0) {
+      #ifdef MKS_WIFI
+      /* 
+      Если данные от WIFI модуля пропускаем через парсер бинарного протокола. 
+      текстовую часть с G-Code пропускаем дальше 
+      */
+      if(p == MKS_WIFI_SERIAL_NUM){
+        mks_wifi_input(c);
+        continue;
+      };
+      #endif
+
+       if (c < 0) {
         // This should never happen, let's log it
         PORT_REDIRECT(SERIAL_PORTMASK(p));     // Reply to the serial port that sent the command
         // Crash here to get more information why it failed
@@ -522,7 +533,7 @@ void GCodeQueue::get_serial_commands() {
         #if DISABLED(EMERGENCY_PARSER)
           // Process critical commands early
           if (command[0] == 'M') switch (command[3]) {
-            case '8': if (command[2] == '0' && command[1] == '1') { wait_for_heatup = false; TERN_(HAS_LCD_MENU, wait_for_user = false); } break;
+            case '8': if (command[2] == '0' && command[1] == '1') { wait_for_heatup = false; print_job_timer.heating_stop(); TERN_(HAS_LCD_MENU, wait_for_user = false); } break;
             case '2': if (command[2] == '1' && command[1] == '1') kill(M112_KILL_STR, nullptr, true); break;
             case '0': if (command[1] == '4' && command[2] == '1') quickstop_stepper(); break;
           }

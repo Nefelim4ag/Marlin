@@ -94,12 +94,17 @@ uint8_t read_byte(uint8_t *byte) { return *byte; }
  *   * displays 'E1'...'E11' for indexes 0 - 10 (By default. Uses LCD_FIRST_TOOL)
  */
 void TFT_String::add(uint8_t *string, int8_t index, uint8_t *itemString) {
-  wchar_t wchar;
 
   while (*string) {
-    string = get_utf8_value_cb(string, read_byte, &wchar);
+
+/*      string = get_utf8_value_cb(string, read_byte, &wchar);
     if (wchar > 255) wchar |= 0x0080;
     uint8_t ch = uint8_t(wchar & 0x00FF);
+ */
+    uint8_t ch = *string;
+    string++;
+
+
 
     if (ch == '=' || ch == '~' || ch == '*') {
       if (index >= 0) {
@@ -124,11 +129,16 @@ void TFT_String::add(uint8_t *string, int8_t index, uint8_t *itemString) {
 }
 
 void TFT_String::add(uint8_t *string, uint8_t max_len) {
-  wchar_t wchar;
   while (*string && max_len) {
+/* 
     string = get_utf8_value_cb(string, read_byte, &wchar);
     if (wchar > 255) wchar |= 0x0080;
     uint8_t ch = uint8_t(wchar & 0x00FF);
+ */
+
+    uint8_t ch = *string;
+    string++;
+
     add_character(ch);
     max_len--;
   }
