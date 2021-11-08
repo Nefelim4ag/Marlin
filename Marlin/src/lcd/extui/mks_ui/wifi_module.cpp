@@ -22,9 +22,11 @@
 
 #include "../../../inc/MarlinConfigPre.h"
 
-#if BOTH(HAS_TFT_LVGL_UI, MKS_WIFI_MODULE)
+#if ENABLED(MKS_WIFI_MODULE)
 
-#include "draw_ui.h"
+#if BOTH(HAS_TFT_LVGL_UI, MKS_WIFI_MODULE)
+  #include "draw_ui.h"
+#endif
 #include "wifi_module.h"
 #include "wifi_upload.h"
 #include "SPI_TFT.h"
@@ -2028,6 +2030,7 @@ void get_wifi_commands() {
           // Process critical commands early
           if (strcmp_P(command, PSTR("M108")) == 0) {
             wait_for_heatup = false;
+            print_job_timer.heating_stop();
             TERN_(HAS_LCD_MENU, wait_for_user = false);
           }
           if (strcmp_P(command, PSTR("M112")) == 0) kill(FPSTR(M112_KILL_STR), nullptr, true);

@@ -114,7 +114,7 @@ void menu_configuration();
 
   void custom_menus_main() {
     START_MENU();
-    BACK_ITEM(MSG_MAIN);
+    // BACK_ITEM(MSG_MAIN);
 
     #define HAS_CUSTOM_ITEM_MAIN(N) (defined(MAIN_MENU_ITEM_##N##_DESC) && defined(MAIN_MENU_ITEM_##N##_GCODE))
 
@@ -223,15 +223,10 @@ void menu_configuration();
 #endif // CUSTOM_MENU_MAIN
 
 void menu_main() {
-  const bool busy = printingIsActive()
-    #if ENABLED(SDSUPPORT)
-      , card_detected = card.isMounted()
-      , card_open = card_detected && card.isFileOpen()
-    #endif
-  ;
+  const bool busy = printingIsActive();
 
   START_MENU();
-  BACK_ITEM(MSG_INFO_SCREEN);
+  // BACK_ITEM(MSG_INFO_SCREEN);
 
   #if ENABLED(SDSUPPORT)
 
@@ -239,37 +234,41 @@ void menu_main() {
       #define MEDIA_MENU_AT_TOP
     #endif
 
-    auto sdcard_menu_items = [&]{
-      #if ENABLED(MENU_ADDAUTOSTART)
-        ACTION_ITEM(MSG_RUN_AUTO_FILES, card.autofile_begin); // Run Auto Files
+    #if !ENABLED(RS_STYLE_COLOR_UI)
+      #if ENABLED(SDSUPPORT)
+        const bool card_open = card_detected && card.isFileOpen(), card_detected = card.isMounted();
       #endif
-
-      if (card_detected) {
-        if (!card_open) {
-          #if PIN_EXISTS(SD_DETECT)
-            GCODES_ITEM(MSG_CHANGE_MEDIA, PSTR("M21"));       // M21 Change Media
-          #else                                               // - or -
-            ACTION_ITEM(MSG_RELEASE_MEDIA, []{                // M22 Release Media
-              queue.inject(PSTR("M22"));
-              #if ENABLED(TFT_COLOR_UI)
-                // Menu display issue on item removal with multi language selection menu
-                if (encoderTopLine > 0) encoderTopLine--;
-                ui.refresh(LCDVIEW_CALL_REDRAW_NEXT);
-              #endif
-            });
-          #endif
-          SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);        // Media Menu (or Password First)
-        }
-      }
-      else {
-        #if PIN_EXISTS(SD_DETECT)
-          ACTION_ITEM(MSG_NO_MEDIA, nullptr);                 // "No Media"
-        #else
-          GCODES_ITEM(MSG_ATTACH_MEDIA, PSTR("M21"));         // M21 Attach Media
+      auto sdcard_menu_items = [&]{
+        #if ENABLED(MENU_ADDAUTOSTART)
+          ACTION_ITEM(MSG_RUN_AUTO_FILES, card.autofile_begin); // Run Auto Files
         #endif
-      }
-    };
 
+        if (card_detected) {
+          if (!card_open) {
+            #if PIN_EXISTS(SD_DETECT)
+              GCODES_ITEM(MSG_CHANGE_MEDIA, PSTR("M21"));       // M21 Change Media
+            #else                                               // - or -
+              ACTION_ITEM(MSG_RELEASE_MEDIA, []{                // M22 Release Media
+                queue.inject(PSTR("M22"));
+                #if ENABLED(TFT_COLOR_UI)
+                  // Menu display issue on item removal with multi language selection menu
+                  if (encoderTopLine > 0) encoderTopLine--;
+                  ui.refresh(LCDVIEW_CALL_REDRAW_NEXT);
+                #endif
+              });
+            #endif
+            SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);        // Media Menu (or Password First)
+          }
+        }
+        else {
+          #if PIN_EXISTS(SD_DETECT)
+            ACTION_ITEM(MSG_NO_MEDIA, nullptr);                 // "No Media"
+          #else
+            GCODES_ITEM(MSG_ATTACH_MEDIA, PSTR("M21"));         // M21 Attach Media
+          #endif
+        }
+      };
+    #endif    // !ENABLED(RS_STYLE_COLOR_UI)
   #endif
 
   if (busy) {
@@ -317,6 +316,8 @@ void menu_main() {
     SUBMENU(MSG_MOTION, menu_motion);
   }
 
+  SUBMENU(MSG_CONFIGURATION, menu_configuration);
+
   #if HAS_CUTTER
     SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
   #endif
@@ -336,8 +337,6 @@ void menu_main() {
   #if ENABLED(MMU2_MENUS)
     if (!busy) SUBMENU(MSG_MMU2_MENU, menu_mmu2);
   #endif
-
-  SUBMENU(MSG_CONFIGURATION, menu_configuration);
 
   #if ENABLED(CUSTOM_MENU_MAIN)
     if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
@@ -387,7 +386,7 @@ void menu_main() {
   #endif
 
   #if ENABLED(SDSUPPORT) && DISABLED(MEDIA_MENU_AT_TOP)
-    sdcard_menu_items();
+    // sdcard_menu_items();
   #endif
 
   #if HAS_SERVICE_INTERVALS
