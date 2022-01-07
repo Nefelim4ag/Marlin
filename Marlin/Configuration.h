@@ -44,6 +44,9 @@
 //============================= Getting Started =============================
 //===========================================================================
 
+// Not working yet
+#define FIRMWARE_BIN Robin_nano35.bin
+
 /**
  * Here are some useful links to help get your machine configured and calibrated:
  *
