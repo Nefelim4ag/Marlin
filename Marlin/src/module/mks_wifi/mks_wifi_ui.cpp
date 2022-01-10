@@ -18,9 +18,9 @@ void mks_update_status(char *filename, uint32_t current_filesize, uint32_t file_
     static uint32_t call_count = 0;
     static uint32_t last_value = 200;
     // fit to 0.01 MB
-    float current = current_filesize / 1048576;
+    // float current = current_filesize / 1048576;
     uint32_t percent_done = current_filesize / one_percent;
-    
+
     // thermalManager.setTargetBed(0);
     // thermalManager.setTargetHotend(0,0);
     // thermalManager.manage_heater();
@@ -45,7 +45,7 @@ void mks_update_status(char *filename, uint32_t current_filesize, uint32_t file_
       tft_string.add(" MB ");
       tft_string.add(ftostr32_62(call_count));
       tft.add_text(tft_string.center(TFT_WIDTH), 140, COLOR_CONTROL_ENABLED, tft_string);
-    
+
       tft.add_bar(2, 180, TFT_WIDTH - 4, 40, COLOR_PROGRESS_BG);
       tft.add_rectangle(2, 180, TFT_WIDTH - 4, 40, COLOR_PROGRESS_FRAME);
       if (percent_done)

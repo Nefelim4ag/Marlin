@@ -96,7 +96,7 @@ uint8_t read_byte(uint8_t *byte) { return *byte; }
  *   @ displays an axis name such as XYZUVW, or E for an extruder
  */
 void TFT_String::add(uint8_t *string, int8_t index, uint8_t *itemString/*=nullptr*/) {
-  wchar_t wchar;
+  // wchar_t wchar;
 
   while (*string) {
 
