@@ -173,3 +173,6 @@ __pycache__
 
 # IOLogger logs
 *_log.csv
+
+# Local Debug
+output.map

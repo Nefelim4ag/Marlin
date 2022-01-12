@@ -500,8 +500,8 @@
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  *
  */
-#ifdef MARLIN_CONFIG_MY
-  #define TEMP_SENSOR_0 5
+#ifdef TEMP_SERSOR_TYPE
+  #define TEMP_SENSOR_0 TEMP_SERSOR_TYPE
 #else
   #define TEMP_SENSOR_0 1
 #endif
