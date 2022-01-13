@@ -3066,8 +3066,9 @@
    *
    * Comment *_STALL_SENSITIVITY to disable sensorless homing for that axis.
    */
-  //#define SENSORLESS_HOMING // StallGuard capable drivers only
-
+  #ifdef XY_SENSORLESS_HOMING
+    #define SENSORLESS_HOMING // StallGuard capable drivers only
+  #endif
   #if EITHER(SENSORLESS_HOMING, SENSORLESS_PROBING)
     // TMC2209: 0...255. TMC2130: -64...63
     #define X_STALL_SENSITIVITY  8
