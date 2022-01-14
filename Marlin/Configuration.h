@@ -959,8 +959,8 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#if STEPPERS_MICROSTEP == 64
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 320, 320, 800, 1642 }
+#if XY_STEPPERS_MICROSTEP == 64
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 320, 320, 800, 410 }
 #elif STEPPERS_MICROSTEP == 32
   #ifdef MARLIN_CONFIG_MY
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 410 }
