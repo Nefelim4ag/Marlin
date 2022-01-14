@@ -574,7 +574,15 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
+#ifndef TEMP_SERSOR_TYPE
 #define HEATER_0_MAXTEMP 300
+#else
+  #if TEMP_SERSOR_TYPE == 5
+    #define HEATER_0_MAXTEMP 310
+  #else
+    #define HEATER_0_MAXTEMP 300
+  #endif
+#endif
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275
 #define HEATER_3_MAXTEMP 275
