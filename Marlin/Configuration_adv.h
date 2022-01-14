@@ -2193,7 +2193,9 @@
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
+#ifndef MIN_STEPS_PER_SEGMENT
 #define MIN_STEPS_PER_SEGMENT 6
+#endif
 
 /**
  * Minimum delay before and after setting the stepper DIR (in ns)
