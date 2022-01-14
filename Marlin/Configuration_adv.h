@@ -55,6 +55,12 @@
 //
 // Custom Thermistor 1000 parameters
 //
+#if TEMP_SENSOR_0 == 1001
+  #define HOTEND0_PULLUP_RESISTOR_OHMS 4700     // Pullup resistor
+  #define HOTEND0_RESISTANCE_25C_OHMS  4721000  // Resistance at 25C
+  #define HOTEND0_BETA                 5300     // Beta value
+#endif
+
 #if TEMP_SENSOR_0 == 1000
   #define HOTEND0_PULLUP_RESISTOR_OHMS 4700    // Pullup resistor
   #define HOTEND0_RESISTANCE_25C_OHMS  100000  // Resistance at 25C

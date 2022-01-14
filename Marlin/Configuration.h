@@ -494,6 +494,7 @@
  *  ------
  *     0 : not used
  *  1000 : Custom - Specify parameters in Configuration_adv.h
+ *  1001 : T-D500
  *
  *   !!! Use these for Testing or Development purposes. NEVER for production machine. !!!
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
