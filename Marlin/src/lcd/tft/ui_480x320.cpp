@@ -79,7 +79,7 @@ void MarlinUI::tft_idle() {
       #define SITE_URL_Y (TFT_HEIGHT - 90)
     #endif
     tft.add_image((TFT_WIDTH - BOOT_LOGO_W) / 2, (TFT_HEIGHT - BOOT_LOGO_H) / 2, imgBootScreen);
-    
+
     tft_string.set(Language_en::MSG_MARLIN);
     tft_string.add(" v");
     tft_string.add(SHORT_REBORN_VERSION);
@@ -168,7 +168,7 @@ void draw_heater_status(uint16_t x, uint16_t y, const int8_t Heater) {
   if (Heater >= 0) { // HotEnd
     if (currentTemperature >= coldExtrusionTemp) Color = COLOR_HOTEND;
     if (currentTemperature >= targetTemperature - TEMP_HYSTERESIS && currentTemperature <= targetTemperature + TEMP_HYSTERESIS) Color = COLOR_TARGET_HOTEND;
-    
+
   }
   #if HAS_HEATED_BED
     else if (Heater == H_BED) {
@@ -630,6 +630,7 @@ void MenuEditItemBase::draw_edit_screen(PGM_P const pstr, const char * const val
 
 #if ENABLED(RS_STYLE_COLOR_UI)
   // Name of editable field
+  uint16_t line = 1;
   uint16_t cy = 10;
   tft.canvas(0, cy, TFT_WIDTH, MENU_ITEM_HEIGHT);
   tft.set_background(COLOR_BACKGROUND);
