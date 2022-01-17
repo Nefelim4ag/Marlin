@@ -306,10 +306,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
   TERN_(HAS_FANCHECK, fan_check.check_deferred_error());
 
   KEEPALIVE_STATE(IN_HANDLER);
-
    #if ENABLED(MKS_WIFI)
     serial_index_t port = queue.ring_buffer.command_port();
-    DEBUG("Gcode: %c %d Port: %d",parser.command_letter,parser.codenum, port.index);
   #endif
 
 /**
@@ -335,7 +333,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
   switch (parser.command_letter) {
 
-    case 'G': switch (parser.codenum) {
+    case 'G':
+    switch (parser.codenum) {
 
       case 0: case 1:                                             // G0: Fast Move, G1: Linear Move
         G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); break;
@@ -463,7 +462,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
     }
     break;
 
-    case 'M': switch (parser.codenum) {
+    case 'M':
+    switch (parser.codenum) {
 
       #if HAS_RESUME_CONTINUE
         case 0:                                                   // M0: Unconditional stop - Wait for user button press on LCD
@@ -505,12 +505,12 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
       #if ENABLED(SDSUPPORT)
         case 20:                                                  // M20: List SD card
+          DEBUG("Command M20 with param: %s", parser.string_arg);
           #if ENABLED(MKS_WIFI)
-            if(!IS_SD_PRINTING()){
-              DEBUG("No SD print, proceed cmd");
-              M20();
+            if(port.index == MKS_WIFI_SERIAL_NUM){
+              mks_m20(parser.string_arg);
             }else{
-              DEBUG("SD print, skip cmd");
+              M20();
             }
           #else
             M20();

@@ -540,13 +540,21 @@ typedef struct SettingsDataStruct {
     uint8_t ui_language;                                // M414 S
   #endif
 
+  #ifdef RS_ADDSETTINGS
+    planner_axinvert_t invert_axes;
+  #endif  // #ifdef RS_ADDSETTINGS
 } SettingsData;
+
+#ifdef RS_ADDSETTINGS
+  extra_settings_t extra_settings;
+#endif  // #ifdef RS_ADDSETTINGS
 
 //static_assert(sizeof(SettingsData) <= MARLIN_EEPROM_SIZE, "EEPROM too small to contain SettingsData!");
 
 MarlinSettings settings;
 
 uint16_t MarlinSettings::datasize() { return sizeof(SettingsData); }
+
 
 /**
  * Post-process after Retrieve or Reset
@@ -1522,6 +1530,10 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(ui.language);
     #endif
 
+    #ifdef RS_ADDSETTINGS
+      EEPROM_WRITE(planner.invert_axis);
+    #endif  // #ifdef RS_ADDSETTINGS
+
     //
     // Report final CRC and Data Size
     //
@@ -1556,6 +1568,10 @@ void MarlinSettings::postprocess() {
     if (!eeprom_error) LCD_MESSAGE(MSG_SETTINGS_STORED);
 
     TERN_(EXTENSIBLE_UI, ExtUI::onConfigurationStoreWritten(!eeprom_error));
+
+    #ifdef RS_ADDSETTINGS
+      extra_settings.poweroff_at_printed = false;
+    #endif  // #ifdef RS_ADDSETTINGS
 
     return !eeprom_error;
   }
@@ -2466,6 +2482,10 @@ void MarlinSettings::postprocess() {
       }
       #endif
 
+      #ifdef RS_ADDSETTINGS
+        EEPROM_READ((uint8_t *)&planner.invert_axis, sizeof(planner.invert_axis));
+      #endif  // #ifdef RS_ADDSETTINGS
+
       //
       // Validate Final Size and CRC
       //
@@ -2485,6 +2505,8 @@ void MarlinSettings::postprocess() {
         DEBUG_ECHO(version);
         DEBUG_ECHOLNPGM(" stored settings retrieved (", eeprom_index - (EEPROM_OFFSET), " bytes; crc ", (uint32_t)working_crc, ")");
       }
+      else
+        DEBUG_ECHO_MSG("EEPROM read success. Index: ", eeprom_index - (EEPROM_OFFSET), " Size: ", datasize());
 
       if (!validating && !eeprom_error) postprocess();
 
@@ -2526,6 +2548,10 @@ void MarlinSettings::postprocess() {
     #endif
 
     EEPROM_FINISH();
+
+    #ifdef RS_ADDSETTINGS
+      extra_settings.poweroff_at_printed = false;
+    #endif  // #ifdef RS_ADDSETTINGS
 
     return !eeprom_error;
   }
@@ -2696,6 +2722,12 @@ void MarlinSettings::reset() {
     planner.settings.max_acceleration_mm_per_s2[i] = pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
     planner.settings.axis_steps_per_mm[i] = pgm_read_float(&_DASU[ALIM(i, _DASU)]);
     planner.settings.max_feedrate_mm_s[i] = pgm_read_float(&_DMF[ALIM(i, _DMF)]);
+    #ifdef RS_ADDSETTINGS
+      planner.invert_axis.invert_axis[X_AXIS] = INVERT_X_DIR;
+      planner.invert_axis.invert_axis[Y_AXIS] = INVERT_Y_DIR;
+      planner.invert_axis.invert_axis[Z_AXIS] = INVERT_Z_DIR;
+      planner.invert_axis.invert_axis[E_AXIS] = INVERT_E0_DIR;
+    #endif  // #ifdef RS_ADDSETTINGS
   }
 
   planner.settings.min_segment_time_us = DEFAULT_MINSEGMENTTIME;
@@ -2704,6 +2736,9 @@ void MarlinSettings::reset() {
   planner.settings.travel_acceleration = DEFAULT_TRAVEL_ACCELERATION;
   planner.settings.min_feedrate_mm_s = feedRate_t(DEFAULT_MINIMUMFEEDRATE);
   planner.settings.min_travel_feedrate_mm_s = feedRate_t(DEFAULT_MINTRAVELFEEDRATE);
+  #ifdef RS_ADDSETTINGS
+    planner.invert_axis.z2_vs_z_dir = ENABLED(INVERT_Z2_VS_Z_DIR);
+  #endif // #ifdef RS_ADDSETTINGS
 
   #if HAS_CLASSIC_JERK
     #ifndef DEFAULT_XJERK
@@ -3153,6 +3188,13 @@ void MarlinSettings::reset() {
   postprocess();
 
   DEBUG_ECHO_MSG("Hardcoded Default Settings Loaded");
+
+  TERN_(EXTENSIBLE_UI, ExtUI::onFactoryReset());
+
+  #ifdef RS_ADDSETTINGS
+    extra_settings.poweroff_at_printed = false;
+  #endif  // #ifdef RS_ADDSETTINGS
+
 }
 
 #if DISABLED(DISABLE_M503)

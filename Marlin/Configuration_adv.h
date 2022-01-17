@@ -464,14 +464,18 @@
 
 // The number of consecutive low temperature errors that can occur
 // before a min_temp_error is triggered. (Shouldn't be more than 10.)
-//#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 0
+#ifdef HIGH_TEMPERATURE_MODE
+  #define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 5
+#endif
 
 // The number of milliseconds a hotend will preheat before starting to check
 // the temperature. This value should NOT be set to the time it takes the
 // hot end to reach the target temperature, but the time it takes to reach
 // the minimum temperature your thermistor can read. The lower the better/safer.
 // This shouldn't need to be more than 30 seconds (30000)
-//#define MILLISECONDS_PREHEAT_TIME 0
+#ifdef HIGH_TEMPERATURE_MODE
+  #define MILLISECONDS_PREHEAT_TIME 15000
+#endif
 
 // @section extruder
 
@@ -536,7 +540,7 @@
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
 // before setting a PWM value. (Does not work with software PWM for fan on Sanguinololu)
-#define FAN_KICKSTART_TIME 500
+#define FAN_KICKSTART_TIME 50
 
 // Some coolers may require a non-zero "off" state.
 //#define FAN_OFF_PWM  1
@@ -553,7 +557,7 @@
  *
  * Define one or both of these to override the default 0-255 range.
  */
-#define FAN_MIN_PWM 65
+#define FAN_MIN_PWM 20
 #define FAN_MAX_PWM 255
 
 /**
@@ -583,8 +587,8 @@
  */
 #define FAST_PWM_FAN    // Increase the fan PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 #if ENABLED(FAST_PWM_FAN)
-  #define FAST_PWM_FAN_FREQUENCY 400
-  //#define USE_OCR2A_AS_TOP
+  #define FAST_PWM_FAN_FREQUENCY 300
+  #define USE_OCR2A_AS_TOP
   #ifndef FAST_PWM_FAN_FREQUENCY
     #ifdef __AVR__
       #define FAST_PWM_FAN_FREQUENCY ((F_CPU) / (2 * 255 * 1))
@@ -625,7 +629,11 @@
 #define COOLER_AUTO_FAN_PIN -1
 #define COOLER_FAN_PIN -1
 
-#define EXTRUDER_AUTO_FAN_TEMPERATURE 50
+#ifdef HIGH_TEMPERATURE_MODE
+  #define EXTRUDER_AUTO_FAN_TEMPERATURE 85
+#else
+  #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
+#endif
 #define EXTRUDER_AUTO_FAN_SPEED 255   // 255 == full speed
 #define CHAMBER_AUTO_FAN_TEMPERATURE 30
 #define CHAMBER_AUTO_FAN_SPEED 255

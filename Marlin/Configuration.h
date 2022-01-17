@@ -38,7 +38,7 @@
  * Advanced settings can be found in Configuration_adv.h
  */
 #define CONFIGURATION_H_VERSION 02000903
-#define REBORN_FW_VERSION 0105
+#define REBORN_FW_VERSION 0106
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -376,14 +376,14 @@
  * Enable and connect the power supply to the PS_ON_PIN.
  * Specify whether the power supply is active HIGH or active LOW.
  */
-//#define PSU_CONTROL
-//#define PSU_NAME "Power Supply"
+#define PSU_CONTROL
+#define PSU_NAME "Power Supply"
 
 #if ENABLED(PSU_CONTROL)
-  //#define MKS_PWC                 // Using the MKS PWC add-on
+  #define MKS_PWC                 // Using the MKS PWC add-on
   //#define PS_OFF_CONFIRM          // Confirm dialog when power off
   //#define PS_OFF_SOUND            // Beep 1s when power off
-  #define PSU_ACTIVE_STATE LOW      // Set 'LOW' for ATX, 'HIGH' for X-Box
+  #define PSU_ACTIVE_STATE HIGH      // Set 'LOW' for ATX, 'HIGH' for X-Box
 
   //#define PSU_DEFAULT_OFF         // Keep power off until enabled directly with M80
   //#define PSU_POWERUP_DELAY 250   // (ms) Delay for the PSU to warm up to full power
@@ -504,7 +504,11 @@
 #ifdef TEMP_SERSOR_TYPE
   #define TEMP_SENSOR_0 TEMP_SERSOR_TYPE
 #else
-  #define TEMP_SENSOR_0 1
+  #ifdef HIGH_TEMPERATURE_MODE
+    #define TEMP_SENSOR_0 66
+  #else
+    #define TEMP_SENSOR_0 1
+  #endif
 #endif
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
@@ -579,6 +583,8 @@
 #else
   #if TEMP_SERSOR_TYPE == 5
     #define HEATER_0_MAXTEMP 310
+  #elif TEMP_SERSOR_TYPE == 66
+    #define HEATER_0_MAXTEMP 510
   #else
     #define HEATER_0_MAXTEMP 300
   #endif
@@ -627,9 +633,15 @@
     #define DEFAULT_Ki_LIST {   1.08,   1.08 }
     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
-    #define DEFAULT_Kp 9.91
-    #define DEFAULT_Ki 0.55
-    #define DEFAULT_Kd 44.99
+    #ifdef HIGH_TEMPERATURE_MODE
+      #define DEFAULT_Kp 14.0
+      #define DEFAULT_Ki 0.5
+      #define DEFAULT_Kd 125.0
+    #else
+      #define DEFAULT_Kp 9.91
+      #define DEFAULT_Ki 0.55
+      #define DEFAULT_Kd 44.99
+    #endif
 
     // #define DEFAULT_Kp  22.20
     // #define DEFAULT_Ki   1.08
@@ -3085,3 +3097,7 @@
 
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
 //#define SERVO_DETACH_GCODE
+
+
+// Additional settings in EEPROM
+#define RS_ADDSETTINGS
