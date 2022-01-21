@@ -670,7 +670,7 @@
 #elif MB(INDEX_REV03)
   #include "stm32f4/pins_INDEX_REV03.h"         // STM32F4                                env:Index_Mobo_Rev03
 #elif MB(MKS_ROBIN_NANO_V1_3_F4)
-  #include "stm32f4/pins_MKS_ROBIN_NANO_V1_3_F4.h" // STM32F4                             env:mks_robin_nano_v1_3_f4_x32 env:mks_robin_nano_v1_3_f4_x16 env:mks_robin_nano_v1_3_f4 env:mks_robin_nano_v1_3_f4_MY env:mks_robin_nano_v1_3_f4_x32_nefelim4ag
+  #include "stm32f4/pins_MKS_ROBIN_NANO_V1_3_F4.h" // STM32F4                             env:mks_robin_nano_v1_3_f4_x32 env:mks_robin_nano_v1_3_f4_x16 env:mks_robin_nano_v1_3_f4 env:mks_robin_nano_v1_3_f4_MY env:mks_robin_nano_v1_3_f4_x32_nefelim4ag env:mks_robin_nano_v1_3_f4_x32_TSensor_66
 #elif MB(MKS_ROBIN_NANO_SV1_3_F4)
   #include "stm32f4/pins_MKS_ROBIN_NANO_V1_3_F4.h" // STM32F4                             env:mks_robin_nano_Sv1_3_f4_x32 env:mks_robin_nano_Sv1_3_f4_x16 env:mks_robin_nano_Sv1_3_f4_x16_SWAP_Z_E_TSensor_5 env:mks_robin_nano_Sv1_3_f4_x16_SWAP_Z_E_BLTouch
 #elif MB(MKS_EAGLE)
