@@ -58,7 +58,7 @@
 void menu_tmc();
 void menu_backlash();
 
-#ifdef RS_ADDSETTINGS
+#if ENABLED(RS_ADDSETTINGS)
   void menu_advanced_axesdir();
 #endif
 
@@ -595,7 +595,7 @@ void menu_advanced_settings() {
   if (!is_busy)
     SUBMENU(MSG_STEPS_PER_MM, menu_advanced_steps_per_mm);
 
-  #ifdef RS_ADDSETTINGS
+  #if ENABLED(RS_ADDSETTINGS)
     SUBMENU(MSG_AXIS_DIRECTION, menu_advanced_axesdir);
   #endif
 
@@ -664,7 +664,7 @@ void menu_advanced_settings() {
 
 
 
-  #ifdef RS_ADDSETTINGS
+  #if ENABLED(RS_ADDSETTINGS)
   void menu_advanced_axesdir()
   {
     START_MENU();
@@ -678,7 +678,7 @@ void menu_advanced_settings() {
 
     END_MENU();
   }
-  #endif  //   #ifdef RS_ADDSETTINGS
+  #endif  //   RS_ADDSETTINGS
 
 
 #endif // HAS_LCD_MENU
