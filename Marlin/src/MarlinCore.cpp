@@ -1329,6 +1329,7 @@ void setup() {
 
   SETUP_RUN(settings.first_load());   // Load data from EEPROM if available (or use defaults)
                                       // This also updates variables in the planner, elsewhere
+  SERIAL_ECHO_MSG(" settings.first_load() done");
 
   #if HAS_ETHERNET
     SETUP_RUN(ethernet.init());
@@ -1341,14 +1342,19 @@ void setup() {
   TERN_(HAS_M206_COMMAND, current_position += home_offset); // Init current position based on home_offset
 
   sync_plan_position();               // Vital to init stepper/planner equivalent for current_position
+  SERIAL_ECHO_MSG(" sync_plan_position() done");
 
   SETUP_RUN(thermalManager.init());   // Initialize temperature loop
+  SERIAL_ECHO_MSG(" thermalManager.init() done");
 
   SETUP_RUN(print_job_timer.init());  // Initial setup of print job timer
+  SERIAL_ECHO_MSG(" print_job_timer.init() done");
 
   SETUP_RUN(endstops.init());         // Init endstops and pullups
+  SERIAL_ECHO_MSG(" endstops.init() done");
 
   SETUP_RUN(stepper.init());          // Init stepper. This enables interrupts!
+  SERIAL_ECHO_MSG(" stepper.init() done");
 
   #if HAS_SERVOS
     SETUP_RUN(servo_init());
@@ -1544,6 +1550,7 @@ void setup() {
 
   #if ENABLED(USE_WATCHDOG)
     SETUP_RUN(watchdog_init());       // Reinit watchdog after HAL_get_reset_source call
+    SERIAL_ECHO_MSG(" watchdog_init() done");
   #endif
 
   #if ENABLED(EXTERNAL_CLOSED_LOOP_CONTROLLER)
@@ -1610,6 +1617,7 @@ void setup() {
       SERIAL_ECHOLNPGM("elapsed=", elapsed);
     #endif
     SETUP_RUN(ui.bootscreen_completion(elapsed));
+    SERIAL_ECHO_MSG(" ui.bootscreen_completion(elapsed) done");
   #endif
 
   #if ENABLED(PASSWORD_ON_STARTUP)
@@ -1618,6 +1626,7 @@ void setup() {
 
   #if BOTH(HAS_LCD_MENU, TOUCH_SCREEN_CALIBRATION) && EITHER(TFT_CLASSIC_UI, TFT_COLOR_UI)
     SETUP_RUN(ui.check_touch_calibration());
+    SERIAL_ECHO_MSG(" ui.check_touch_calibration() done");
   #endif
 
   #if ENABLED(EASYTHREED_UI)
@@ -1628,6 +1637,7 @@ void setup() {
   #endif
   #if ENABLED(MKS_WIFI)
     mks_wifi_init();
+    SERIAL_ECHO_MSG(" mks_wifi_init() done");
   #endif
 
   marlin_state = MF_RUNNING;
