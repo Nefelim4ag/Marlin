@@ -2714,7 +2714,9 @@
   #if AXIS_IS_TMC(X)
     #define X_CURRENT       800        // (mA) RMS current. Multiply by 1.414 for peak current.
     #define X_CURRENT_HOME  X_CURRENT  // (mA) RMS current for sensorless homing
+    #ifndef X_MICROSTEPS
     #define X_MICROSTEPS     16        // 0..256
+    #endif
     #define X_RSENSE          0.11
     #define X_CHAIN_POS      -1        // -1..0: Not chained. 1: MCU MOSI connected. 2: Next in chain, ...
     //#define X_INTERPOLATE  true      // Enable to override 'INTERPOLATE' for the X axis
@@ -2734,7 +2736,9 @@
   #if AXIS_IS_TMC(Y)
     #define Y_CURRENT       800
     #define Y_CURRENT_HOME  Y_CURRENT
+    #ifndef X_MICROSTEPS
     #define Y_MICROSTEPS     16
+    #endif
     #define Y_RSENSE          0.11
     #define Y_CHAIN_POS      -1
     //#define Y_INTERPOLATE  true
@@ -2823,7 +2827,9 @@
 
   #if AXIS_IS_TMC(E0)
     #define E0_CURRENT      800
+    #ifndef E0_MICROSTEPS
     #define E0_MICROSTEPS    16
+    #endif
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
@@ -2940,7 +2946,9 @@
    * on the same serial port, either here or in your board's pins file.
    */
 #ifdef XY_USE_UART
-  #define X_SLAVE_ADDRESS 0
+  #define E0_SLAVE_ADDRESS 0
+  #define X_SLAVE_ADDRESS 1
+  #define Y_SLAVE_ADDRESS 2
 #endif
   //#define  X_SLAVE_ADDRESS 0
   //#define  Y_SLAVE_ADDRESS 0
@@ -2997,7 +3005,7 @@
    * Define your own with:
    * { <off_time[1..15]>, <hysteresis_end[-3..12]>, hysteresis_start[1..8] }
    */
-  #define CHOPPER_TIMING CHOPPER_DEFAULT_12V        // All axes (override below)
+  #define CHOPPER_TIMING CHOPPER_DEFAULT_24V        // All axes (override below)
   //#define CHOPPER_TIMING_X  CHOPPER_TIMING        // For X Axes (override below)
   //#define CHOPPER_TIMING_X2 CHOPPER_TIMING_X
   //#define CHOPPER_TIMING_Y  CHOPPER_TIMING        // For Y Axes (override below)
@@ -3026,7 +3034,9 @@
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
    * M122 - Report driver parameters (Requires TMC_DEBUG)
    */
-  //#define MONITOR_DRIVER_STATUS
+  #ifdef XY_USE_UART
+  #define MONITOR_DRIVER_STATUS
+  #endif
 
   #if ENABLED(MONITOR_DRIVER_STATUS)
     #define CURRENT_STEP_DOWN     50  // [mA]
@@ -3041,11 +3051,13 @@
    * STEALTHCHOP_(XY|Z|E) must be enabled to use HYBRID_THRESHOLD.
    * M913 X/Y/Z/E to live tune the setting
    */
-  //#define HYBRID_THRESHOLD
+  #ifdef XY_USE_UART
+    #define HYBRID_THRESHOLD
+  #endif
 
-  #define X_HYBRID_THRESHOLD     100  // [mm/s]
+  #define X_HYBRID_THRESHOLD     150  // [mm/s]
   #define X2_HYBRID_THRESHOLD    100
-  #define Y_HYBRID_THRESHOLD     100
+  #define Y_HYBRID_THRESHOLD     150
   #define Y2_HYBRID_THRESHOLD    100
   #define Z_HYBRID_THRESHOLD       3
   #define Z2_HYBRID_THRESHOLD      3

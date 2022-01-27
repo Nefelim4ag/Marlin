@@ -984,8 +984,8 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#if XY_STEPPERS_MICROSTEP == 64
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 320, 320, 800, 410 }
+#ifdef XY_USE_UART
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   {5 * X_MICROSTEPS, 5 * Y_MICROSTEPS, 800, 821/32*E0_MICROSTEPS }
 #elif STEPPERS_MICROSTEP == 32
   #ifdef MARLIN_CONFIG_MY
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 410 }
@@ -1001,11 +1001,11 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 250, 250, 50, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 50, 25 }
 
 #define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 400, 400, 100, 50 } // ...or, set your own edit limits
+  #define MAX_FEEDRATE_EDIT_VALUES    { 1000, 1000, 100, 50 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1014,11 +1014,11 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 4000, 4000, 300, 15000 }
+#define DEFAULT_MAX_ACCELERATION      { 5000, 5000, 300, 15000 }
 
 #define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
-  #define MAX_ACCEL_EDIT_VALUES       { 4000, 4000, 300, 15000 } // ...or, set your own edit limits
+  #define MAX_ACCEL_EDIT_VALUES       { 10000, 10000, 300, 15000 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1054,7 +1054,7 @@
 
   #define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
   #if ENABLED(LIMITED_JERK_EDITING)
-    #define MAX_JERK_EDIT_VALUES { 20, 20, 1, 20 } // ...or, set your own edit limits
+    #define MAX_JERK_EDIT_VALUES { 50, 50, 1, 20 } // ...or, set your own edit limits
   #endif
 #endif
 

@@ -69,20 +69,22 @@
   /**
    * TMC2208/TMC2209 stepper drivers
    */
+  // Avoid timers conflict
+  #undef TEMP_TIMER
   //
   // Software serial
   //
   #define X_SERIAL_TX_PIN                   PB2
   #define X_SERIAL_RX_PIN                   PB2
 
-  // #define Y_SERIAL_TX_PIN                   PA8
-  // #define Y_SERIAL_RX_PIN                   PA8
+  #define Y_SERIAL_TX_PIN                   PB2
+  #define Y_SERIAL_RX_PIN                   PB2
 
   // #define Z_SERIAL_TX_PIN                   PA6
   // #define Z_SERIAL_RX_PIN                   PA1
 
-  // #define E0_SERIAL_TX_PIN                  PA6
-  // #define E0_SERIAL_RX_PIN                  PA1
+  #define E0_SERIAL_TX_PIN                  PB2
+  #define E0_SERIAL_RX_PIN                  PB2
 
   // Reduce baud rate to improve software serial reliability
   #define TMC_BAUD_RATE 19200
