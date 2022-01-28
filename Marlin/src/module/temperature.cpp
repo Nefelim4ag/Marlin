@@ -189,11 +189,7 @@
 #if HAS_HOTEND_THERMISTOR
   #define NEXT_TEMPTABLE(N) ,TEMPTABLE_##N
   #define NEXT_TEMPTABLE_LEN(N) ,TEMPTABLE_##N##_LEN
-  #if ENABLED(RS_ADDSETTINGS)
-    // static temp_entry_t* heater_ttbl_map[HOTENDS];
-  #else
-    static const temp_entry_t* heater_ttbl_map[HOTENDS] = ARRAY_BY_HOTENDS(TEMPTABLE_0 REPEAT_S(1, HOTENDS, NEXT_TEMPTABLE));
-  #endif
+  static const temp_entry_t* heater_ttbl_map[HOTENDS] = ARRAY_BY_HOTENDS(TEMPTABLE_0 REPEAT_S(1, HOTENDS, NEXT_TEMPTABLE));
   static constexpr uint8_t heater_ttbllen_map[HOTENDS] = ARRAY_BY_HOTENDS(TEMPTABLE_0_LEN REPEAT_S(1, HOTENDS, NEXT_TEMPTABLE_LEN));
 #endif
 
@@ -201,15 +197,6 @@ Temperature thermalManager;
 
 PGMSTR(str_t_thermal_runaway, STR_T_THERMAL_RUNAWAY);
 PGMSTR(str_t_heating_failed, STR_T_HEATING_FAILED);
-#if ENABLED(RS_ADDSETTINGS)
-  thermistors_data_t thermistors_data;
-
-  constexpr thermistor_types_t    thermistor_types[THERMISTORS_TYPES_COUNT] PROGMEM = { {1, "Epcos 100k (1)", temptable_1, sizeof(temptable_1)/sizeof(*temptable_1)},
-                                                          {5, "ATC 104GT/104NT 100k (5)", temptable_5, sizeof(temptable_5)/sizeof(*temptable_5)},
-                                                          {13, "Hisens 3950 100k (13)", temptable_13, sizeof(temptable_13)/sizeof(*temptable_13)},
-                                                          {66, "Dyze D500 4.7M (66)", temptable_66, sizeof(temptable_66)/sizeof(*temptable_66)},
-                                                        };
-#endif  // RS_ADDSETTINGS
 
 /**
  * Macros to include the heater id in temp errors. The compiler's dead-code
@@ -1952,12 +1939,8 @@ void Temperature::manage_heater() {
 
     #if HAS_HOTEND_THERMISTOR
       // Thermistor with conversion table?
-      #if ENABLED(RS_ADDSETTINGS)
-        SCAN_THERMISTOR_TABLE(thermistors_data.heater_type[e]->table, thermistors_data.heater_type[e]->table_size);
-      #else
-        const temp_entry_t(*tt)[] = (temp_entry_t(*)[])(heater_ttbl_map[e]);
-        SCAN_THERMISTOR_TABLE((*tt), heater_ttbllen_map[e]);
-      #endif  // RS_ADDSETTINGS
+      const temp_entry_t(*tt)[] = (temp_entry_t(*)[])(heater_ttbl_map[e]);
+      SCAN_THERMISTOR_TABLE((*tt), heater_ttbllen_map[e]);
     #endif
 
     return 0;
@@ -1970,11 +1953,7 @@ void Temperature::manage_heater() {
     #if TEMP_SENSOR_BED_IS_CUSTOM
       return user_thermistor_to_deg_c(CTI_BED, raw);
     #elif TEMP_SENSOR_BED_IS_THERMISTOR
-      #if ENABLED(RS_ADDSETTINGS)
-        SCAN_THERMISTOR_TABLE(thermistors_data.bed_type->table, thermistors_data.bed_type->table_size);
-      #else
-        SCAN_THERMISTOR_TABLE(TEMPTABLE_BED, TEMPTABLE_BED_LEN);
-      #endif  // RS_ADDSETTINGS
+      SCAN_THERMISTOR_TABLE(TEMPTABLE_BED, TEMPTABLE_BED_LEN);
     #elif TEMP_SENSOR_BED_IS_AD595
       return TEMP_AD595(raw);
     #elif TEMP_SENSOR_BED_IS_AD8495

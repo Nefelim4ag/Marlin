@@ -287,12 +287,12 @@ typedef struct {
             min_travel_feedrate_mm_s;           // (mm/s) M205 T - Minimum travel feedrate
 } planner_settings_t;
 
-#if ENABLED(RS_ADDSETTINGS)
+#ifdef RS_ADDSETTINGS
   typedef struct {
     bool  invert_axis[DISTINCT_AXES];
     bool  z2_vs_z_dir;
   } planner_axinvert_t;
-#endif  // RS_ADDSETTINGS
+#endif  // #ifdef RS_ADDSETTINGS
 
 
 #if ENABLED(IMPROVE_HOMING_RELIABILITY)
@@ -381,9 +381,9 @@ class Planner {
 
     static planner_settings_t settings;
 
-    #if ENABLED(RS_ADDSETTINGS)
+    #ifdef RS_ADDSETTINGS
       static planner_axinvert_t invert_axis;
-    #endif  // RS_ADDSETTINGS
+    #endif  // #ifdef RS_ADDSETTINGS
 
     #if ENABLED(LASER_POWER_INLINE)
       static laser_state_t laser_inline;

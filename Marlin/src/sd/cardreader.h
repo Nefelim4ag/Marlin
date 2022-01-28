@@ -113,7 +113,7 @@ public:
 
   static SdFile getroot() { return root; }
 
-  static void mount(bool wifi = false);
+  static void mount();
   static void release();
   static inline bool isMounted() { return flag.mounted; }
 

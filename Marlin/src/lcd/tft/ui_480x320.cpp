@@ -127,17 +127,12 @@ void draw_heater_status(uint16_t x, uint16_t y, const int8_t Heater) {
   MarlinImage image = imgHotEnd;
   // MarlinImage image = imgMove;
   uint16_t Color;
-  celsius_t currentTemperature, targetTemperature;
-  #if ENABLED(RS_STYLE_COLOR_UI)
-    celsius_t coldExtrusionTemp;
-  #endif
+  celsius_t currentTemperature, targetTemperature, coldExtrusionTemp;
 
   if (Heater >= 0) { // HotEnd
     currentTemperature = thermalManager.wholeDegHotend(Heater);
     targetTemperature = thermalManager.degTargetHotend(Heater);
-    #if ENABLED(RS_STYLE_COLOR_UI)
-      coldExtrusionTemp = thermalManager.extrude_min_temp;
-    #endif
+    coldExtrusionTemp = thermalManager.extrude_min_temp;
   }
   #if HAS_HEATED_BED
     else if (Heater == H_BED) {
@@ -302,9 +297,7 @@ void draw_fan_status(uint16_t x, uint16_t y, const bool blink) {
 void MarlinUI::draw_status_screen() {
   const bool blink = get_blink();
 
-  #if ENABLED(RS_STYLE_COLOR_UI)
-    static bool       prev_is_printing = 0;
-  #endif
+  static bool       prev_is_printing = 0;
 
   TERN_(TOUCH_SCREEN, touch.clear());
 

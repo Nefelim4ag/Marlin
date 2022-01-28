@@ -50,8 +50,7 @@ uint8_t mks_wifi_sd_init(void){
 
 void mks_wifi_sd_deinit(void){
    f_mount(0, "", 1);
-   delay(500);
-   card.mount(true);
+   card.mount();
 };
 
 void sd_delete_file(char *filename){
