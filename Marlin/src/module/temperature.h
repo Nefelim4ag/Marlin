@@ -1064,11 +1064,10 @@ extern Temperature thermalManager;
 
   typedef struct 
   {
-    uint8_t heater_type[HOTENDS];
-    uint8_t bed_type;
+    thermistor_types_t *heater_type[HOTENDS];
+    thermistor_types_t *bed_type;
   } thermistors_data_t;
   extern thermistors_data_t thermistors_data;
-  
   #define THERMISTORS_TYPES_COUNT 4
   
 #endif  // RS_ADDSETTINGS

@@ -1932,12 +1932,7 @@
   //#define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.
 #endif
 
-/*
-MKS Robin EEPROM:
-EEPROM_SD
-EEPROM_W25Q
-*/
-#define EEPROM_W25Q
+// #define EEPROM_W25Q
 #if ENABLED(EEPROM_W25Q)
   #undef SDCARD_EEPROM_EMULATION
   #undef USE_REAL_EEPROM
