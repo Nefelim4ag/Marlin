@@ -130,10 +130,10 @@
   #endif
 
   #ifndef COLOR_RATE_100
-    #define COLOR_RATE_100          COLOR_FAN
+    #define COLOR_RATE_100          COLOR_VIVID_GREEN
   #endif
   #ifndef COLOR_RATE_ALTERED
-    #define COLOR_RATE_ALTERED      RGB(201, 201, 0)
+    #define COLOR_RATE_ALTERED      COLOR_YELLOW
   #endif
 
   #ifndef COLOR_PRINT_TIME
