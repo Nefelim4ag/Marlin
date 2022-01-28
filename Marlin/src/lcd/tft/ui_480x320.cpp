@@ -717,7 +717,7 @@ void MenuEditItemBase::draw_edit_screen(PGM_P const pstr, const char * const val
       menu_line(line - 1);
 
       tft_string.set(X_LBL);
-      tft.add_text((TFT_WIDTH / 2 - ITEM_WIDTH1), MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
+      tft.add_text((TFT_WIDTH / 2 - ITEM_WIDTH), MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
       tft_string.set(ftostr52(LOGICAL_X_POSITION(current_position.x)));
       tft_string.trim();
       tft.add_text((TFT_WIDTH / 2 - 16) - tft_string.width(), MENU_TEXT_Y_OFFSET, COLOR_MENU_VALUE, tft_string);
@@ -726,7 +726,7 @@ void MenuEditItemBase::draw_edit_screen(PGM_P const pstr, const char * const val
       tft.add_text((TFT_WIDTH / 2 + 16), MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
       tft_string.set(ftostr52(LOGICAL_X_POSITION(current_position.y)));
       tft_string.trim();
-      tft.add_text((TFT_WIDTH / 2 + ITEM_WIDTH1) - tft_string.width(), MENU_TEXT_Y_OFFSET, COLOR_MENU_VALUE, tft_string);
+      tft.add_text((TFT_WIDTH / 2 + ITEM_WIDTH) - tft_string.width(), MENU_TEXT_Y_OFFSET, COLOR_MENU_VALUE, tft_string);
     }
   #endif
 
