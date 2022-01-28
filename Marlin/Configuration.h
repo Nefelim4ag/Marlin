@@ -985,7 +985,7 @@
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
 #ifdef XY_USE_UART
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   {5 * X_MICROSTEPS, 5 * Y_MICROSTEPS, 800, 821/32*E0_MICROSTEPS }
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   {5 * X_MICROSTEPS, 5 * Y_MICROSTEPS, 800, 821*E0_MICROSTEPS/32 }
 #elif STEPPERS_MICROSTEP == 32
   #ifdef MARLIN_CONFIG_MY
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 410 }
