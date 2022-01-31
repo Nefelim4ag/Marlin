@@ -2949,9 +2949,13 @@
    * Set *_SERIAL_TX_PIN and *_SERIAL_RX_PIN to match for all drivers
    * on the same serial port, either here or in your board's pins file.
    */
-#ifdef XY_USE_UART
+#if E0_DRIVER_TYPE == TMC2209 || E0_DRIVER_TYPE == TMC2208
   #define E0_SLAVE_ADDRESS 0
+#endif
+#if X_DRIVER_TYPE == TMC2209
   #define X_SLAVE_ADDRESS 1
+#endif
+#if Y_DRIVER_TYPE == TMC2209
   #define Y_SLAVE_ADDRESS 2
 #endif
   //#define  X_SLAVE_ADDRESS 0
@@ -3038,7 +3042,7 @@
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
    * M122 - Report driver parameters (Requires TMC_DEBUG)
    */
-  #ifdef XY_USE_UART
+  #if HAS_TMC220x
   #define MONITOR_DRIVER_STATUS
   #endif
 
@@ -3055,7 +3059,7 @@
    * STEALTHCHOP_(XY|Z|E) must be enabled to use HYBRID_THRESHOLD.
    * M913 X/Y/Z/E to live tune the setting
    */
-  #ifdef XY_USE_UART
+  #if HAS_TMC220x
     #define HYBRID_THRESHOLD
   #endif
 

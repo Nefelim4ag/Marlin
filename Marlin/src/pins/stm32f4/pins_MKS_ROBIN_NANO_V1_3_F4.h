@@ -64,7 +64,6 @@
 //  #define MKS_WIFI_IO_RST                    PA5
 // #endif
 
-#ifdef XY_USE_UART
 #if HAS_TMC220x
   /**
    * TMC2208/TMC2209 stepper drivers
@@ -74,19 +73,23 @@
   //
   // Software serial
   //
+  #if X_DRIVER_TYPE == TMC2209
   #define X_SERIAL_TX_PIN                   PB2
   #define X_SERIAL_RX_PIN                   PB2
+  #endif
 
+  #if Y_DRIVER_TYPE == TMC2209
   #define Y_SERIAL_TX_PIN                   PB2
   #define Y_SERIAL_RX_PIN                   PB2
-
+  #endif
   // #define Z_SERIAL_TX_PIN                   PA6
   // #define Z_SERIAL_RX_PIN                   PA1
 
+  #if E0_DRIVER_TYPE == TMC2209 || E0_DRIVER_TYPE == TMC2209
   #define E0_SERIAL_TX_PIN                  PB2
   #define E0_SERIAL_RX_PIN                  PB2
+  #endif
 
   // Reduce baud rate to improve software serial reliability
   #define TMC_BAUD_RATE 19200
-#endif
 #endif
