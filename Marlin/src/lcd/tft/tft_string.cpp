@@ -118,6 +118,7 @@ unsigned char read_byte(const unsigned char *byte) { return *byte; }
  *   @ displays an axis name such as XYZUVW, or E for an extruder
  */
 void TFT_String::add(const char *tpl, const int8_t index, const char *cstr/*=nullptr*/, FSTR_P const fstr/*=nullptr*/) {
+//  lchar_t wc;
 
   while (*tpl) {
 
@@ -154,7 +155,7 @@ void TFT_String::add(const char *tpl, const int8_t index, const char *cstr/*=nul
 }
 
 void TFT_String::add(const char *cstr, uint8_t max_len/*=MAX_STRING_LENGTH*/) {
-  lchar_t wchar;
+  lchar_t wc;
   uint8_t *string1 = (uint8_t*)cstr, *string2;
   while (*string1 && max_len) {
 /* 
@@ -163,7 +164,7 @@ void TFT_String::add(const char *cstr, uint8_t max_len/*=MAX_STRING_LENGTH*/) {
     const uint8_t ch = uint8_t(wc & 0x00FF);
  */
 
-    string2 = (uint8_t*)get_utf8_value_cb(string1, read_byte, wchar);
+    string2 = (uint8_t*)get_utf8_value_cb(string1, read_byte, wc);
     uint32_t wlen = string2 - string1;
     if (wlen > max_len)
       break;
@@ -171,9 +172,9 @@ void TFT_String::add(const char *cstr, uint8_t max_len/*=MAX_STRING_LENGTH*/) {
     length += wlen;
     max_len -= wlen;
 
-    if (wchar > 255)
-      wchar |= 0x0080;
-    uint8_t ch = uint8_t(wchar & 0x00FF);
+    if (wc > 255)
+      wc |= 0x0080;
+    uint8_t ch = uint8_t(wc & 0x00FF);
     span += glyph(ch)->DWidth;
 
     string1 = string2;
