@@ -422,7 +422,7 @@ xyze_int8_t Stepper::count_direction{0};
     #define Z_APPLY_STEP(v,Q) do{ Z_STEP_WRITE(v); Z2_STEP_WRITE(v); Z3_STEP_WRITE(v); }while(0)
   #endif
 #elif NUM_Z_STEPPERS == 2
-  #define Z_APPLY_DIR(v,Q) do{ Z_DIR_WRITE(v); Z2_DIR_WRITE((v) ^ ENABLED(INVERT_Z2_VS_Z_DIR)); }while(0)
+  #define Z_APPLY_DIR(v,Q) do{ Z_DIR_WRITE(v); Z2_DIR_WRITE((v) ^ planner.invert_axis.z2_vs_z_dir); }while(0)
   #if ENABLED(Z_MULTI_ENDSTOPS)
     #define Z_APPLY_STEP(v,Q) DUAL_ENDSTOP_APPLY_STEP(Z,v)
   #elif ENABLED(Z_STEPPER_AUTO_ALIGN)
@@ -589,15 +589,14 @@ void Stepper::set_directions() {
   DIR_WAIT_BEFORE();
 
   #define SET_STEP_DIR(A)                       \
-    if (motor_direction(_AXIS(A))) {            \
-      A##_APPLY_DIR(INVERT_##A##_DIR, false);   \
-      count_direction[_AXIS(A)] = -1;           \
-    }                                           \
-    else {                                      \
-      A##_APPLY_DIR(!INVERT_##A##_DIR, false);  \
-      count_direction[_AXIS(A)] = 1;            \
-    }
-
+  if (motor_direction(_AXIS(A))) {            \
+    A##_APPLY_DIR(planner.invert_axis.invert_axis[_AXIS(A)], false);   \
+    count_direction[_AXIS(A)] = -1;           \
+  }                                           \
+  else {                                      \
+    A##_APPLY_DIR(!planner.invert_axis.invert_axis[_AXIS(A)], false);  \
+    count_direction[_AXIS(A)] = 1;            \
+  }
   TERN_(HAS_X_DIR, SET_STEP_DIR(X)); // A
   TERN_(HAS_Y_DIR, SET_STEP_DIR(Y)); // B
   TERN_(HAS_Z_DIR, SET_STEP_DIR(Z)); // C
@@ -2845,9 +2844,9 @@ void Stepper::init() {
   // Init direction bits for first moves
   set_directions(0
     NUM_AXIS_GANG(
-      | TERN0(INVERT_X_DIR, _BV(X_AXIS)),
-      | TERN0(INVERT_Y_DIR, _BV(Y_AXIS)),
-      | TERN0(INVERT_Z_DIR, _BV(Z_AXIS)),
+      | TERN0(planner.invert_axis.invert_axis[X_AXIS], _BV(X_AXIS)),
+      | TERN0(planner.invert_axis.invert_axis[Y_AXIS], _BV(Y_AXIS)),
+      | TERN0(planner.invert_axis.invert_axis[Z_AXIS], _BV(Z_AXIS)),
       | TERN0(INVERT_I_DIR, _BV(I_AXIS)),
       | TERN0(INVERT_J_DIR, _BV(J_AXIS)),
       | TERN0(INVERT_K_DIR, _BV(K_AXIS)),
@@ -2856,6 +2855,7 @@ void Stepper::init() {
       | TERN0(INVERT_W_DIR, _BV(W_AXIS))
     )
   );
+
 
   #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
     initialized = true;

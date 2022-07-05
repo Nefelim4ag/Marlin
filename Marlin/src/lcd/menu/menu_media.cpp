@@ -30,6 +30,7 @@
 
 #include "menu_item.h"
 #include "../../sd/cardreader.h"
+#include "../tft/tft.h"
 
 void lcd_sd_updir() {
   ui.encoderPosition = card.cdup() ? ENCODER_STEPS_PER_MENU_ITEM : 0;
@@ -72,17 +73,27 @@ class MenuItem_sdfile : public MenuItem_sdbase {
         sd_items = screen_items;
       #endif
       #if ENABLED(SD_MENU_CONFIRM_START)
-        MenuItem_submenu::action(fstr, []{
-          char * const longest = card.longest_filename();
-          char buffer[strlen(longest) + 2];
-          buffer[0] = ' ';
-          strcpy(buffer + 1, longest);
-          MenuItem_confirm::select_screen(
-            GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
-            sdcard_start_selected_file, nullptr,
-            GET_TEXT_F(MSG_START_PRINT), buffer, F("?")
-          );
-        });
+        #if ENABLED(RS_STYLE_COLOR_UI)
+          MenuItem_submenu::action(fstr, []{
+            char * const longest = card.longest_filename();
+            char buffer[strlen(longest) + 2];
+            buffer[0] = ' ';
+            strcpy(buffer + 1, longest);
+            MenuItem_fileconfirm::select_screen(sdcard_start_selected_file, ui.goto_previous_screen, buffer);
+          });
+        #else   // ENABLED(RS_STYLE_COLOR_UI)
+          MenuItem_submenu::action(pstr, []{
+            char * const longest = card.longest_filename();
+            char buffer[strlen(longest) + 2];
+            buffer[0] = ' ';
+            strcpy(buffer + 1, longest);
+            MenuItem_confirm::select_screen(
+              GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
+              sdcard_start_selected_file, nullptr,
+              GET_TEXT_F(MSG_START_PRINT), buffer, F("?")
+            );
+          });
+          #endif  // ENABLED(RS_STYLE_COLOR_UI)
       #else
         sdcard_start_selected_file();
         UNUSED(fstr);

@@ -26,6 +26,11 @@
 // Print debug messages with M111 S2 (Uses 156 bytes of PROGMEM)
 //#define DEBUG_STOPWATCH
 
+#include "../core/macros.h" // for FORCE_INLINE
+
+#include <stdint.h>
+typedef uint32_t millis_t;
+
 /**
  * @brief Stopwatch class
  * @details This class acts as a timer proving stopwatch functionality including
@@ -39,6 +44,15 @@ class Stopwatch {
     static millis_t accumulator;
     static millis_t startTimestamp;
     static millis_t stopTimestamp;
+
+    static millis_t accumulatorHeat;
+    static millis_t startHeatTimestamp;
+    static millis_t stopHeatTimestamp;
+    static bool     heatRunning;
+
+    static millis_t last_M73_timestamp;
+    static millis_t M73_remain;
+    static millis_t M73_progress;
 
   public:
     /**
@@ -83,6 +97,12 @@ class Stopwatch {
      */
     static void reset();
 
+    static void heating_start();
+
+    static void heating_stop();
+
+    static void set_M73(uint32_t percents, uint32_t  remain_minutes);
+
     /**
      * @brief Check if the timer is running
      * @details Return true if the timer is currently running, false otherwise.
@@ -103,6 +123,14 @@ class Stopwatch {
      * @return the delta since starting the stopwatch
      */
     static millis_t duration();
+
+    static millis_t durationHeat();
+
+    FORCE_INLINE static bool is_M73_valid() { return ((millis() - last_M73_timestamp) < 180*1000); }; // M73 timeout - 3 minutes
+
+    FORCE_INLINE static uint32_t get_M73_remain() { return M73_remain; };
+
+    FORCE_INLINE static uint32_t get_M73_progress() { return M73_progress; };
 
     #ifdef DEBUG_STOPWATCH
 

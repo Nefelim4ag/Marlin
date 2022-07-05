@@ -415,6 +415,7 @@
 #define BOARD_TH3D_EZBOARD_V2         4234  // TH3D EZBoard v2.0
 #define BOARD_OPULO_LUMEN_REV3        4235  // Opulo Lumen PnP Controller REV3 (STM32F407VE/VG)
 #define BOARD_MKS_ROBIN_NANO_V1_3_F4  4236  // MKS Robin Nano V1.3 and MKS Robin Nano-S V1.3 (STM32F407VE)
+#define BOARD_MKS_ROBIN_NANO_SV1_3_F4 42361 // MKS Robin Nano-S V1.3 (STM32F407VET6)
 #define BOARD_MKS_EAGLE               4237  // MKS Eagle (STM32F407VE)
 #define BOARD_ARTILLERY_RUBY          4238  // Artillery Ruby (STM32F401RC)
 #define BOARD_FYSETC_SPIDER_V2_2      4239  // FYSETC Spider V2.2 (STM32F446VE)

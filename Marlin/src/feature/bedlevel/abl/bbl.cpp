@@ -21,6 +21,7 @@
  */
 
 #include "../../../inc/MarlinConfig.h"
+#include "../../../module/settings.h"
 
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
@@ -118,21 +119,20 @@ void LevelingBilinear::set_grid(const xy_pos_t& _grid_spacing, const xy_pos_t& _
  */
 void LevelingBilinear::extrapolate_unprobed_bed_level() {
   #ifdef HALF_IN_X
-    constexpr uint8_t ctrx2 = 0, xend = GRID_MAX_POINTS_X - 1;
+    uint8_t ctrx2 = 0, xend = bedlevel_settings.bedlevel_points.x - 1;
   #else
-    constexpr uint8_t ctrx1 = (GRID_MAX_CELLS_X) / 2, // left-of-center
-                      ctrx2 = (GRID_MAX_POINTS_X) / 2,  // right-of-center
+    uint8_t ctrx1 = (bedlevel_settings.bedlevel_points.x - 1) / 2, // left-of-center
+                      ctrx2 = (bedlevel_settings.bedlevel_points.x) / 2,  // right-of-center
                       xend = ctrx1;
   #endif
 
   #ifdef HALF_IN_Y
-    constexpr uint8_t ctry2 = 0, yend = GRID_MAX_POINTS_Y - 1;
+    uint8_t ctry2 = 0, yend = bedlevel_settings.bedlevel_points.y - 1;
   #else
-    constexpr uint8_t ctry1 = (GRID_MAX_CELLS_Y) / 2, // top-of-center
-                      ctry2 = (GRID_MAX_POINTS_Y) / 2,  // bottom-of-center
+    uint8_t ctry1 = (bedlevel_settings.bedlevel_points.y - 1) / 2, // top-of-center
+                      ctry2 = (bedlevel_settings.bedlevel_points.y) / 2,  // bottom-of-center
                       yend = ctry1;
   #endif
-
   LOOP_LE_N(xo, xend)
     LOOP_LE_N(yo, yend) {
       uint8_t x2 = ctrx2 + xo, y2 = ctry2 + yo;
@@ -156,7 +156,7 @@ void LevelingBilinear::extrapolate_unprobed_bed_level() {
 void LevelingBilinear::print_leveling_grid(const bed_mesh_t* _z_values /*= NULL*/) {
   // print internal grid(s) or just the one passed as a parameter
   SERIAL_ECHOLNPGM("Bilinear Leveling Grid:");
-  print_2d_array(GRID_MAX_POINTS_X, GRID_MAX_POINTS_Y, 3, _z_values ? *_z_values[0] : z_values[0]);
+  print_2d_array(bedlevel_settings.bedlevel_points.x, bedlevel_settings.bedlevel_points.y, 3, _z_values ? *_z_values[0] : z_values[0]);
 
   #if ENABLED(ABL_BILINEAR_SUBDIVISION)
     if (!_z_values) {
@@ -168,8 +168,8 @@ void LevelingBilinear::print_leveling_grid(const bed_mesh_t* _z_values /*= NULL*
 
 #if ENABLED(ABL_BILINEAR_SUBDIVISION)
 
-  #define ABL_TEMP_POINTS_X (GRID_MAX_POINTS_X + 2)
-  #define ABL_TEMP_POINTS_Y (GRID_MAX_POINTS_Y + 2)
+  #define ABL_TEMP_POINTS_X (bedlevel_settings.bedlevel_points.x + 2)
+  #define ABL_TEMP_POINTS_Y (bedlevel_settings.bedlevel_points.y + 2)
   float LevelingBilinear::z_values_virt[ABL_GRID_POINTS_VIRT_X][ABL_GRID_POINTS_VIRT_Y];
   xy_pos_t LevelingBilinear::grid_spacing_virt;
   xy_float_t LevelingBilinear::grid_factor_virt;
@@ -177,7 +177,7 @@ void LevelingBilinear::print_leveling_grid(const bed_mesh_t* _z_values /*= NULL*
   #define LINEAR_EXTRAPOLATION(E, I) ((E) * 2 - (I))
   float LevelingBilinear::bed_level_virt_coord(const uint8_t x, const uint8_t y) {
     uint8_t ep = 0, ip = 1;
-    if (x > (GRID_MAX_POINTS_X) + 1 || y > (GRID_MAX_POINTS_Y) + 1) {
+    if (x > (bedlevel_settings.bedlevel_points.x) + 1 || y > (bedlevel_settings.bedlevel_points.y) + 1) {
       // The requested point requires extrapolating two points beyond the mesh.
       // These values are only requested for the edges of the mesh, which are always an actual mesh point,
       // and do not require interpolation. When interpolation is not needed, this "Mesh + 2" point is
@@ -187,7 +187,7 @@ void LevelingBilinear::print_leveling_grid(const bed_mesh_t* _z_values /*= NULL*
     }
     if (!x || x == ABL_TEMP_POINTS_X - 1) {
       if (x) {
-        ep = (GRID_MAX_POINTS_X) - 1;
+        ep = (bedlevel_settings.bedlevel_points.x) - 1;
         ip = GRID_MAX_CELLS_X - 1;
       }
       if (WITHIN(y, 1, ABL_TEMP_POINTS_Y - 2))
@@ -203,7 +203,7 @@ void LevelingBilinear::print_leveling_grid(const bed_mesh_t* _z_values /*= NULL*
     }
     if (!y || y == ABL_TEMP_POINTS_Y - 1) {
       if (y) {
-        ep = (GRID_MAX_POINTS_Y) - 1;
+        ep = (bedlevel_settings.bedlevel_points.y) - 1;
         ip = GRID_MAX_CELLS_Y - 1;
       }
       if (WITHIN(x, 1, ABL_TEMP_POINTS_X - 2))
@@ -243,11 +243,11 @@ void LevelingBilinear::print_leveling_grid(const bed_mesh_t* _z_values /*= NULL*
   void LevelingBilinear::bed_level_virt_interpolate() {
     grid_spacing_virt = grid_spacing / (BILINEAR_SUBDIVISIONS);
     grid_factor_virt = grid_spacing_virt.reciprocal();
-    LOOP_L_N(y, GRID_MAX_POINTS_Y)
-      LOOP_L_N(x, GRID_MAX_POINTS_X)
+    LOOP_L_N(y, bedlevel_settings.bedlevel_points.y)
+      LOOP_L_N(x, bedlevel_settings.bedlevel_points.x)
         LOOP_L_N(ty, BILINEAR_SUBDIVISIONS)
           LOOP_L_N(tx, BILINEAR_SUBDIVISIONS) {
-            if ((ty && y == (GRID_MAX_POINTS_Y) - 1) || (tx && x == (GRID_MAX_POINTS_X) - 1))
+            if ((ty && y == (bedlevel_settings.bedlevel_points.y) - 1) || (tx && x == (bedlevel_settings.bedlevel_points.x) - 1))
               continue;
             z_values_virt[x * (BILINEAR_SUBDIVISIONS) + tx][y * (BILINEAR_SUBDIVISIONS) + ty] =
               bed_level_virt_2cmr(
@@ -277,8 +277,8 @@ void LevelingBilinear::refresh_bed_level() {
 #else
   #define ABL_BG_SPACING(A) grid_spacing.A
   #define ABL_BG_FACTOR(A)  grid_factor.A
-  #define ABL_BG_POINTS_X   GRID_MAX_POINTS_X
-  #define ABL_BG_POINTS_Y   GRID_MAX_POINTS_Y
+  #define ABL_BG_POINTS_X   bedlevel_settings.bedlevel_points.x
+  #define ABL_BG_POINTS_Y   bedlevel_settings.bedlevel_points.y
   #define ABL_BG_GRID(X,Y)  z_values[X][Y]
 #endif
 

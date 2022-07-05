@@ -28,10 +28,19 @@
   #include "../lcd/extui/ui_api.h"
 #endif
 
+extern bool wait_for_heatup;
+
 Stopwatch::State Stopwatch::state;
-millis_t Stopwatch::accumulator;
-millis_t Stopwatch::startTimestamp;
-millis_t Stopwatch::stopTimestamp;
+millis_t    Stopwatch::accumulator;
+millis_t    Stopwatch::accumulatorHeat;
+millis_t    Stopwatch::startTimestamp;
+millis_t    Stopwatch::stopTimestamp;
+millis_t    Stopwatch::startHeatTimestamp;
+millis_t    Stopwatch::stopHeatTimestamp;
+bool        Stopwatch::heatRunning;
+millis_t    Stopwatch::last_M73_timestamp;
+millis_t    Stopwatch::M73_remain;
+millis_t    Stopwatch::M73_progress;
 
 bool Stopwatch::stop() {
   debug(F("stop"));
@@ -40,6 +49,8 @@ bool Stopwatch::stop() {
     TERN_(EXTENSIBLE_UI, ExtUI::onPrintTimerStopped());
     state = STOPPED;
     stopTimestamp = millis();
+    heatRunning = 0;
+
     return true;
   }
   else return false;
@@ -52,6 +63,7 @@ bool Stopwatch::pause() {
     TERN_(EXTENSIBLE_UI, ExtUI::onPrintTimerPaused());
     state = PAUSED;
     stopTimestamp = millis();
+    heatRunning = 0;
     return true;
   }
   else return false;
@@ -68,6 +80,8 @@ bool Stopwatch::start() {
 
     state = RUNNING;
     startTimestamp = millis();
+    heatRunning = wait_for_heatup;
+
     return true;
   }
   else return false;
@@ -77,7 +91,11 @@ void Stopwatch::resume(const millis_t with_time) {
   debug(F("resume"));
 
   reset();
-  if ((accumulator = with_time)) state = RUNNING;
+  if ((accumulator = with_time)) {
+    state = RUNNING;
+    heatRunning = wait_for_heatup;
+  }
+
 }
 
 void Stopwatch::reset() {
@@ -87,10 +105,41 @@ void Stopwatch::reset() {
   startTimestamp = 0;
   stopTimestamp = 0;
   accumulator = 0;
+
+  accumulatorHeat = 0;
+  startHeatTimestamp = 0;
+  stopHeatTimestamp = 0;
+  heatRunning = 0;
+}
+
+void Stopwatch::heating_start() {
+  if (isRunning() && !heatRunning) {
+    accumulatorHeat = durationHeat();
+    startHeatTimestamp = millis();
+    heatRunning = 1;
+  }
+}
+
+void Stopwatch::heating_stop() {
+  if (isRunning() && heatRunning) {
+    stopHeatTimestamp = millis();
+    heatRunning = 0;
+  }
 }
 
 millis_t Stopwatch::duration() {
   return accumulator + MS_TO_SEC((isRunning() ? millis() : stopTimestamp) - startTimestamp);
+}
+
+millis_t Stopwatch::durationHeat() {
+  return accumulatorHeat + MS_TO_SEC((heatRunning ? millis() : stopHeatTimestamp) - startHeatTimestamp);
+}
+
+void Stopwatch::set_M73(uint32_t percents, uint32_t  remain_minutes)
+{
+  last_M73_timestamp = millis();
+  M73_progress = percents;
+  M73_remain = remain_minutes;
 }
 
 #if ENABLED(DEBUG_STOPWATCH)

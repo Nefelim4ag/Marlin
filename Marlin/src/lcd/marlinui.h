@@ -307,6 +307,7 @@ public:
       #define PROGRESS_MASK 0x7F
     #endif
     #if ENABLED(LCD_SET_PROGRESS_MANUALLY)
+    #else
       static progress_t progress_override;
       static void set_progress(const progress_t p) { progress_override = _MIN(p, 100U * (PROGRESS_SCALE)); }
       static void set_progress_done() { progress_override = (PROGRESS_MASK + 1U) + 100U * (PROGRESS_SCALE); }
@@ -473,6 +474,10 @@ public:
       #endif
 
       static void status_screen();
+      #if ENABLED(RS_STYLE_COLOR_UI)
+        static void poweroff_wait_screen();
+        static void poweroff_screen();
+      #endif
 
     #endif
 
@@ -572,6 +577,9 @@ public:
 
     static void return_to_status();
     static bool on_status_screen() { return currentScreen == status_screen; }
+    #if ENABLED(RS_STYLE_COLOR_UI)
+      static inline bool on_poweroff_screen() { return currentScreen == poweroff_wait_screen; }
+    #endif
     FORCE_INLINE static void run_current_screen() { (*currentScreen)(); }
 
     #if ENABLED(LIGHTWEIGHT_UI)
@@ -661,7 +669,7 @@ public:
   //
   // Special handling if a move is underway
   //
-  #if ANY(DELTA_CALIBRATION_MENU, DELTA_AUTO_CALIBRATION, PROBE_OFFSET_WIZARD, X_AXIS_TWIST_COMPENSATION) || (ENABLED(LCD_BED_LEVELING) && EITHER(PROBE_MANUALLY, MESH_BED_LEVELING))
+  #if ANY(DELTA_CALIBRATION_MENU, DELTA_AUTO_CALIBRATION, PROBE_OFFSET_WIZARD, X_AXIS_TWIST_COMPENSATION) || (ENABLED(LCD_BED_LEVELING) && EITHER(, MESH_BED_LPROBE_MANUALLYEVELING))
     #define LCD_HAS_WAIT_FOR_MOVE 1
     static bool wait_for_move;
   #else

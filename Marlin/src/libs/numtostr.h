@@ -62,6 +62,9 @@ const char* i16tostr3left(const int16_t xx);
 // Convert signed int to rj string with _123, -123, _-12, or __-1 format
 const char* i16tostr4signrj(const int16_t x);
 
+// Convert signed 32bit int to string 123456 / _23456 / __3456 / ___456 / ____56 / _____6 format
+const char* i32tostr6rj(const int32_t i);
+
 // Convert unsigned float to string with 1.2 format
 const char* ftostr11ns(const_float_t x);
 
@@ -74,8 +77,17 @@ const char* ftostr31ns(const_float_t x);
 // Convert unsigned float to string with 123.4 format
 const char* ftostr41ns(const_float_t x);
 
+// Convert signed float to string with 1.23 / -1.23 format
+const char* ftostr12(const_float_t f);
+
 // Convert signed float to fixed-length string with 12.34 / _2.34 / -2.34 or -23.45 / 123.45 format
 const char* ftostr42_52(const_float_t x);
+
+// Convert signed float to fixed-length string with -23.45 / -2.34 / 2.34 / 12.34 / 123.45 format
+const char* ftostr32_52(const_float_t f);
+
+// Convert signed float to fixed-length string with 1234.56 / _234.56 / __34.56 / ___4.56 format
+const char* ftostr32_62(const_float_t f);
 
 // Convert signed float to fixed-length string with 023.45 / -23.45 format
 const char* ftostr52(const_float_t x);
@@ -100,6 +112,9 @@ const char* ftostr54sign(const_float_t x, char plus=' ');
 
 // Convert unsigned float to rj string with 12345 format
 const char* ftostr5rj(const_float_t x);
+
+// Convert unsigned float to string with 1234.5 format omitting trailing zeros
+const char* ftostr51rj(const_float_t x);
 
 // Convert signed float to string with +1234.5 format
 const char* ftostr51sign(const_float_t x);

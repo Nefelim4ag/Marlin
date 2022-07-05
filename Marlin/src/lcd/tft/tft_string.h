@@ -32,8 +32,9 @@ extern const uint8_t font10x20[];
 
 extern const uint8_t Helvetica12Bold[];
 
-extern const uint8_t Helvetica14[], Helvetica14_symbols[];
-extern const uint8_t Helvetica18[], Helvetica18_symbols[];
+extern const uint8_t Helvetica14[], Helvetica14ru[], Tahoma14[], Helvetica14_symbols[];
+extern const uint8_t Helvetica18[], Helvetica18ru[], Tahoma18[], Helvetica18_symbols[];
+extern const uint8_t Tahoma36bold_num[];
 
 #define NO_GLYPH          0xFF
 
@@ -64,7 +65,7 @@ typedef struct __attribute__((__packed__)) {
    int8_t BBXOffsetY;
 } glyph_t;
 
-#define MAX_STRING_LENGTH   64
+#define MAX_STRING_LENGTH   128
 
 class TFT_String {
   private:
@@ -87,10 +88,7 @@ class TFT_String {
     static uint16_t font_height() { return font_header->FontAscent - font_header->FontDescent; }
     static glyph_t *glyph(uint8_t character) { return glyphs[character] ?: glyphs[0x3F]; }  /* Use '?' for unknown glyphs */
     static glyph_t *glyph(uint8_t *character) { return glyph(*character); }
-
-    /**
-     * @brief Set the string empty
-     */
+    static glyph_t *get_font_glyph(font_t *font, uint8_t character);
     static void set();
 
     /**
@@ -118,6 +116,7 @@ class TFT_String {
      */
     static void add(FSTR_P const fstr, uint8_t max_len=MAX_STRING_LENGTH) { add(FTOP(fstr), max_len); }
     static void set(FSTR_P const fstr, uint8_t max_len=MAX_STRING_LENGTH) { set(FTOP(fstr), max_len); }
+
 
     /**
      * @brief Append / Set C-string with optional substitution

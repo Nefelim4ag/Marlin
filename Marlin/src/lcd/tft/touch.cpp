@@ -156,7 +156,7 @@ void Touch::touch(touch_control_t *control) {
         break;
     #endif // TOUCH_SCREEN_CALIBRATION
 
-    case MENU_SCREEN: ui.goto_screen((screenFunc_t)control->data); break;
+    case MENU_SCREEN: ui.push_current_screen(); ui.goto_screen((screenFunc_t)control->data); break;
     case BACK: ui.goto_previous_screen(); break;
     case MENU_CLICK:
       TERN_(SINGLE_TOUCH_NAVIGATION, ui.encoderPosition = control->data);
@@ -222,13 +222,13 @@ void Touch::touch(touch_control_t *control) {
       break;
     case FEEDRATE:
       ui.clear_lcd();
-      MenuItem_int3::action(GET_TEXT_F(MSG_SPEED), &feedrate_percentage, 10, 999);
+      MenuItem_int3::action(GET_TEXT_F(MSG_SPEED), &feedrate_percentage, 10, 400);
       break;
     case FLOWRATE:
       ui.clear_lcd();
       MenuItemBase::itemIndex = control->data;
       #if EXTRUDERS == 1
-        MenuItem_int3::action(GET_TEXT_F(MSG_FLOW), &planner.flow_percentage[MenuItemBase::itemIndex], 10, 999, []{ planner.refresh_e_factor(MenuItemBase::itemIndex); });
+        MenuItem_int3::action(GET_TEXT_F(MSG_FLOW), &planner.flow_percentage[MenuItemBase::itemIndex], 10, 200, []{ planner.refresh_e_factor(MenuItemBase::itemIndex); });
       #else
         MenuItem_int3::action(GET_TEXT_F(MSG_FLOW_N), &planner.flow_percentage[MenuItemBase::itemIndex], 10, 999, []{ planner.refresh_e_factor(MenuItemBase::itemIndex); });
       #endif
@@ -242,8 +242,27 @@ void Touch::touch(touch_control_t *control) {
       ui.goto_screen((screenFunc_t)ui.move_axis_screen);
       break;
 
+    case PRINT_PAUSE:
+      ui.pause_print();
+      break;
+
+    case PRINT_RESUME:
+      ui.resume_print();
+      break;
+
+    case PRINT_STOP:
+      ui.goto_screen([]{MenuItem_confirm::select_screen( GET_TEXT_F(MSG_BUTTON_STOP), GET_TEXT_F(MSG_BACK), ui.abort_print, ui.goto_previous_screen,
+                                                        GET_TEXT_F(MSG_STOP_PRINT), FSTR_P(nullptr), FPSTR("?") );
+                        });
+      break;
+
     // TODO: TOUCH could receive data to pass to the callback
     case BUTTON: ((screenFunc_t)control->data)(); break;
+
+    case ACTIVE_REGION:
+      if (control->data != 0)
+        ((void (*)()) control->data)();
+      break;
 
     default: break;
   }
@@ -283,6 +302,15 @@ bool Touch::get_point(int16_t *x, int16_t *y) {
   #endif
   return is_touched;
 }
+
+
+void Touch::get_last_point(int16_t *xp, int16_t *yp)
+{
+  *xp = x;
+  *yp = y;
+}
+
+
 
 #if HAS_TOUCH_SLEEP
 

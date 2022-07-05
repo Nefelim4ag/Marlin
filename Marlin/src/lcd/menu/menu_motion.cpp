@@ -44,6 +44,7 @@
 #if HAS_LEVELING
   #include "../../module/planner.h"
   #include "../../feature/bedlevel/bedlevel.h"
+  #include "../../module/settings.h"
 #endif
 
 //
@@ -150,7 +151,7 @@ void _menu_move_distance(const AxisEnum axis, const screenFunc_t func, const int
     }
   }
 
-  BACK_ITEM(MSG_MOVE_AXIS);
+  // BACK_ITEM(MSG_MOVE_AXIS);
   if (parser.using_inch_units()) {
     if (LARGE_AREA_TEST) SUBMENU(MSG_MOVE_1IN, []{ _goto_manual_move(IN_TO_MM(1.000f)); });
     SUBMENU(MSG_MOVE_01IN,   []{ _goto_manual_move(IN_TO_MM(0.100f)); });
@@ -192,7 +193,7 @@ void _menu_move_distance(const AxisEnum axis, const screenFunc_t func, const int
 
 void menu_move() {
   START_MENU();
-  BACK_ITEM(MSG_MOTION);
+  // BACK_ITEM(MSG_MOTION);
 
   #if BOTH(HAS_SOFTWARE_ENDSTOPS, SOFT_ENDSTOPS_MENU_ITEM)
     EDIT_ITEM(bool, MSG_LCD_SOFT_ENDSTOPS, &soft_endstop._enabled);
@@ -289,7 +290,7 @@ void menu_move() {
   //
   void menu_home() {
     START_MENU();
-    BACK_ITEM(MSG_MOTION);
+    // BACK_ITEM(MSG_MOTION);
 
     GCODES_ITEM(MSG_AUTO_HOME, FPSTR(G28_STR));
     MAIN_AXIS_MAP(_HOME_ITEM);
@@ -304,17 +305,13 @@ void menu_move() {
   void menu_bed_leveling();
 #endif
 
-#if ENABLED(ASSISTED_TRAMMING_WIZARD)
-  void goto_tramming_wizard();
-#endif
-
 void menu_motion() {
   START_MENU();
 
   //
   // ^ Main
   //
-  BACK_ITEM(MSG_MAIN);
+  // BACK_ITEM(MSG_MAIN);
 
   //
   // Move Axis
@@ -346,13 +343,6 @@ void menu_motion() {
   //
   #if EITHER(Z_STEPPER_AUTO_ALIGN, MECHANICAL_GANTRY_CALIBRATION)
     GCODES_ITEM(MSG_AUTO_Z_ALIGN, F("G34"));
-  #endif
-
-  //
-  // Assisted Bed Tramming
-  //
-  #if ENABLED(ASSISTED_TRAMMING_WIZARD)
-    SUBMENU(MSG_TRAMMING_WIZARD, goto_tramming_wizard);
   #endif
 
   //

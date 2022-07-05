@@ -34,6 +34,7 @@
 #include "../../module/printcounter.h"
 #include "../../module/stepper.h"
 #include "../../sd/cardreader.h"
+#include "../../module/settings.h"
 
 #if ENABLED(PSU_CONTROL)
   #include "../../feature/power.h"
@@ -114,7 +115,7 @@ void menu_configuration();
 
   void custom_menus_main() {
     START_MENU();
-    BACK_ITEM(MSG_MAIN);
+    // BACK_ITEM(MSG_MAIN);
 
     #define HAS_CUSTOM_ITEM_MAIN(N) (defined(MAIN_MENU_ITEM_##N##_DESC) && defined(MAIN_MENU_ITEM_##N##_GCODE))
 
@@ -231,7 +232,7 @@ void menu_main() {
   ;
 
   START_MENU();
-  BACK_ITEM(MSG_INFO_SCREEN);
+  // BACK_ITEM(MSG_INFO_SCREEN);
 
   #if ENABLED(SDSUPPORT)
 
@@ -239,6 +240,12 @@ void menu_main() {
       #define MEDIA_MENU_AT_TOP
     #endif
 
+    #if !ENABLED(RS_STYLE_COLOR_UI)
+      #if ENABLED(SDSUPPORT)
+        const bool card_detected = card.isMounted();
+        const bool card_open = card_detected && card.isFileOpen();
+      #endif
+      #if BOTH(SDSUPPORT, MEDIA_MENU_AT_TOP)
     auto sdcard_menu_items = [&]{
       #if ENABLED(MENU_ADDAUTOSTART)
         ACTION_ITEM(MSG_RUN_AUTO_FILES, card.autofile_begin); // Run Auto Files
@@ -269,10 +276,12 @@ void menu_main() {
         #endif
       }
     };
-
+      #endif  // BOTH(SDSUPPORT, MEDIA_MENU_AT_TOP)
+    #endif    // !ENABLED(RS_STYLE_COLOR_UI)
   #endif
 
   if (busy) {
+  /*
     #if MACHINE_CAN_PAUSE
       ACTION_ITEM(MSG_PAUSE_PRINT, ui.pause_print);
     #endif
@@ -285,13 +294,13 @@ void menu_main() {
         );
       });
     #endif
-
+*/
     #if ENABLED(GCODE_REPEAT_MARKERS)
       if (repeat.is_active())
         ACTION_ITEM(MSG_END_LOOPS, repeat.cancel);
     #endif
 
-    SUBMENU(MSG_TUNE, menu_tune);
+//    SUBMENU(MSG_TUNE, menu_tune);
 
     #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
       SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
@@ -303,8 +312,8 @@ void menu_main() {
       sdcard_menu_items();
     #endif
 
-    if (TERN0(MACHINE_CAN_PAUSE, printingIsPaused()))
-      ACTION_ITEM(MSG_RESUME_PRINT, ui.resume_print);
+//    if (TERN0(MACHINE_CAN_PAUSE, printingIsPaused()))
+//      ACTION_ITEM(MSG_RESUME_PRINT, ui.resume_print);
 
     #if ENABLED(HOST_START_MENU_ITEM) && defined(ACTION_ON_START)
       ACTION_ITEM(MSG_HOST_START_PRINT, hostui.start);
@@ -315,7 +324,13 @@ void menu_main() {
     #endif
 
     SUBMENU(MSG_MOTION, menu_motion);
+
+    if (psu_settings.psu_enabled)
+      EDIT_ITEM(bool, MSG_POWEROFF_AT_END, &autooff_settings.poweroff_at_printed);
+
   }
+
+  SUBMENU(MSG_CONFIGURATION, menu_configuration);
 
   #if HAS_CUTTER
     SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
@@ -336,8 +351,6 @@ void menu_main() {
   #if ENABLED(MMU2_MENUS)
     if (!busy) SUBMENU(MSG_MMU2_MENU, menu_mmu2);
   #endif
-
-  SUBMENU(MSG_CONFIGURATION, menu_configuration);
 
   #if ENABLED(CUSTOM_MENU_MAIN)
     if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
@@ -372,22 +385,25 @@ void menu_main() {
   // Switch power on/off
   //
   #if ENABLED(PSU_CONTROL)
-    if (powerManager.psu_on)
-      #if ENABLED(PS_OFF_CONFIRM)
-        CONFIRM_ITEM(MSG_SWITCH_PS_OFF,
-          MSG_YES, MSG_NO,
-          ui.poweroff, nullptr,
-          GET_TEXT_F(MSG_SWITCH_PS_OFF), (const char *)nullptr, F("?")
-        );
-      #else
-        ACTION_ITEM(MSG_SWITCH_PS_OFF, ui.poweroff);
-      #endif
-    else
-      GCODES_ITEM(MSG_SWITCH_PS_ON, F("M80"));
+    if (psu_settings.psu_enabled)
+    {
+      if (powerManager.psu_on)
+        #if ENABLED(PS_OFF_CONFIRM)
+          CONFIRM_ITEM(MSG_SWITCH_PS_OFF,
+            MSG_YES, MSG_NO,
+            ui.poweroff, nullptr,
+            GET_TEXT_F(MSG_SWITCH_PS_OFF), (const char *)nullptr, F("?")
+          );
+        #else
+          ACTION_ITEM(MSG_SWITCH_PS_OFF, ui.poweroff);
+        #endif
+      else
+        GCODES_ITEM(MSG_SWITCH_PS_ON, F("M80"));
+    }
   #endif
 
   #if ENABLED(SDSUPPORT) && DISABLED(MEDIA_MENU_AT_TOP)
-    sdcard_menu_items();
+    // sdcard_menu_items();
   #endif
 
   #if HAS_SERVICE_INTERVALS

@@ -78,11 +78,35 @@ void TFT_String::add_glyphs(const uint8_t *font) {
   }
 }
 
+glyph_t *TFT_String::get_font_glyph(font_t *gfont, uint8_t character)
+{
+  if (gfont == 0)
+    return glyphs[0x3F];
+
+  uint32_t glyph;
+  uint8_t *pointer = (uint8_t *)gfont + sizeof(font_t);
+
+  for (glyph = ((font_t *)gfont)->FontStartEncoding; glyph <= ((font_t *)gfont)->FontEndEncoding; glyph++) {
+    if (*pointer != NO_GLYPH)
+    {
+      if (glyph == character)
+        return (glyph_t *)pointer;
+      pointer += sizeof(glyph_t) + ((glyph_t *)pointer)->DataSize;
+    }
+    else
+      pointer++;
+  }
+  return glyphs[character] ?: glyphs[0x3F];
+}
+
 void TFT_String::set() {
   *data = 0x00;
   span = 0;
   length = 0;
 }
+
+unsigned char read_byte(const unsigned char *byte) { return *byte; }
+
 
 /**
  * Add a string, applying substitutions for the following characters:
@@ -94,12 +118,18 @@ void TFT_String::set() {
  *   @ displays an axis name such as XYZUVW, or E for an extruder
  */
 void TFT_String::add(const char *tpl, const int8_t index, const char *cstr/*=nullptr*/, FSTR_P const fstr/*=nullptr*/) {
-  lchar_t wc;
 
   while (*tpl) {
+
+/*
     tpl = get_utf8_value_cb(tpl, read_byte_ram, wc);
     if (wc > 255) wc |= 0x0080;
     const uint8_t ch = uint8_t(wc & 0x00FF);
+ */
+    uint8_t ch = *tpl;
+    tpl++;
+
+
 
     if (ch == '=' || ch == '~' || ch == '*') {
       if (index >= 0) {
@@ -124,13 +154,29 @@ void TFT_String::add(const char *tpl, const int8_t index, const char *cstr/*=nul
 }
 
 void TFT_String::add(const char *cstr, uint8_t max_len/*=MAX_STRING_LENGTH*/) {
-  lchar_t wc;
-  while (*cstr && max_len) {
+  lchar_t wchar;
+  uint8_t *string1 = (uint8_t*)cstr, *string2;
+  while (*string1 && max_len) {
+/* 
     cstr = get_utf8_value_cb(cstr, read_byte_ram, wc);
     if (wc > 255) wc |= 0x0080;
     const uint8_t ch = uint8_t(wc & 0x00FF);
-    add_character(ch);
-    max_len--;
+ */
+
+    string2 = (uint8_t*)get_utf8_value_cb(string1, read_byte, wchar);
+    uint32_t wlen = string2 - string1;
+    if (wlen > max_len)
+      break;
+    memcpy(&data[length], string1, wlen);
+    length += wlen;
+    max_len -= wlen;
+
+    if (wchar > 255)
+      wchar |= 0x0080;
+    uint8_t ch = uint8_t(wchar & 0x00FF);
+    span += glyph(ch)->DWidth;
+
+    string1 = string2;
   }
   eol();
 }
@@ -150,8 +196,9 @@ void TFT_String::rtrim(const char character) {
       span -= glyph(data[length])->DWidth;
       eol();
     }
-    else
+    else {
       break;
+    }
   }
 }
 

@@ -37,28 +37,24 @@
 
 #define MAX_E_STEPPERS 8
 
-#if NONE(FET_ORDER_EEF, FET_ORDER_EEB, FET_ORDER_EFF, FET_ORDER_EFB, FET_ORDER_SF)
-  #if   MB(RAMPS_13_EFB, RAMPS_14_EFB, RAMPS_PLUS_EFB, RAMPS_14_RE_ARM_EFB, RAMPS_SMART_EFB, RAMPS_DUO_EFB, RAMPS4DUE_EFB)
-    #define FET_ORDER_EFB 1
-  #elif MB(RAMPS_13_EEB, RAMPS_14_EEB, RAMPS_PLUS_EEB, RAMPS_14_RE_ARM_EEB, RAMPS_SMART_EEB, RAMPS_DUO_EEB, RAMPS4DUE_EEB)
-    #define FET_ORDER_EEB 1
-  #elif MB(RAMPS_13_EFF, RAMPS_14_EFF, RAMPS_PLUS_EFF, RAMPS_14_RE_ARM_EFF, RAMPS_SMART_EFF, RAMPS_DUO_EFF, RAMPS4DUE_EFF)
-    #define FET_ORDER_EFF 1
-  #elif MB(RAMPS_13_EEF, RAMPS_14_EEF, RAMPS_PLUS_EEF, RAMPS_14_RE_ARM_EEF, RAMPS_SMART_EEF, RAMPS_DUO_EEF, RAMPS4DUE_EEF)
-    #define FET_ORDER_EEF 1
-  #elif MB(RAMPS_13_SF,  RAMPS_14_SF,  RAMPS_PLUS_SF,  RAMPS_14_RE_ARM_SF,  RAMPS_SMART_SF,  RAMPS_DUO_SF,  RAMPS4DUE_SF)
-    #define FET_ORDER_SF 1
-  #elif HAS_MULTI_HOTEND || (HAS_EXTRUDERS && HAS_CUTTER)
-    #if TEMP_SENSOR_BED
-      #define FET_ORDER_EEB 1
-    #else
-      #define FET_ORDER_EEF 1
-    #endif
-  #elif TEMP_SENSOR_BED
-    #define FET_ORDER_EFB 1
-  #else
-    #define FET_ORDER_EFF 1
-  #endif
+#if   MB(RAMPS_13_EFB, RAMPS_14_EFB, RAMPS_PLUS_EFB, RAMPS_14_RE_ARM_EFB, RAMPS_SMART_EFB, RAMPS_DUO_EFB, RAMPS4DUE_EFB)
+  #define FET_ORDER_EFB 1
+#elif MB(RAMPS_13_EEB, RAMPS_14_EEB, RAMPS_PLUS_EEB, RAMPS_14_RE_ARM_EEB, RAMPS_SMART_EEB, RAMPS_DUO_EEB, RAMPS4DUE_EEB)
+  #define FET_ORDER_EEB 1
+#elif MB(RAMPS_13_EFF, RAMPS_14_EFF, RAMPS_PLUS_EFF, RAMPS_14_RE_ARM_EFF, RAMPS_SMART_EFF, RAMPS_DUO_EFF, RAMPS4DUE_EFF)
+  #define FET_ORDER_EFF 1
+#elif MB(RAMPS_13_EEF, RAMPS_14_EEF, RAMPS_PLUS_EEF, RAMPS_14_RE_ARM_EEF, RAMPS_SMART_EEF, RAMPS_DUO_EEF, RAMPS4DUE_EEF)
+  #define FET_ORDER_EEF 1
+#elif MB(RAMPS_13_SF,  RAMPS_14_SF,  RAMPS_PLUS_SF,  RAMPS_14_RE_ARM_SF,  RAMPS_SMART_SF,  RAMPS_DUO_SF,  RAMPS4DUE_SF) || EITHER(SPINDLE_FEATURE, LASER_FEATURE)
+  #define FET_ORDER_SF 1
+#elif HAS_MULTI_HOTEND && TEMP_SENSOR_BED
+  #define FET_ORDER_EEB 1
+#elif HAS_MULTI_HOTEND
+  #define FET_ORDER_EEF 1
+#elif TEMP_SENSOR_BED
+  #define FET_ORDER_EFB 1
+#else
+  #define FET_ORDER_EFF 1
 #endif
 
 #if !(BOTH(HAS_WIRED_LCD, IS_NEWPANEL) && ANY(PANEL_ONE, VIKI2, miniVIKI, WYH_L12864, MINIPANEL, REPRAPWORLD_KEYPAD))
@@ -510,7 +506,7 @@
 #elif MB(MKS_ROBIN_MINI)
   #include "stm32f1/pins_MKS_ROBIN_MINI.h"      // STM32F1                                env:mks_robin_mini env:mks_robin_mini_maple
 #elif MB(MKS_ROBIN_NANO)
-  #include "stm32f1/pins_MKS_ROBIN_NANO.h"      // STM32F1                                env:mks_robin_nano35 env:mks_robin_nano35_maple
+  #include "stm32f1/pins_MKS_ROBIN_NANO.h"      // STM32F1                                env:mks_robin_nano35_x32 env:mks_robin_nano35_x16 env:mks_robin_nano35_maple
 #elif MB(MKS_ROBIN_NANO_V2)
   #include "stm32f1/pins_MKS_ROBIN_NANO_V2.h"   // STM32F1                                env:mks_robin_nano35 env:mks_robin_nano35_maple
 #elif MB(MKS_ROBIN_LITE)
@@ -690,7 +686,9 @@
 #elif MB(OPULO_LUMEN_REV3)
   #include "stm32f4/pins_OPULO_LUMEN_REV3.h"    // STM32F4                                env:Opulo_Lumen_REV3
 #elif MB(MKS_ROBIN_NANO_V1_3_F4)
-  #include "stm32f4/pins_MKS_ROBIN_NANO_V1_3_F4.h" // STM32F4                             env:mks_robin_nano_v1_3_f4
+  #include "stm32f4/pins_MKS_ROBIN_NANO_V1_3_F4.h" // STM32F4                             env:mks_robin_nano_v1_3_f4_x32 env:mks_robin_nano_v1_3_f4_x16 env:mks_robin_nano_v1_3_f4 env:mks_robin_nano_v1_3_f4_MY
+#elif MB(MKS_ROBIN_NANO_SV1_3_F4)
+  #include "stm32f4/pins_MKS_ROBIN_NANO_V1_3_F4.h" // STM32F4                             env:mks_robin_nano_Sv1_3_f4_x32 env:mks_robin_nano_Sv1_3_f4_x16 env:mks_robin_nano_SMv1_3_f4_x16
 #elif MB(MKS_EAGLE)
   #include "stm32f4/pins_MKS_EAGLE.h"           // STM32F4                                env:mks_eagle
 #elif MB(ARTILLERY_RUBY)

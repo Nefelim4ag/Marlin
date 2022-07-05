@@ -50,7 +50,13 @@ void GcodeSuite::M401() {
       serialprintln_onoff(bltouch.high_speed_mode);
     #endif
   }
-  else {
+  else if (parser.seen('H')) {
+    #ifdef BLTOUCH_HS_MODE
+      SERIAL_ECHOLNPGM_P("BLTOUCH HigSpeed Mode: ", bltouch.high_speed_mode);
+    #endif
+  }
+  else
+  {
     probe.deploy();
     TERN_(PROBE_TARE, probe.tare());
     report_current_position();

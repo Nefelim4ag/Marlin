@@ -31,6 +31,32 @@
   #include "../HAL/shared/eeprom_api.h"
 #endif
 
+
+typedef struct
+{
+    bool  poweroff_at_printed;
+    bool  sscreen_need_draw;
+} autooff_settings_t;
+extern autooff_settings_t autooff_settings;
+
+typedef struct
+{
+    bool  psu_enabled;
+} psu_settings_t;
+extern psu_settings_t psu_settings;
+
+typedef struct
+{
+    bool      bltouch_enabled;
+    struct
+    {
+      uint8_t   x;
+      uint8_t   y;
+    } bedlevel_points;
+} bedlevel_settings_t;
+extern bedlevel_settings_t bedlevel_settings;
+
+
 class MarlinSettings {
   public:
     static uint16_t datasize();

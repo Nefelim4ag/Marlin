@@ -28,6 +28,7 @@
 #include "../../module/motion.h"
 #include "../../module/probe.h"
 #include "../../feature/bedlevel/bedlevel.h"
+#include "../../module/settings.h"
 
 #if HAS_PTC
   #include "../../feature/probe_temp_comp.h"
@@ -49,8 +50,10 @@
  */
 void GcodeSuite::G30() {
 
-  const xy_pos_t pos = { parser.linearval('X', current_position.x + probe.offset_xy.x),
-                         parser.linearval('Y', current_position.y + probe.offset_xy.y) };
+  if (bedlevel_settings.bltouch_enabled)
+  {
+    const xy_pos_t pos = { parser.linearval('X', current_position.x + probe.offset_xy.x),
+                          parser.linearval('Y', current_position.y + probe.offset_xy.y) };
 
   if (!probe.can_reach(pos)) {
     #if ENABLED(DWIN_LCD_PROUI)
@@ -60,10 +63,10 @@ void GcodeSuite::G30() {
     return;
   }
 
-  // Disable leveling so the planner won't mess with us
-  TERN_(HAS_LEVELING, set_bed_leveling_enabled(false));
+    // Disable leveling so the planner won't mess with us
+    TERN_(HAS_LEVELING, set_bed_leveling_enabled(false));
 
-  remember_feedrate_scaling_off();
+    remember_feedrate_scaling_off();
 
   TERN_(DWIN_LCD_PROUI, process_subcommands_now(F("G28O")));
 
@@ -85,11 +88,11 @@ void GcodeSuite::G30() {
     #endif
   }
 
-  restore_feedrate_and_scaling();
+    restore_feedrate_and_scaling();
 
-  if (raise_after == PROBE_PT_STOW)
-    probe.move_z_after_probing();
-
+    if (raise_after == PROBE_PT_STOW)
+      probe.move_z_after_probing();
+  }
   report_current_position();
 }
 

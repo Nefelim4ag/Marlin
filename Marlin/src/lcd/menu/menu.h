@@ -88,6 +88,23 @@ class MenuItem_back : public MenuItemBase {
     FORCE_INLINE static void action(FSTR_P const=nullptr) { ui.go_back(); }
 };
 
+#if ENABLED(RS_STYLE_COLOR_UI)
+  // CONFIRM_ITEM(LABEL,Y,N,FY,FN,...),
+  // YESNO_ITEM(LABEL,FY,FN,...)
+  class MenuItem_fileconfirm : public MenuItemBase {
+    public:
+      FORCE_INLINE static void draw(const bool sel, const uint8_t row, FSTR_P const ftpl, ...) {
+        _draw(sel, row, ftpl, '>', LCD_STR_ARROW_RIGHT[0]);
+      }
+      // Implemented for HD44780 and DOGM
+      // Draw the prompt, buttons, and state
+      static void draw_select_screen(
+        const char * const string  // Prompt runtime string
+      );
+      static void select_screen(selectFunc_t yesFunc, selectFunc_t noFunc, const char * const string=nullptr);
+  };
+#endif
+
 // CONFIRM_ITEM(LABEL,Y,N,FY,FN,...),
 // YESNO_ITEM(LABEL,FY,FN,...)
 class MenuItem_confirm : public MenuItemBase {
@@ -187,7 +204,7 @@ class MenuEditItemBase : public MenuItemBase {
     static void draw_edit_screen(FSTR_P const fstr, const char * const value);
 
     // This method is for the current menu item
-    static void draw_edit_screen(const char * const value) { draw_edit_screen(editLabel, value); }
+    static inline void draw_edit_screen(const char * const value) { draw_edit_screen(editLabel, value); }
 };
 
 #if ENABLED(SDSUPPORT)
@@ -205,6 +222,7 @@ class MenuEditItemBase : public MenuItemBase {
 
 void menu_main();
 void menu_move();
+void menu_tune();
 
 #if ENABLED(SDSUPPORT)
   void menu_media();
@@ -218,7 +236,7 @@ void lcd_move_axis(const AxisEnum);
 void lcd_move_z();
 void _lcd_draw_homing();
 
-#define HAS_LINE_TO_Z ANY(DELTA, PROBE_MANUALLY, MESH_BED_LEVELING, LCD_BED_TRAMMING)
+#define HAS_LINE_TO_Z 1
 
 #if HAS_LINE_TO_Z
   void line_to_z(const_float_t z);
@@ -260,6 +278,10 @@ void _lcd_draw_homing();
   void touch_screen_calibration();
 #endif
 
+#if ENABLED(RS_STYLE_COLOR_UI)
+  void poweroff_wait();
+#endif
+
 extern uint8_t screen_history_depth;
 inline void clear_menu_history() { screen_history_depth = 0; }
 
@@ -269,6 +291,4 @@ inline void clear_menu_history() { screen_history_depth = 0; }
   extern bool leveling_was_active;
 #endif
 
-#if ANY(PROBE_MANUALLY, MESH_BED_LEVELING, X_AXIS_TWIST_COMPENSATION)
-  extern uint8_t manual_probe_index;
-#endif
+extern uint8_t manual_probe_index;

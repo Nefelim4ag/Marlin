@@ -29,6 +29,8 @@
 
 #include "../../inc/MarlinConfig.h"
 
+#include "../../module/settings.h"
+
 #if ENABLED(PSU_CONTROL)
   #include "../queue.h"
   #include "../../feature/power.h"
@@ -52,7 +54,8 @@
       return;
     }
 
-    powerManager.power_on();
+      if (psu_settings.psu_enabled)
+        powerManager.power_on();
 
     /**
      * If you have a switch on suicide pin, this is useful
@@ -115,6 +118,7 @@ void GcodeSuite::M81() {
   #if HAS_SUICIDE
     suicide();
   #elif ENABLED(PSU_CONTROL)
-    powerManager.power_off_soon();
+    if (psu_settings.psu_enabled)
+      powerManager.power_off_soon();
   #endif
 }

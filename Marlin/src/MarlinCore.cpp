@@ -370,6 +370,7 @@ void startOrResumeJob() {
     TERN(HAS_CUTTER, cutter.kill(), thermalManager.zero_fan_speeds()); // Full cutter shutdown including ISR control
 
     wait_for_heatup = false;
+    print_job_timer.heating_stop();
 
     TERN_(POWER_LOSS_RECOVERY, recovery.purge());
 
@@ -467,24 +468,30 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
 
   #if HAS_KILL
 
-    // Check if the kill button was pressed and wait just in case it was an accidental
-    // key kill key press
-    // -------------------------------------------------------------------------------
-    static int killCount = 0;   // make the inactivity button a bit less responsive
-    const int KILL_DELAY = 750;
-    if (kill_state())
-      killCount++;
-    else if (killCount > 0)
-      killCount--;
+    if (psu_settings.psu_enabled)
+    {
+      // Check if the kill button was pressed and wait just in case it was an accidental
+      // key kill key press
+      // -------------------------------------------------------------------------------
+      static int killCount = 0;   // make the inactivity button a bit less responsive
+      const int KILL_DELAY = 750;
+      if (kill_state())
+        killCount++;
+      else if (killCount > 0)
+        killCount--;
 
-    // Exceeded threshold and we can confirm that it was not accidental
-    // KILL the machine
-    // ----------------------------------------------------------------
-    if (killCount >= KILL_DELAY) {
-      SERIAL_ERROR_START();
-      SERIAL_ECHOPGM(STR_KILL_PRE);
-      SERIAL_ECHOLNPGM(STR_KILL_BUTTON);
-      kill();
+      // Exceeded threshold and we can confirm that it was not accidental
+      // KILL the machine
+      // ----------------------------------------------------------------
+      if (killCount >= KILL_DELAY) {
+        SERIAL_ERROR_MSG(STR_KILL_BUTTON);
+
+        autooff_settings.sscreen_need_draw = true;
+        autooff_settings.poweroff_at_printed = false;
+        thermalManager.disable_all_heaters();
+        stepper.disable_all_steppers();
+        ui.goto_screen(ui.poweroff_wait_screen);
+      }
     }
   #endif
 
@@ -931,7 +938,10 @@ void minkill(const bool steppers_off/*=false*/) {
   // Power off all steppers (for M112) or just the E steppers
   steppers_off ? stepper.disable_all_steppers() : stepper.disable_e_steppers();
 
-  TERN_(PSU_CONTROL, powerManager.power_off());
+  #if ENABLED(PSU_CONTROL)
+    if (psu_settings.psu_enabled == true)
+    powerManager.power_off();
+  #endif
 
   TERN_(HAS_SUICIDE, suicide());
 
@@ -1638,6 +1648,10 @@ void setup() {
   #if ENABLED(EASYTHREED_UI)
     SETUP_RUN(easythreed_ui.init());
   #endif
+  
+  #if ENABLED(MKS_WIFI)
+    mks_wifi_init();
+  #endif
 
   #if HAS_TRINAMIC_CONFIG && DISABLED(PSU_DEFAULT_OFF)
     SETUP_RUN(test_tmc_connection());
@@ -1679,6 +1693,7 @@ void loop() {
     endstops.event_handler();
 
     TERN_(HAS_TFT_LVGL_UI, printer_state_polling());
+    TERN_(MKS_WIFI_MODULE, wifi_looping());
 
   } while (ENABLED(__AVR__)); // Loop forever on slower (AVR) boards
 }

@@ -25,7 +25,11 @@
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
 #ifndef SHORT_BUILD_VERSION
-  #define SHORT_BUILD_VERSION "2.1"
+  #define SHORT_BUILD_VERSION "2.1_rb_2.0"
+#endif
+
+#ifndef SHORT_REBORN_VERSION
+  #define SHORT_REBORN_VERSION "2.0"
 #endif
 
 /**
@@ -42,7 +46,7 @@
  * version was tagged.
  */
 #ifndef STRING_DISTRIBUTION_DATE
-  #define STRING_DISTRIBUTION_DATE "2022-06-04"
+  #define STRING_DISTRIBUTION_DATE "05 Jul 2022"
 #endif
 
 /**
@@ -73,7 +77,7 @@
  * Define a generic printer name to be output to the LCD after booting Marlin.
  */
 #ifndef MACHINE_NAME
-  #define MACHINE_NAME "3D Printer"
+  #define MACHINE_NAME "FlyingBear Reborn"
 #endif
 
 /**
@@ -82,7 +86,7 @@
  * providing the source code to your customers.)
  */
 #ifndef SOURCE_CODE_URL
-  #define SOURCE_CODE_URL "github.com/MarlinFirmware/Marlin"
+  #define SOURCE_CODE_URL "github.com/Andy-Big/Marlin_FB_Reborn"
 #endif
 
 /**
@@ -97,7 +101,7 @@
    * documentation about a specific Marlin release. Displayed in the Info Menu.
    */
 #ifndef WEBSITE_URL
-  #define WEBSITE_URL "marlinfw.org"
+  #define WEBSITE_URL "github.com/Andy-Big/Marlin_FB_Reborn"
 #endif
 
 /**

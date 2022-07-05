@@ -23,6 +23,8 @@
 #include "../gcode.h"
 #include "../../inc/MarlinConfig.h"
 #include "../queue.h"           // for getting the command port
+#include "../../module/settings.h"
+
 
 #if ENABLED(M115_GEOMETRY_REPORT)
   #include "../../module/motion.h"
@@ -59,6 +61,7 @@
  *       the capability is not present.
  */
 void GcodeSuite::M115() {
+  char string[32];
   SERIAL_ECHOLNPGM(
     "FIRMWARE_NAME:Marlin " DETAILED_BUILD_VERSION " (" __DATE__ " " __TIME__ ") "
     "SOURCE_CODE_URL:" SOURCE_CODE_URL " "
@@ -72,6 +75,10 @@ void GcodeSuite::M115() {
       "UUID:" MACHINE_UUID
     #endif
   );
+  sprintf(string, "%u", settings.datasize());
+  strcat(string, "\n");
+  SERIAL_ECHOLNPGM("EPROM datasize: ", settings.datasize(), "\n");
+
 
   #if ENABLED(EXTENDED_CAPABILITIES_REPORT)
 
@@ -115,13 +122,17 @@ void GcodeSuite::M115() {
     cap_line(F("RUNOUT"), ENABLED(FILAMENT_RUNOUT_SENSOR));
 
     // Z_PROBE (G30)
-    cap_line(F("Z_PROBE"), ENABLED(HAS_BED_PROBE));
+    #if MOTHERBOARD != BOARD_MKS_ROBIN_NANO
+      cap_line(F("Z_PROBE"), bedlevel_settings.bltouch_enabled);
+    #else
+      cap_line(F("Z_PROBE"), ENABLED(HAS_BED_PROBE));
+    #endif
 
     // MESH_REPORT (M420 V)
     cap_line(F("LEVELING_DATA"), ENABLED(HAS_LEVELING));
 
     // BUILD_PERCENT (M73)
-    cap_line(F("BUILD_PERCENT"), ENABLED(LCD_SET_PROGRESS_MANUALLY));
+    cap_line(F("BUILD_PERCENT"), true); //ENABLED(LCD_SET_PROGRESS_MANUALLY));
 
     // SOFTWARE_POWER (M80, M81)
     cap_line(F("SOFTWARE_POWER"), ENABLED(PSU_CONTROL));

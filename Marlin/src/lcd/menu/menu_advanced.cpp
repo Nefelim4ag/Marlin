@@ -31,6 +31,9 @@
 #include "menu_item.h"
 #include "../../MarlinCore.h"
 #include "../../module/planner.h"
+#include "../../module/settings.h"
+
+#include "../../module/endstops.h"
 
 #if DISABLED(NO_VOLUMETRICS)
   #include "../../gcode/parser.h"
@@ -56,8 +59,21 @@
   #include "../../feature/password/password.h"
 #endif
 
+#if ENABLED(BLTOUCH)
+  #include "../../feature/bltouch.h"
+#endif
+
 void menu_tmc();
 void menu_backlash();
+
+void menu_advanced_axesdir();
+void menu_advanced_endstop_inverting();
+void menu_advanced_bedlevelsetup();
+
+void bltouch_report();
+void menu_bltouch();
+void menu_bedlevel_points();
+
 
 #if HAS_MOTOR_CURRENT_DAC
 
@@ -67,7 +83,7 @@ void menu_backlash();
     static xyze_uint8_t driverPercent;
     LOOP_LOGICAL_AXES(i) driverPercent[i] = stepper_dac.get_current_percent((AxisEnum)i);
     START_MENU();
-    BACK_ITEM(MSG_ADVANCED_SETTINGS);
+    //BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
     LOOP_LOGICAL_AXES(a)
       EDIT_ITEM_N(uint8, a, MSG_DAC_PERCENT_N, &driverPercent[a], 0, 100, []{ stepper_dac.set_current_percents(driverPercent); });
@@ -84,7 +100,7 @@ void menu_backlash();
 
   void menu_pwm() {
     START_MENU();
-    BACK_ITEM(MSG_ADVANCED_SETTINGS);
+    //BACK_ITEM(MSG_ADVANCED_SETTINGS);
     #define EDIT_CURRENT_PWM(LABEL,I) EDIT_ITEM_F(long5, F(LABEL), &stepper.motor_current_setting[I], 100, 2000, stepper.refresh_motor_power)
     #if ANY_PIN(MOTOR_CURRENT_PWM_XY, MOTOR_CURRENT_PWM_X, MOTOR_CURRENT_PWM_Y)
       EDIT_CURRENT_PWM(STR_A STR_B, 0);
@@ -106,11 +122,11 @@ void menu_backlash();
   //
   void menu_advanced_filament() {
     START_MENU();
-    BACK_ITEM(MSG_ADVANCED_SETTINGS);
+    // BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
     #if ENABLED(LIN_ADVANCE)
       #if EXTRUDERS == 1
-        EDIT_ITEM(float42_52, MSG_ADVANCE_K, &planner.extruder_advance_K[0], 0, 10);
+        EDIT_ITEM(float43, MSG_ADVANCE_K, &planner.extruder_advance_K[0], 0, 0.5);
       #elif HAS_MULTI_EXTRUDER
         EXTRUDER_LOOP()
           EDIT_ITEM_N(float42_52, e, MSG_ADVANCE_K_E, &planner.extruder_advance_K[e], 0, 10);
@@ -155,7 +171,7 @@ void menu_backlash();
 
     #if HAS_FILAMENT_RUNOUT_DISTANCE
       editable.decimal = runout.runout_distance();
-      EDIT_ITEM_FAST(float3, MSG_RUNOUT_DISTANCE_MM, &editable.decimal, 1, 999,
+      EDIT_ITEM_FAST(float3, MSG_RUNOUT_DISTANCE_MM, &editable.decimal, 1, 1500,
         []{ runout.set_runout_distance(editable.decimal); }, true
       );
     #endif
@@ -200,7 +216,7 @@ void menu_backlash();
           return;
         #endif
     }
-    sprintf_P(cmd, PSTR("M303 U1 E%i S%i"), hid, tune_temp);
+    sprintf_P(cmd, PSTR("M303 C10 U1 E%i S%i"), hid, tune_temp);
     queue.inject(cmd);
     ui.return_to_status();
   }
@@ -262,14 +278,110 @@ void menu_backlash();
       TERN_(MPC_INCLUDE_FAN, editable.decimal = c.ambient_xfer_coeff_fan0 + c.fan255_adjustment)
   #endif
 
+  void menu_thermistors_list();
+
+  static  uint8_t therm_num = 0;
+
+  void thermistors_set_type(uint32_t type) {
+    if (therm_num < 255)
+    {
+      thermistors_data.heater_type[therm_num] = type;
+      thermistors_data.fan_auto_temp[therm_num] = thermistor_types[type].fan_auto_temp;
+      thermistors_data.high_temp[therm_num] = thermistor_types[type].high_temp;
+      thermalManager.hotend_maxtemp[therm_num] = thermistor_types[type].max_temp;
+    }
+    else
+    {
+      thermistors_data.bed_type = type;
+    }
+    ui.goto_previous_screen();
+  }
+
+  void menu_thermistors_hot0_list() {
+    therm_num = 0;
+    menu_thermistors_list();
+  }
+
+  #if (HOTENDS > 1)
+    void menu_thermistors_hot1_list() {
+      therm_num = 1;
+      menu_thermistors_list();
+    }
+  #endif
+
+  void menu_thermistors_bed_list() {
+    therm_num = 255;
+    menu_thermistors_list();
+  }
+
+  void menu_thermistors_list() {
+    START_MENU();
+
+    #if THERMISTORS_TYPES_COUNT > 0
+      ACTION_ITEM_F(FPSTR(thermistor_types[0].name), []{ thermistors_set_type(0); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 1
+      ACTION_ITEM_F(FPSTR(thermistor_types[1].name), []{ thermistors_set_type(1); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 2
+      ACTION_ITEM_F(FPSTR(thermistor_types[2].name), []{ thermistors_set_type(2); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 3
+      ACTION_ITEM_F(FPSTR(thermistor_types[3].name), []{ thermistors_set_type(3); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 4
+      ACTION_ITEM_F(FPSTR(thermistor_types[4].name), []{ thermistors_set_type(4); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 5
+      ACTION_ITEM_F(FPSTR(thermistor_types[5].name), []{ thermistors_set_type(5); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 6
+      ACTION_ITEM_F(FPSTR(thermistor_types[6].name), []{ thermistors_set_type(6); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 7
+      ACTION_ITEM_F(FPSTR(thermistor_types[7].name), []{ thermistors_set_type(7); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 8
+      ACTION_ITEM_F(FPSTR(thermistor_types[8].name), []{ thermistors_set_type(8); });
+    #endif
+    #if THERMISTORS_TYPES_COUNT > 9
+      ACTION_ITEM_F(FPSTR(thermistor_types[9].name), []{ thermistors_set_type(9); });
+    #endif
+
+    END_MENU();
+  }
+
+  void menu_advanced_thermistors() {
+    START_MENU();
+
+    char itemlbl[64];
+    strcpy(itemlbl, GET_TEXT(MSG_NOZZLE1));
+    strcat(itemlbl, ": ");
+    strcat(itemlbl, thermistor_types[thermistors_data.heater_type[0]].name);
+    SUBMENU_F(FPSTR(itemlbl), menu_thermistors_hot0_list);
+
+    #if (HOTENDS > 1)
+      strcpy(itemlbl, STR_E1);
+      strcat(itemlbl, ": ");
+      strcat(itemlbl, thermistor_types[thermistors_data.heater_type[1]].name);
+      SUBMENU_F(itemlbl, menu_thermistors_hot1_list);
+    #endif
+
+    strcpy(itemlbl, GET_TEXT(MSG_BED1));
+    strcat(itemlbl, ": ");
+    strcat(itemlbl, thermistor_types[thermistors_data.bed_type].name);
+    SUBMENU_F(FPSTR(itemlbl), menu_thermistors_bed_list);
+
+    END_MENU();
+  }
+
   void menu_advanced_temperature() {
     #if ENABLED(MPC_EDIT_MENU) && !HAS_MULTI_HOTEND
       MPC_EDIT_DEFS(0);
     #endif
 
     START_MENU();
-    BACK_ITEM(MSG_ADVANCED_SETTINGS);
-
+    // BACK_ITEM(MSG_ADVANCED_SETTINGS);
     //
     // Autotemp, Min, Max, Fact
     //
@@ -401,6 +513,9 @@ void menu_backlash();
       #endif
     #endif
 
+    SUBMENU(MSG_MENU_THERMISTORS, menu_advanced_thermistors);
+    EDIT_ITEM(int3, MSG_HOTEND_AUTO_FAN, &thermistors_data.fan_auto_temp[0], 20, thermalManager.hotend_maxtemp[0]);
+
     END_MENU();
   }
 
@@ -427,7 +542,7 @@ void menu_backlash();
     #endif
 
     START_MENU();
-    BACK_ITEM(MSG_ADVANCED_SETTINGS);
+    // BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
     LOOP_NUM_AXES(a)
       EDIT_ITEM_FAST_N(float5, a, MSG_VMAX_N, &planner.settings.max_feedrate_mm_s[a], 1, max_fr_edit_scaled[a]);
@@ -470,7 +585,7 @@ void menu_backlash();
     #endif
 
     START_MENU();
-    BACK_ITEM(MSG_ADVANCED_SETTINGS);
+    // BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
     // M204 P Acceleration
     EDIT_ITEM_FAST(float5_25, MSG_ACC, &planner.settings.acceleration, 25, max_accel);
@@ -514,7 +629,7 @@ void menu_backlash();
 
     void menu_advanced_jerk() {
       START_MENU();
-      BACK_ITEM(MSG_ADVANCED_SETTINGS);
+      // BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
       #if HAS_JUNCTION_DEVIATION
         EDIT_ITEM(float43, MSG_JUNCTION_DEVIATION, &planner.junction_deviation_mm, 0.001f, TERN(LIN_ADVANCE, 0.3f, 0.5f)
@@ -549,10 +664,10 @@ void menu_backlash();
   #if HAS_BED_PROBE
     void menu_probe_offsets() {
       START_MENU();
-      BACK_ITEM(MSG_ADVANCED_SETTINGS);
+      // BACK_ITEM(MSG_ADVANCED_SETTINGS);
       #if HAS_PROBE_XY_OFFSET
-        EDIT_ITEM(float31sign, MSG_ZPROBE_XOFFSET, &probe.offset.x, -(X_BED_SIZE), X_BED_SIZE);
-        EDIT_ITEM(float31sign, MSG_ZPROBE_YOFFSET, &probe.offset.y, -(Y_BED_SIZE), Y_BED_SIZE);
+        EDIT_ITEM(float31sign, MSG_ZPROBE_XOFFSET, &probe.offset.x, -100, 100);
+        EDIT_ITEM(float31sign, MSG_ZPROBE_YOFFSET, &probe.offset.y, -100, 100);
       #endif
       EDIT_ITEM(LCD_Z_OFFSET_TYPE, MSG_ZPROBE_ZOFFSET, &probe.offset.z, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
 
@@ -573,10 +688,10 @@ void menu_backlash();
 // M92 Steps-per-mm
 void menu_advanced_steps_per_mm() {
   START_MENU();
-  BACK_ITEM(MSG_ADVANCED_SETTINGS);
+  // BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
   LOOP_NUM_AXES(a)
-    EDIT_ITEM_FAST_N(float61, a, MSG_N_STEPS, &planner.settings.axis_steps_per_mm[a], 5, 9999, []{ planner.refresh_positioning(); });
+    EDIT_ITEM_FAST_N(float61, a, MSG_N_STEPS, &planner.settings.axis_steps_per_mm[a], 5, 3200, []{ planner.refresh_positioning(); });
 
   #if ENABLED(DISTINCT_E_FACTORS)
     LOOP_L_N(n, E_STEPPERS)
@@ -588,7 +703,7 @@ void menu_advanced_steps_per_mm() {
           planner.mm_per_step[E_AXIS_N(e)] = 1.0f / planner.settings.axis_steps_per_mm[E_AXIS_N(e)];
       });
   #elif E_STEPPERS
-    EDIT_ITEM_FAST_N(float61, E_AXIS, MSG_N_STEPS, &planner.settings.axis_steps_per_mm[E_AXIS], 5, 9999, []{ planner.refresh_positioning(); });
+    EDIT_ITEM_FAST_N(float61, E_AXIS, MSG_N_STEPS, &planner.settings.axis_steps_per_mm[E_AXIS], 5, 3200, []{ planner.refresh_positioning(); });
   #endif
 
   END_MENU();
@@ -602,7 +717,7 @@ void menu_advanced_settings() {
   #endif
 
   START_MENU();
-  BACK_ITEM(MSG_CONFIGURATION);
+  // BACK_ITEM(MSG_CONFIGURATION);
 
   #if DISABLED(SLIM_LCD_MENUS)
 
@@ -630,7 +745,8 @@ void menu_advanced_settings() {
 
     // M851 - Z Probe Offsets
     #if HAS_BED_PROBE
-      if (!is_busy) SUBMENU(MSG_ZPROBE_OFFSETS, menu_probe_offsets);
+      if (bedlevel_settings.bltouch_enabled)
+        if (!is_busy) SUBMENU(MSG_ZPROBE_OFFSETS, menu_probe_offsets);
     #endif
 
   #endif // !SLIM_LCD_MENUS
@@ -638,6 +754,9 @@ void menu_advanced_settings() {
   // M92 - Steps Per mm
   if (!is_busy)
     SUBMENU(MSG_STEPS_PER_MM, menu_advanced_steps_per_mm);
+
+  SUBMENU(MSG_AXIS_DIRECTION, menu_advanced_axesdir);
+  SUBMENU(MSG_ENDSTOP_INVERTING, menu_advanced_endstop_inverting);
 
   #if ENABLED(BACKLASH_GCODE)
     SUBMENU(MSG_BACKLASH, menu_backlash);
@@ -662,10 +781,10 @@ void menu_advanced_settings() {
     SUBMENU(MSG_FILAMENT, menu_advanced_filament);
   #elif ENABLED(LIN_ADVANCE)
     #if EXTRUDERS == 1
-      EDIT_ITEM(float42_52, MSG_ADVANCE_K, &planner.extruder_advance_K[0], 0, 10);
+      EDIT_ITEM(float43, MSG_ADVANCE_K, &planner.extruder_advance_K[0], 0, 2);
     #elif HAS_MULTI_EXTRUDER
       LOOP_L_N(n, E_STEPPERS)
-        EDIT_ITEM_N(float42_52, n, MSG_ADVANCE_K_E, &planner.extruder_advance_K[n], 0, 10);
+        EDIT_ITEM_N(float43, n, MSG_ADVANCE_K_E, &planner.extruder_advance_K[n], 0, 2);
     #endif
   #endif
 
@@ -691,6 +810,9 @@ void menu_advanced_settings() {
     SUBMENU(MSG_PASSWORD_SETTINGS, password.access_menu_password);
   #endif
 
+    SUBMENU(MSG_BEDLEVEL_SETTINGS, menu_advanced_bedlevelsetup);
+    EDIT_ITEM(bool, MSG_PSU_MODULE_ON, &psu_settings.psu_enabled);
+
   #if ENABLED(EEPROM_SETTINGS) && DISABLED(SLIM_LCD_MENUS)
     CONFIRM_ITEM(MSG_INIT_EEPROM,
       MSG_BUTTON_INIT, MSG_BUTTON_CANCEL,
@@ -701,5 +823,128 @@ void menu_advanced_settings() {
 
   END_MENU();
 }
+
+
+
+  void menu_advanced_axesdir()
+  {
+    START_MENU();
+    // BACK_ITEM(MSG_ADVANCED_SETTINGS);
+
+    EDIT_ITEM(bool, MSG_X_INVERT, &planner.invert_axis.invert_axis[X_AXIS]);
+    EDIT_ITEM(bool, MSG_Y_INVERT, &planner.invert_axis.invert_axis[Y_AXIS]);
+    EDIT_ITEM(bool, MSG_Z1_INVERT, &planner.invert_axis.invert_axis[Z_AXIS]);
+    EDIT_ITEM(bool, MSG_Z2_INVERT, &planner.invert_axis.z2_vs_z_dir);
+    EDIT_ITEM(bool, MSG_E_INVERT, &planner.invert_axis.invert_axis[E0_AXIS]);
+
+    END_MENU();
+  }
+
+
+  void menu_advanced_endstop_inverting()
+  {
+    START_MENU();
+    // BACK_ITEM(MSG_ADVANCED_SETTINGS);
+
+    #if HAS_X_MIN
+      EDIT_ITEM(bool, MSG_X_MIN_INVERTING, &endstop_settings.X_MIN_INVERTING);
+    #endif
+    #if HAS_X_MAX
+      EDIT_ITEM(bool, MSG_X_MAX_INVERTING, &endstop_settings.X_MAX_INVERTING);
+    #endif
+    #if HAS_Y_MIN
+      EDIT_ITEM(bool, MSG_Y_MIN_INVERTING, &endstop_settings.Y_MIN_INVERTING);
+    #endif
+    #if HAS_Y_MAX
+      EDIT_ITEM(bool, MSG_Y_MAX_INVERTING, &endstop_settings.Y_MAX_INVERTING);
+    #endif
+    #if HAS_Z_MIN
+      EDIT_ITEM(bool, MSG_Z_MIN_INVERTING, &endstop_settings.Z_MIN_INVERTING);
+    #endif
+    #if HAS_Z_MAX
+      EDIT_ITEM(bool, MSG_Z_MAX_INVERTING, &endstop_settings.Z_MAX_INVERTING);
+    #endif
+    #if HAS_Z2_MIN
+      EDIT_ITEM(bool, MSG_Z2_MIN_INVERTING, &endstop_settings.Z2_MIN_INVERTING);
+    #endif
+    #if HAS_Z2_MAX
+      EDIT_ITEM(bool, MSG_Z2_MAX_INVERTING, &endstop_settings.Z2_MAX_INVERTING);
+    #endif
+    #if HAS_Z_MIN_PROBE_PIN
+      EDIT_ITEM(bool, MSG_Z_MIN_PROBE_INVERTING, &endstop_settings.Z_MIN_PROBE_INVERTING);
+    #endif
+
+    END_MENU();
+  }
+
+  void menu_advanced_bedlevelsetup() {
+    START_MENU();
+    // BACK_ITEM(MSG_ADVANCED_SETTINGS);
+
+
+    #if MOTHERBOARD != BOARD_MKS_ROBIN_NANO
+      EDIT_ITEM(bool, MSG_BLTOUCH, &bedlevel_settings.bltouch_enabled);
+    #endif
+    SUBMENU(MSG_LEVEL_BED_POINTS, menu_bedlevel_points);
+    #if MOTHERBOARD != BOARD_MKS_ROBIN_NANO
+      if (bedlevel_settings.bltouch_enabled)
+        SUBMENU(MSG_BLTOUCH_TOOLS, menu_bltouch);
+    #endif
+
+
+    END_MENU();
+  }
+  
+  
+  #if ENABLED(BLTOUCH_LCD_VOLTAGE_MENU)
+    void bltouch_report() {
+      PGMSTR(mode0, "OD");
+      PGMSTR(mode1, "5V");
+      DEBUG_ECHOPGM("BLTouch Mode: ");
+      DEBUG_ECHOPGM_P(bltouch.od_5v_mode ? mode1 : mode0);
+      DEBUG_ECHOLNPGM(" (Default " TERN(BLTOUCH_SET_5V_MODE, "5V", "OD") ")");
+      char mess[21];
+      strcpy_P(mess, PSTR("BLTouch Mode: "));
+      strcpy_P(&mess[15], bltouch.od_5v_mode ? mode1 : mode0);
+      ui.set_status(mess);
+      ui.return_to_status();
+    }
+  #endif
+
+  #if MOTHERBOARD != BOARD_MKS_ROBIN_NANO
+    void menu_bltouch() {
+      START_MENU();
+      // BACK_ITEM(MSG_CONFIGURATION);
+      ACTION_ITEM(MSG_BLTOUCH_RESET, bltouch._reset);
+      ACTION_ITEM(MSG_BLTOUCH_SELFTEST, bltouch._selftest);
+      ACTION_ITEM(MSG_BLTOUCH_DEPLOY, bltouch._deploy);
+      ACTION_ITEM(MSG_BLTOUCH_STOW, bltouch._stow);
+      ACTION_ITEM(MSG_BLTOUCH_SW_MODE, bltouch._set_SW_mode);
+      #ifdef BLTOUCH_HS_MODE
+        EDIT_ITEM(bool, MSG_BLTOUCH_SPEED_MODE, &bltouch.high_speed_mode);
+      #endif
+      #if ENABLED(BLTOUCH_LCD_VOLTAGE_MENU)
+        CONFIRM_ITEM(MSG_BLTOUCH_5V_MODE, MSG_BLTOUCH_5V_MODE, MSG_BUTTON_CANCEL, bltouch._set_5V_mode, nullptr, GET_TEXT(MSG_BLTOUCH_MODE_CHANGE));
+        CONFIRM_ITEM(MSG_BLTOUCH_OD_MODE, MSG_BLTOUCH_OD_MODE, MSG_BUTTON_CANCEL, bltouch._set_OD_mode, nullptr, GET_TEXT(MSG_BLTOUCH_MODE_CHANGE));
+        ACTION_ITEM(MSG_BLTOUCH_MODE_STORE, bltouch._mode_store);
+        CONFIRM_ITEM(MSG_BLTOUCH_MODE_STORE_5V, MSG_BLTOUCH_MODE_STORE_5V, MSG_BUTTON_CANCEL, bltouch.mode_conv_5V, nullptr, GET_TEXT(MSG_BLTOUCH_MODE_CHANGE));
+        CONFIRM_ITEM(MSG_BLTOUCH_MODE_STORE_OD, MSG_BLTOUCH_MODE_STORE_OD, MSG_BUTTON_CANCEL, bltouch.mode_conv_OD, nullptr, GET_TEXT(MSG_BLTOUCH_MODE_CHANGE));
+        ACTION_ITEM(MSG_BLTOUCH_MODE_ECHO, bltouch_report);
+      #endif
+      END_MENU();
+    }
+  #endif
+
+  void menu_bedlevel_points()
+  {
+    START_MENU();
+
+    EDIT_ITEM(uint8, MSG_LEVEL_BED_POINTS_X, &bedlevel_settings.bedlevel_points.x, 3, GRID_MAX_POINTS_X);
+    EDIT_ITEM(uint8, MSG_LEVEL_BED_POINTS_Y, &bedlevel_settings.bedlevel_points.y, 3, GRID_MAX_POINTS_Y);
+
+    END_MENU();
+  }
+
+
 
 #endif // HAS_MARLINUI_MENU

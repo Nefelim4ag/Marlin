@@ -28,8 +28,8 @@
 #include "../inc/MarlinConfig.h"
 
 #include "motion.h"
+#include "endstops.h"
 
-#if HAS_BED_PROBE
   enum ProbePtRaise : uint8_t {
     PROBE_PT_NONE,      // No raise or stow after run_z_probe
     PROBE_PT_STOW,      // Do a complete stow after run_z_probe
@@ -37,10 +37,10 @@
     PROBE_PT_RAISE,     // Raise to "between" clearance after run_z_probe
     PROBE_PT_BIG_RAISE  // Raise to big clearance after run_z_probe
   };
-#endif
 
 #if USES_Z_MIN_PROBE_PIN
-  #define PROBE_TRIGGERED() (READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING)
+//  #define PROBE_TRIGGERED() (READ(Z_MIN_PROBE_PIN) != Z_MIN_PROBE_ENDSTOP_INVERTING)
+  #define PROBE_TRIGGERED() (READ(Z_MIN_PROBE_PIN) != endstop_settings.Z_MIN_PROBE_INVERTING)
 #else
   #define PROBE_TRIGGERED() (READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING)
 #endif

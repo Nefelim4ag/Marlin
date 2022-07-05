@@ -80,6 +80,7 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
 #endif
 
 #if ENABLED(LCD_SET_PROGRESS_MANUALLY)
+#else
   MarlinUI::progress_t MarlinUI::progress_override; // = 0
   #if ENABLED(USE_M73_REMAINING_TIME)
     uint32_t MarlinUI::remaining_time;
@@ -1083,7 +1084,11 @@ void MarlinUI::init() {
 
       // This runs every ~100ms when idling often enough.
       // Instead of tracking changes just redraw the Status Screen once per second.
+      #if ENABLED(RS_STYLE_COLOR_UI)
+        if ((on_status_screen() || on_poweroff_screen()) && !lcd_status_update_delay--) {
+      #else
       if (on_status_screen() && !lcd_status_update_delay--) {
+      #endif
         lcd_status_update_delay = TERN(HAS_MARLINUI_U8GLIB, 12, 9);
         if (max_display_update_time) max_display_update_time--;  // Be sure never go to a very big number
         refresh(LCDVIEW_REDRAW_NOW);
@@ -1622,15 +1627,23 @@ void MarlinUI::init() {
   void MarlinUI::abort_print() {
     #if ENABLED(SDSUPPORT)
       wait_for_heatup = wait_for_user = false;
+      print_job_timer.heating_stop();
       card.abortFilePrintSoon();
     #endif
     #ifdef ACTION_ON_CANCEL
       hostui.cancel();
     #endif
+
     IF_DISABLED(SDSUPPORT, print_job_timer.stop());
     TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_open(PROMPT_INFO, F("UI Aborted"), FPSTR(DISMISS_STR)));
     LCD_MESSAGE(MSG_PRINT_ABORTED);
     TERN_(HAS_MARLINUI_MENU, return_to_status());
+
+    queue.clear();
+    quickstop_stepper();
+    do_blocking_move_to_z(current_position.z+10, 20);
+//    queue.inject("G01 Z20");
+
   }
 
   #if BOTH(HAS_MARLINUI_MENU, PSU_CONTROL)
@@ -1672,6 +1685,10 @@ void MarlinUI::init() {
   void MarlinUI::resume_print() {
     reset_status();
     TERN_(PARK_HEAD_ON_PAUSE, wait_for_heatup = wait_for_user = false);
+    if (wait_for_heatup)
+      print_job_timer.heating_start();
+    else
+      print_job_timer.heating_stop();
     TERN_(SDSUPPORT, if (IS_SD_PAUSED()) queue.inject_P(M24_STR));
     #ifdef ACTION_ON_RESUME
       hostui.resume();

@@ -106,6 +106,41 @@ enum EndstopEnum : char {
 #undef __ES_ITEM
 #undef _ES_ITEM
 
+
+typedef struct
+{
+  #if HAS_X_MIN
+    bool  X_MIN_INVERTING;
+  #endif
+  #if HAS_X_MAX
+    bool  X_MAX_INVERTING;
+  #endif
+  #if HAS_Y_MIN
+    bool  Y_MIN_INVERTING;
+  #endif
+  #if HAS_Y_MAX
+    bool  Y_MAX_INVERTING;
+  #endif
+  #if HAS_Z_MIN
+    bool  Z_MIN_INVERTING;
+  #endif
+  #if HAS_Z_MAX
+    bool  Z_MAX_INVERTING;
+  #endif
+  #if HAS_Z2_MIN
+    bool  Z2_MIN_INVERTING;
+  #endif
+  #if HAS_Z2_MAX
+    bool  Z2_MAX_INVERTING;
+  #endif
+  #if HAS_Z_MIN_PROBE_PIN
+    bool Z_MIN_PROBE_INVERTING;
+  #endif
+} endstop_settings_t;
+extern endstop_settings_t endstop_settings;
+
+
+
 class Endstops {
   public:
 
