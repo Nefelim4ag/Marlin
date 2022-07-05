@@ -10,7 +10,7 @@
 Работает с платами: **MKS Robin Nano v1.3** (съемные драйвера, контроллер STM32F407), **MKS Robin Nano S v1.3** (несъемные драйвера, контроллер STM32F407) и **MKS Robin Nano v1.1** (красная плата со съемными драйверами, контроллер STM32F103, может иметь название Flyingbear Reborn v2.0). Для всех трех плат прошивка построена в двух вариантах - для драйверов с микрошагом 16 и для драйверов с микрошагом 32.
 ![Interface](IMG/IMG_20211026_223227.jpg)
 
-Основана на [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin)  версии 2.0.9.x
+Основана на [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin)  версии 2.1
 
 ## Содержание
 * [Главное](#главное)
@@ -24,7 +24,7 @@
 * [История](#история)
 
 ## Главное
-Обновлено 29.06.2022
+Обновлено 06.07.2022
 - WiFi интерфейс для управления принтером и передачи файлов
 - активирован Linear Advance
 - активирована возможность использовать встроенные в прошивку ретракты (командами G10, G11)
@@ -246,7 +246,7 @@
 Works with boards: **MKS Robin Nano v1.3** (removable drivers, STM32F407 controller), **MKS Robin Nano S v1.3** (non-removable drivers, STM32F407 controller) and **MKS Robin Nano v1.1** (red board with removable drivers, STM32F103 controller, can have the name Flyingbear Reborn v2.0). For all three boards, the firmware is built in two versions - for drivers with microstep 16 and for drivers with microstepping 32.
 ![Interface](IMG/IMG_20211026_223227.jpg)
 
-Based on [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin) version 2.0.9.x
+Based on [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin) version 2.1
 
 ## Content
 * [The main thing](#the-main-thing)
@@ -260,7 +260,7 @@ Based on [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin) 
 * [Version history](#version-history)
 
 ## The main thing
-(updated 01/29/2022)
+Updated 07/06/2022
 - activated Linear Advance
 - WiFi interface for printer control and file transfer
 - the filament end sensor is active
