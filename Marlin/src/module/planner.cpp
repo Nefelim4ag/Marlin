@@ -2987,6 +2987,12 @@ void Planner::buffer_sync_block(const BlockFlagBit sync_flag /*=BLOCK_BIT_SYNC_P
    */
   TERN_(LASER_POWER_SYNC, block->laser.power = cutter.power);
 
+  /**
+   * M3-based power setting can be processed inline with a laser power sync block.
+   * During active moves cutter.power is processed immediately, otherwise on the next move.
+   */
+  TERN_(LASER_POWER_SYNC, block->laser.power = cutter.power);
+
   // If this is the first added movement, reload the delay, otherwise, cancel it.
   if (block_buffer_head == block_buffer_tail)
   {
