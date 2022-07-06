@@ -348,7 +348,7 @@ void MarlinUI::init() {
       if (theCard.longFilename[0]) {
         #if MARLINUI_SCROLL_NAME
           if (doScroll) {
-            for (uint8_t l = FILENAME_LENGTH; l--;)
+            for (uint8_t l = FF_SFN_BUF; l--;)
               hash = ((hash << 1) | (hash >> 7)) ^ theCard.filename[l];      // rotate, xor
             static uint8_t filename_scroll_hash;
             if (filename_scroll_hash != hash) {                              // If the hash changed...

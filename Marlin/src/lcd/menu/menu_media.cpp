@@ -55,7 +55,9 @@ void lcd_sd_updir() {
 #endif
 
 inline void sdcard_start_selected_file() {
+#ifndef FF_DEBUG
   card.openAndPrintFile(card.filename);
+#endif // FF_DEBUG
   ui.return_to_status();
   ui.reset_status();
 }
@@ -132,7 +134,7 @@ void menu_media_filelist() {
   #else
     BACK_ITEM_F(TERN1(BROWSE_MEDIA_ON_INSERT, screen_history_depth) ? GET_TEXT_F(MSG_MAIN) : GET_TEXT_F(MSG_BACK));
   #endif
-  if (card.flag.workDirIsRoot) {
+  if (card.isRootDir()) {
     #if !HAS_SD_DETECT
       ACTION_ITEM(MSG_REFRESH, []{ encoderTopLine = 0; card.mount(); });
     #endif
@@ -140,18 +142,23 @@ void menu_media_filelist() {
   else if (card.isMounted())
     ACTION_ITEM_F(F(LCD_STR_FOLDER " .."), lcd_sd_updir);
 
-  if (ui.should_draw()) for (uint16_t i = 0; i < fileCnt; i++) {
-    if (_menuLineNr == _thisItemNr) {
-      card.getfilename_sorted(SD_ORDER(i, fileCnt));
-      if (card.flag.filenameIsDir)
-        MENU_ITEM(sdfolder, MSG_MEDIA_MENU, card);
+  if (ui.should_draw())
+  {
+    for (uint16_t i = 0; i < fileCnt; i++)
+    {
+      if (_menuLineNr == _thisItemNr)
+      {
+        card.getfilename_sorted(SD_ORDER(i, fileCnt));
+        if (card.flag.filenameIsDir)
+          MENU_ITEM(sdfolder, MSG_MEDIA_MENU, card);
+        else
+          MENU_ITEM(sdfile, MSG_MEDIA_MENU, card);
+      }
       else
-        MENU_ITEM(sdfile, MSG_MEDIA_MENU, card);
+        SKIP_ITEM();
     }
-    else
-      SKIP_ITEM();
-  }
   END_MENU();
+  }
 }
 
 #if ENABLED(MULTI_VOLUME)

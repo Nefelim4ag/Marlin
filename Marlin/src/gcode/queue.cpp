@@ -566,10 +566,13 @@ void GCodeQueue::get_serial_commands() {
     static uint8_t sd_input_state = PS_NORMAL;
 
     // Get commands if there are more in the file
-    if (!IS_SD_FETCHING()) return;
+    if (!IS_SD_FETCHING())
+      return;
 
     int sd_count = 0;
-    while (!ring_buffer.full() && !card.eof()) {
+
+    while (!ring_buffer.full() && !card.eof())
+    {
       const int16_t n = card.get();
       const bool card_eof = card.eof();
       if (n < 0 && !card_eof) { SERIAL_ERROR_MSG(STR_SD_ERR_READ); continue; }
@@ -661,7 +664,8 @@ void GCodeQueue::advance() {
 
   #if ENABLED(SDSUPPORT)
 
-    if (card.flag.saving) {
+    if (card.flag.saving)
+    {
       char * const cmd = ring_buffer.peek_next_command_string();
       if (is_M29(cmd)) {
         // M29 closes the file

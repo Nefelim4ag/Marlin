@@ -31,7 +31,8 @@
  * M20: List SD card to serial output
  */
 void GcodeSuite::M20() {
-  if (card.flag.mounted) {
+  if (card.isMounted())
+  {
     SERIAL_ECHOLNPGM(STR_BEGIN_FILE_LIST);
     card.ls(
       TERN_(CUSTOM_FIRMWARE_UPLOAD, parser.boolval('F'))
@@ -40,6 +41,7 @@ void GcodeSuite::M20() {
       #endif
       TERN_(LONG_FILENAME_HOST_SUPPORT, parser.boolval('L'))
     );
+
     SERIAL_ECHOLNPGM(STR_END_FILE_LIST);
   }
   else

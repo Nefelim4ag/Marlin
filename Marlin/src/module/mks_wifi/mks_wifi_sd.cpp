@@ -29,6 +29,7 @@ volatile uint8_t dma_stopped;
 FIL upload_file;
 
 void mks_wifi_sd_ls(void){
+#ifndef FF_DEBUG
     res = f_opendir((DIR*)&dir, "0:");                       /* Open the directory */
     if (res == FR_OK) {
         for (;;) {
@@ -40,16 +41,20 @@ void mks_wifi_sd_ls(void){
           ERROR("Opendir error %d",res);
       }
    f_closedir((DIR*)&dir);
+#endif // FF_DEBUG
 }
 
 uint8_t mks_wifi_sd_init(void){
+#ifndef FF_DEBUG
    card.release();
-   res = f_mount((FATFS *)&FATFS_Obj, "0", 1);
+   res = f_mount((FATFS *)&FATFS_Obj, DISK_SD, 1);
    return (uint8_t)res;
+#endif // FF_DEBUG
+   return 0;
 }
 
 void mks_wifi_sd_deinit(void){
-   f_mount(0, "", 1);
+   f_mount(0, DISK_SD, 1);
    delay(500);
    card.mount(true);
 };
@@ -70,6 +75,7 @@ uint8_t get_dos_filename(char *filename, char* dosfilename){
    
    mks_wifi_sd_init();
 
+#ifndef FF_DEBUG
     res = f_opendir((DIR*)&dir, "0:");                       /* Open the directory */
     
     if (res == FR_OK) {
@@ -89,6 +95,7 @@ uint8_t get_dos_filename(char *filename, char* dosfilename){
    f_closedir((DIR*)&dir);
 
    mks_wifi_sd_deinit();
+#endif // FF_DEBUG
 
    return ret_val;
 }
@@ -145,6 +152,7 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet){
    
    DEBUG("Open file");
    //открыть файл для записи
+#ifndef FF_DEBUG
    res=f_open((FIL *)&upload_file,file_name,FA_CREATE_ALWAYS | FA_WRITE);
    if(res){
       ERROR("File open error %d",res);
@@ -459,6 +467,7 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet){
    thermalManager.setTargetHotend(save_e0,0);
    DEBUG("Restore thermal settings E0:%d Bed:%d",save_bed,save_e0);
 
+#endif // FF_DEBUG
 }
 
 #ifdef STM32F1

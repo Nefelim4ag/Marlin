@@ -91,7 +91,7 @@ void mks_m20(bool longnames)
   if(IS_SD_PRINTING())
     return;
 
-  if (card.flag.mounted)
+  if (card.isMounted())
   {
 
     mks_wifi_out_add ((uint8_t*)parser.string_arg, strlen(parser.string_arg));
@@ -309,6 +309,7 @@ void mks_m23(char *filename){
       if (*fn == '.') break;
     }
    
+#ifndef FF_DEBUG
     if((strlen(filename) > 12) || (dot_pos > 4)){
       if(get_dos_filename(filename,dosfilename)){
         strcpy(CardReader::longFilename,filename); //Для отображения на экране
@@ -320,6 +321,7 @@ void mks_m23(char *filename){
     }else{
       card.openFileRead(filename);
     }
+#endif // FF_DEBUG
 
   SERIAL_ECHOPGM(STR_OK);
   SERIAL_EOL();

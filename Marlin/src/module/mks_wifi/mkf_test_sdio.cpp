@@ -12,10 +12,12 @@ void mks_test_sdio(void){
     DEBUG("Start sdio test");
     
     for(uint32_t i=0; i<100000; i++){
+#ifndef FF_DEBUG
         if((i%1000) == 0){
             DEBUG("Progress %d blocks",i);
         }
         SDIO_ReadBlock(i,data);
+#endif // FF_DEBUG
     }
     
     DEBUG("Finish sdio test");

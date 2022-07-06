@@ -15,6 +15,7 @@ volatile uint8_t __attribute__ ((aligned (4))) buf_copy[512];
 
 /* Definitions of physical drive number for each drive */
 #define DEV_SD		0	/* Example: Map MMC/SD card to physical drive 1 */
+#define DEV_FLASH	1	/* Example: Map MMC/SD card to physical drive 1 */
 
 
 /*-----------------------------------------------------------------------*/
@@ -195,13 +196,13 @@ DWORD get_fattime (void) {
 	
 	uint32_t  d,ret;
 		
-	d=2018-1980;
+	d=2022-1980;
 	ret=(d << 25);
 	
-	d=02;
+	d=04;
 	ret |= (d << 21);
 	
-	d=12;
+	d=07;
 	d=((d > 0) && (d < 32)) ? d : 1;
 	ret |= (d << 16);
 	
