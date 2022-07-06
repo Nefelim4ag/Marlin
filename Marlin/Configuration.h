@@ -1037,6 +1037,7 @@
 **/
 #define DEFAULT_AXIS_STEPS_PER_UNIT { 160*X_MICROSTEP/32, 160*Y_MICROSTEP/32, 800*Z_MICROSTEP/32, 821*E0_MICROSTEP/32 }
 
+
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
  * Override with M203
