@@ -2016,22 +2016,25 @@ uint32_t Stepper::block_phase_isr() {
           else if (LA_steps) nextAdvanceISR = 0;
         #endif
 
-        // Update laser - Accelerating
-        #if ENABLED(LASER_POWER_INLINE_TRAPEZOID)
-          if (laser_trap.enabled) {
-            #if DISABLED(LASER_POWER_INLINE_TRAPEZOID_CONT)
-              if (current_block->laser.entry_per) {
-                laser_trap.acc_step_count -= step_events_completed - laser_trap.last_step_count;
-                laser_trap.last_step_count = step_events_completed;
+        /**
+         * Adjust Laser Power - Accelerating
+         *
+         *  isPowered - True when a move is powered.
+         *  isEnabled - laser power is active.
+         *
+         * Laser power variables are calulated and stored in this block by the planner code.
+         *  trap_ramp_active_pwr - the active power in this block across accel or decel trap steps.
+         *  trap_ramp_entry_incr - holds the precalculated value to increase the current power per accel step.
+         *
+         * Apply the starting active power and then increase power per step by the trap_ramp_entry_incr value if positive.
+         */
 
-                // Should be faster than a divide, since this should trip just once
-                if (laser_trap.acc_step_count < 0) {
-                  while (laser_trap.acc_step_count < 0) {
-                    laser_trap.acc_step_count += current_block->laser.entry_per;
-                    if (laser_trap.cur_power < current_block->laser.power) laser_trap.cur_power++;
-                  }
-                  cutter.ocr_set_power(laser_trap.cur_power);
-                }
+        #if ENABLED(LASER_POWER_TRAP)
+          if (cutter.cutter_mode == CUTTER_MODE_CONTINUOUS) {
+            if (planner.laser_inline.status.isPowered && planner.laser_inline.status.isEnabled) {
+              if (current_block->laser.trap_ramp_entry_incr > 0) {
+                cutter.apply_power(current_block->laser.trap_ramp_active_pwr);
+                current_block->laser.trap_ramp_active_pwr += current_block->laser.trap_ramp_entry_incr;
               }
             #else
               if (laser_trap.till_update)
@@ -2050,6 +2053,7 @@ uint32_t Stepper::block_phase_isr() {
         uint32_t step_rate;
 
         #if ENABLED(S_CURVE_ACCELERATION)
+
           // If this is the 1st time we process the 2nd half of the trapezoid...
           if (!bezier_2nd_half) {
             // Initialize the Bézier speed curve
@@ -2064,6 +2068,7 @@ uint32_t Stepper::block_phase_isr() {
               ? _eval_bezier_curve(deceleration_time)
               : current_block->final_rate;
           }
+
         #else
 
           // Using the old trapezoidal control
@@ -2074,9 +2079,8 @@ uint32_t Stepper::block_phase_isr() {
           }
           else
             step_rate = current_block->final_rate;
-        #endif
 
-        // step_rate is in steps/second
+        #endif
 
         // step_rate to timer interval and steps per stepper isr
         interval = calc_timer_interval(step_rate, &steps_per_isr);
@@ -2139,13 +2143,18 @@ uint32_t Stepper::block_phase_isr() {
         // The timer interval is just the nominal value for the nominal speed
         interval = ticks_nominal;
 
-        // Update laser - Cruising
-        #if ENABLED(LASER_POWER_INLINE_TRAPEZOID)
-          if (laser_trap.enabled) {
-            if (!laser_trap.cruise_set) {
-              laser_trap.cur_power = current_block->laser.power;
-              cutter.ocr_set_power(laser_trap.cur_power);
-              laser_trap.cruise_set = true;
+      /**
+       * Adjust Laser Power - Cruise
+       * power - direct or floor adjusted active laser power.
+       */
+      #if ENABLED(LASER_POWER_TRAP)
+        if (cutter.cutter_mode == CUTTER_MODE_CONTINUOUS) {
+          if (step_events_completed + 1 == accelerate_until) {
+            if (planner.laser_inline.status.isPowered && planner.laser_inline.status.isEnabled) {
+              if (current_block->laser.trap_ramp_entry_incr > 0) {
+                current_block->laser.trap_ramp_active_pwr = current_block->laser.power;
+                cutter.apply_power(current_block->laser.power);
+              }
             }
             #if ENABLED(LASER_POWER_INLINE_TRAPEZOID_CONT)
               laser_trap.till_update = LASER_POWER_INLINE_TRAPEZOID_CONT_PER;
@@ -2153,9 +2162,31 @@ uint32_t Stepper::block_phase_isr() {
               laser_trap.last_step_count = step_events_completed;
             #endif
           }
-        #endif
-      }
+        }
+      #endif
     }
+
+    #if ENABLED(LASER_FEATURE)
+      /**
+       * CUTTER_MODE_DYNAMIC is experimental and developing.
+       * Super-fast method to dynamically adjust the laser power OCR value based on the input feedrate in mm-per-minute.
+       * TODO: Set up Min/Max OCR offsets to allow tuning and scaling of various lasers.
+       * TODO: Integrate accel/decel +-rate into the dynamic laser power calc.
+       */
+      if (cutter.cutter_mode == CUTTER_MODE_DYNAMIC
+        && planner.laser_inline.status.isPowered                  // isPowered flag set on any parsed G1, G2, G3, or G5 move; cleared on any others.
+        && cutter.last_block_power != current_block->laser.power  // Prevent constant update without change
+      ) {
+        cutter.apply_power(current_block->laser.power);
+        cutter.last_block_power = current_block->laser.power;
+      }
+    #endif
+  }
+  else { // !current_block
+    #if ENABLED(LASER_FEATURE)
+      if (cutter.cutter_mode == CUTTER_MODE_DYNAMIC)
+        cutter.apply_power(0);  // No movement in dynamic mode so turn Laser off
+    #endif
   }
 
   // If there is no current block at this point, attempt to pop one from the buffer
