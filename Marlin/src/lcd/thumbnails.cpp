@@ -36,9 +36,7 @@ bool    Thumbnails::Open(char *fname)
   memset(&decode_info, 0, sizeof(decode_info));
   decode_info.old_draw_y = -1;
 
-#ifndef FF_DEBUG
   card.openFileRead(fname, 9);
-#endif // FF_DEBUG
   if (!card.isFileOpen())
   {
     return FALSE;
@@ -67,9 +65,7 @@ bool    Thumbnails::Open(char *fname)
   // не нашли
   if (decode_info.img_base64_size == 0)
   {
-#ifndef FF_DEBUG
     card.closefile();
-#endif // FF_DEBUG
     return FALSE;
   }
 
@@ -90,9 +86,7 @@ void    Thumbnails::Close()
   DEBUG("Thumbnails: closing");
 
   png.close();
-#ifndef FF_DEBUG
   card.closefile();
-#endif // FF_DEBUG
 }
 
 
@@ -175,7 +169,6 @@ int32_t    Thumbnails::ReadLine(uint8_t* buff, uint32_t buffsize)
   int32_t		pos = 0;
   uint32_t	file_index = card.getIndex();
 
-#ifndef FF_DEBUG
   rd = card.read(buff, buffsize);
   if (rd > 0)
   {
@@ -190,7 +183,6 @@ int32_t    Thumbnails::ReadLine(uint8_t* buff, uint32_t buffsize)
   {
     return -1;
   }
-#endif // FF_DEBUG
 
   return pos;
 }
@@ -235,9 +227,7 @@ uint32_t    Thumbnails::base64_read(uint8_t* buff,	uint32_t size)
     decode_info.buff_current_decpos = 0;
     decode_info.buff_ready_decbytes = 0;
     // считываем сырые данные
-#ifndef FF_DEBUG
     rd = card.read(strbuff + decode_info.remain_rawbytes, 240);
-#endif // FF_DEBUG
     if (rd <= 0)
       return 0;
 
@@ -361,9 +351,7 @@ int32_t    Thumbnails::PNGSeek(PNGFILE *handle, int32_t position)
   }
   else
   {
-    #ifndef FF_DEBUG
     card.setIndex(thumbnails.decode_info.srcfile_begin_pos);
-    #endif // FF_DEBUG
     length = position;
     thumbnails.decode_info.buff_current_decpos = 0;
     thumbnails.decode_info.buff_ready_decbytes = 0;

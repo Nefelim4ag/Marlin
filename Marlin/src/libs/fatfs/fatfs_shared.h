@@ -15,9 +15,15 @@ extern FATFS FATFS_sd;
 
 char*		FATFS_GetFileExtension(char *fname);
 char*		FATFS_GetFileExtensionUTF(char *fname);
-void		FATFS_DelFileExtension(char *fname);
+char*   FATFS_GetFilenameFromPath(char *path);
+char*   FATFS_GetFilenameFromPathUTF(char *path);
+void    FATFS_GetPathFromFilename(char *fname, char *path);
+void    FATFS_GetPathFromFilenameUTF(char *fname, char *path);
+void    FATFS_DelFileExtension(char *fname);
 void		FATFS_DelFileExtensionUTF(char *fname);
 char*		FATFS_GetPrevDir(char *fname);
+
+char*		strupper_utf(char *src);
 
 
 #endif

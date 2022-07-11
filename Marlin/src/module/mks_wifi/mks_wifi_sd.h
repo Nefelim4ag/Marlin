@@ -41,8 +41,8 @@
 
 void mks_wifi_sd_ls(void);
 
-uint8_t mks_wifi_sd_init(void);
-void mks_wifi_sd_deinit(void);
+bool mks_wifi_sd_init(void);
+//void mks_wifi_sd_deinit(void);
 void sd_delete_file(char *filename);
 
 uint8_t get_dos_filename(char *filename, char* dosfilename);

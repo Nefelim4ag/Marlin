@@ -32,10 +32,7 @@
  */
 void GcodeSuite::M928() {
 
-#ifndef FF_DEBUG
   card.openLogFile(parser.string_arg);
-#endif // FF_DEBUG
-
 
 }
 

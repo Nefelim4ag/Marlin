@@ -56,10 +56,7 @@ void GcodeSuite::M28() {
 
   #else
 
-#ifndef FF_DEBUG
     card.openFileWrite(parser.string_arg);
-#endif // FF_DEBUG
-
 
   #endif
 }

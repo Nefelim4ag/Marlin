@@ -70,7 +70,7 @@ public:
   CardReader();
 
 
-  static void mount(bool wifi = false);
+  static bool mount(bool wifi = false);
   static void release();
   static bool isMounted() { return FATFS_sd.fs_type != 0; }
   static bool isRootDir();
@@ -79,9 +79,7 @@ public:
   static void manage_media();
 
   // SD Card Logging
-  /*
   static void openLogFile(const char * const path);
-*/
 
   static void write_command(char * const buf);
 
@@ -94,8 +92,8 @@ public:
 
   // Basic file ops
   static void openFileRead(const char * const path, const uint8_t subcall=0);
-/*
   static void openFileWrite(const char * const path);
+/*   
   static bool fileExists(const char * const name);
 */
   static void removeFile(const char * const name);
@@ -116,9 +114,9 @@ public:
 
   // Select a file
   static void selectFileByIndex(const uint16_t nr);
-/*
   static void selectFileByName(const char * const match);  // (working directory only)
 
+/*
   // Print job
   static void getAbsFilenameInCWD(char *dst);
   static void cdroot();
@@ -200,16 +198,14 @@ public:
     static AutoReporter<AutoReportSD> auto_reporter;
   #endif
 
-/*
-  static int16_t read(void *buf, uint16_t nbyte)  { return file.isOpen() ? file.read(buf, nbyte) : -1; }
-  static int16_t write(void *buf, uint16_t nbyte) { return file.isOpen() ? file.write(buf, nbyte) : -1; }
+    static uint32_t read(void *buf, uint32_t nbyte);
+    static uint32_t write(void *buf, uint32_t nbyte);
 
-private:
-*/
-  static FIL curfile;
-  static FILINFO curfilinfo;
-  static uint8_t  activefileitems[MAX_DIR_DEPTH];
-  static dir_active_items_t  active_dir_items;
+  private:
+    static FIL curfile;
+    static FILINFO curfilinfo;
+    static uint8_t activefileitems[MAX_DIR_DEPTH];
+    static dir_active_items_t active_dir_items;
 
   //
   // Procedure calls to other files

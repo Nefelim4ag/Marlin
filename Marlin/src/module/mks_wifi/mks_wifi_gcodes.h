@@ -17,9 +17,7 @@ void mks_m23(char *filename);
 void mks_m27(void);
 void mks_m30(char *filename);
 void mks_m20(bool longnames = false);
-#ifndef FF_DEBUG
-void mks_printListing(SdFile parent);
-#endif // FF_DEBUG
+//void mks_printListing(SdFile parent);
 void mks_printLongPath(char * const path);
 
 #endif

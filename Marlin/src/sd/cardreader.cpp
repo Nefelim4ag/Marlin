@@ -369,7 +369,6 @@ void CardReader::openFileRead(const char *const path, const uint8_t subcall_type
     }
 }
 
-#ifndef FF_DEBUG
 inline void echo_write_to_file(const char *const fname)
 {
     SERIAL_ECHOLNPGM(STR_SD_WRITE_TO_FILE, fname);
@@ -388,27 +387,25 @@ void CardReader::openFileWrite(const char *const path)
 
     abortFilePrintNow();
 
-    SdFile *diveDir;
-    const char *const fname = diveToFile(false, diveDir, path);
-    if (!fname)
-        return;
+    char *fname = FATFS_GetFilenameFromPathUTF((char*)path);
 
 #if ENABLED(SDCARD_READONLY)
-    openFailed(fname);
+        openFailed(fname);
 #else
-    if (file.open(diveDir, fname, O_CREAT | O_APPEND | O_WRITE | O_TRUNC))
+        if (f_open(&curfile, path, FA_WRITE | FA_OPEN_ALWAYS | FA_OPEN_APPEND) == FR_OK)
     {
         flag.saving = true;
-        selectFileByName(fname);
+        selectFileByName(path);
         TERN_(EMERGENCY_PARSER, emergency_parser.disable());
         echo_write_to_file(fname);
         ui.set_status(fname);
     }
     else
-        openFailed(fname);
+        openFailed(path);
 #endif
 }
 
+#ifndef FF_DEBUG
 //
 // Check if a file exists by absolute or workDir-relative path
 // If the file exists, the long name can also be fetched.
@@ -774,26 +771,68 @@ void CardReader::closefile(const bool store_location /*=false*/)
     }
 }
 
-#ifndef FF_DEBUG
 //
 // Get info for a file in the working directory by DOS name
 //
 void CardReader::selectFileByName(const char *const match)
 {
-#if ENABLED(SDSORT_CACHE_NAMES)
-    for (uint16_t nr = 0; nr < sort_count; nr++)
-        if (strcasecmp(match, sortshort[nr]) == 0)
+    TCHAR curpath[256];
+    TCHAR curname[256];
+    char    *fname;
+    DIR dir;
+    FILINFO finfo;
+    static uint8_t depth = 0;
+
+    if (match == NULL || match[0] == 0)
+        return;
+
+    FATFS_GetPathFromFilenameUTF((char*)match, curpath);
+    
+    if (curpath[0] == 0)
+    {
+        if (f_getcwd(curpath, sizeof(curpath)) != FR_OK)
         {
-            strcpy(filename, sortshort[nr]);
-            strcpy(longFilename, sortnames[nr]);
-            flag.filenameIsDir = IS_DIR(nr);
+            openFailed(match);
             return;
         }
-#endif
-    workDir.rewind();
-    selectByName(workDir, match);
+    }
+
+    if (f_chdir(curpath) != FR_OK)
+    {
+        openFailed(match);
+        return;
+    }
+
+    if (f_opendir(&dir, curpath) != FR_OK)
+    {
+        openFailed(match);
+        return;
+    }
+
+    fname = FATFS_GetFilenameFromPathUTF((char*)match);
+    strncpy(curname, fname, sizeof(curname));
+    strupper_utf(curname);
+
+    while (f_readdir(&dir, &finfo) == FR_OK)
+    {
+        if (finfo.fname[0] == 0)
+        {
+            openFailed(match);
+            return;
+        }
+        strncpy(fname, finfo.fname, sizeof(fname));
+        strupper_utf(fname);
+        if (strcmp(fname, curname) == 0)
+        {
+            memcpy(&curfilinfo, &finfo, sizeof(curfilinfo));
+            return;
+        }
+    }
+
+    openFailed(match);
 }
 
+#ifndef FF_DEBUG
 uint16_t CardReader::countFilesInWorkDir()
 {
     workDir.rewind();
@@ -1070,6 +1109,31 @@ int16_t CardReader::get()
     return val;
 }
 
+
+uint32_t CardReader::read(void *buf, uint32_t nbyte)
+{
+    if (!isFileOpen())
+        return -1;
+    UINT rd = 0;
+    if (f_read(&curfile, buf, nbyte, &rd) != FR_OK)
+        return -1;
+    
+    return rd;
+}
+
+
+uint32_t CardReader::write(void *buf, uint32_t nbyte)
+{
+    if (!isFileOpen())
+        return -1;
+    UINT wr = 0;
+    if (f_write(&curfile, buf, nbyte, &wr) != FR_OK)
+        return -1;
+
+    return wr;
+}
+
+
 //
 // Return from procedure or close out the Print Job
 //
@@ -1141,18 +1205,19 @@ void CardReader::removeJobRecoveryFile()
 
 #endif // POWER_LOSS_RECOVERY
 
+#endif // FF_DEBUG
+
 void CardReader::openLogFile(const char *const path)
 {
     flag.logging = DISABLED(SDCARD_READONLY);
     IF_DISABLED(SDCARD_READONLY, openFileWrite(path));
 }
 
-#endif // FF_DEBUG
-
-void CardReader::mount(bool wifi)
+bool CardReader::mount(bool wifi)
 {
+    FRESULT res = FR_OK;
 
-    if (f_mount(&FATFS_sd, DISK_SD, 1) != FR_OK)
+    if ((res = f_mount(&FATFS_sd, DISK_SD, 1)) != FR_OK)
     {
         if (wifi)
             SERIAL_ECHO_MSG("WIFI: " STR_SD_INIT_FAIL);
@@ -1170,6 +1235,8 @@ void CardReader::mount(bool wifi)
 #endif
 
     ui.refresh();
+
+    return res == FR_OK;
 }
 
 /**
