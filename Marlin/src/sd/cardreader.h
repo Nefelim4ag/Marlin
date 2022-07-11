@@ -34,8 +34,8 @@ extern const char M23_STR[], M24_STR[];
   #define SD_ORDER(N,C) N
 #endif
 
-#define MAX_DIR_DEPTH     10       // Maximum folder depth
-#define MAXDIRNAMELENGTH  12       // DOS folder name size
+#define MAX_DIR_DEPTH     6       // Maximum folder depth
+#define MAXDIRNAMELENGTH  128       // DOS folder name size
 #define MAXPATHNAMELENGTH  (1 + (MAXDIRNAMELENGTH + 1) * (MAX_DIR_DEPTH) + 1 + FF_SFN_BUF) // "/" + N * ("ADIRNAME/") + "filename.ext"
 
 typedef struct {
@@ -61,8 +61,8 @@ typedef struct
 class CardReader {
 public:
   static card_flags_t flag;                         // Flags (above)
-  static char filename[FF_SFN_BUF],            // DOS 8.3 filename of the selected item
-              longFilename[FF_LFN_BUF];   // Long name of the selected item
+  // static char filename[FF_SFN_BUF],            // DOS 8.3 filename of the selected item
+  //             longFilename[FF_LFN_BUF];   // Long name of the selected item
 
 
   // // // Methods // // //
@@ -92,15 +92,15 @@ public:
     static void autofile_cancel() { autofile_index = 0; }
   #endif
 
-/*
   // Basic file ops
   static void openFileRead(const char * const path, const uint8_t subcall=0);
+/*
   static void openFileWrite(const char * const path);
   static bool fileExists(const char * const name);
 */
   static void removeFile(const char * const name);
   static void closefile(const bool store_location=false);
-  static char* longest_filename() { return longFilename[0] ? longFilename : filename; }
+  static char* longest_filename() { return curfilinfo.fname[0] ? curfilinfo.fname : curfilinfo.altname; }
 
   #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
     static void printLongPath(char * const path);   // Used by M33

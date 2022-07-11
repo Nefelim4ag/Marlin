@@ -345,15 +345,15 @@ void MarlinUI::init() {
 
     const char * MarlinUI::scrolled_filename(CardReader &theCard, const uint8_t maxlen, uint8_t hash, const bool doScroll) {
       const char *outstr = theCard.longest_filename();
-      if (theCard.longFilename[0]) {
+      if (outstr[0]) {
         #if MARLINUI_SCROLL_NAME
           if (doScroll) {
             for (uint8_t l = FF_SFN_BUF; l--;)
-              hash = ((hash << 1) | (hash >> 7)) ^ theCard.filename[l];      // rotate, xor
+              hash = ((hash << 1) | (hash >> 7)) ^ outstr[l];      // rotate, xor
             static uint8_t filename_scroll_hash;
             if (filename_scroll_hash != hash) {                              // If the hash changed...
               filename_scroll_hash = hash;                                   // Save the new hash
-              filename_scroll_max = _MAX(0, utf8_strlen(theCard.longFilename) - maxlen); // Update the scroll limit
+              filename_scroll_max = _MAX(0, utf8_strlen(outstr) - maxlen); // Update the scroll limit
               filename_scroll_pos = 0;                                       // Reset scroll to the start
               lcd_status_update_delay = 8;                                   // Don't scroll right away
             }

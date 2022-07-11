@@ -533,7 +533,7 @@ void MarlinUI::draw_status_screen() {
   // file name
   if (printJobOngoing() || printingIsPaused())
   {
-    tft_string.set(card.longFilename);
+    tft_string.set(card.longest_filename());
     x = tft_string.width();
     if (x > 460)
     x = 470;
@@ -892,7 +892,7 @@ void TFT::draw_edit_screen_buttons() {
         tft.add_text(tft_string.center(TFT_WIDTH), 0, COLOR_MENU_TEXT, tft_string);
       }
 
-      bool is_thumb = thumbnails.Open(card.filename);
+      bool is_thumb = thumbnails.Open(card.longest_filename());
       // card.openFileRead(card.filename);
       // card.closefile();
 

@@ -109,7 +109,7 @@ class MenuItem_sdfolder : public MenuItem_sdbase {
       MenuItem_sdbase::draw(sel, row, fstr, theCard, true);
     }
     static void action(FSTR_P const, CardReader &theCard) {
-      card.cd(theCard.filename);
+      card.cd(theCard.longest_filename());
       encoderTopLine = 0;
       ui.encoderPosition = 2 * (ENCODER_STEPS_PER_MENU_ITEM);
       ui.screen_changed = true;

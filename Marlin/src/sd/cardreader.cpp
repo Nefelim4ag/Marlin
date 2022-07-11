@@ -70,7 +70,7 @@ PGMSTR(M24_STR, "M24");
 // public:
 
 card_flags_t          CardReader::flag;
-char                  CardReader::filename[FF_SFN_BUF], CardReader::longFilename[FF_LFN_BUF];
+//char                  CardReader::filename[FF_SFN_BUF], CardReader::longFilename[FF_LFN_BUF];
 uint8_t               CardReader::activefileitems[MAX_DIR_DEPTH];
 dir_active_items_t    CardReader::active_dir_items;
 FIL                   CardReader::curfile;
@@ -232,6 +232,8 @@ void CardReader::getAbsFilenameInCWD(char *dst) {
   *dst = '\0';
 }
 
+#endif // FF_DEBUG
+
 void openFailed(const char * const fname) {
   SERIAL_ECHOLNPGM(STR_SD_OPEN_FILE_FAIL, fname, ".");
 }
@@ -246,6 +248,8 @@ void announceOpen(const uint8_t doing, const char * const path) {
   }
 }
 
+
+
 //
 // Open a file by DOS path for read
 // The 'subcall_type' flag indicates...
@@ -256,9 +260,11 @@ void announceOpen(const uint8_t doing, const char * const path) {
 //   - 9 : Just open file
 //
 void CardReader::openFileRead(const char * const path, const uint8_t subcall_type/*=0*/) {
-  if (!isMounted()) return;
+  if (!isMounted() || path == 0)
+    return;
 
-  switch (subcall_type) {
+  switch (subcall_type)
+  {
     case 0:      // Starting a new print. "Now fresh file: ..."
       announceOpen(2, path);
       TERN_(HAS_MEDIA_SUBCALLS, file_subcall_ctr = 0);
@@ -267,24 +273,35 @@ void CardReader::openFileRead(const char * const path, const uint8_t subcall_typ
     #if HAS_MEDIA_SUBCALLS
 
       case 1:      // Starting a sub-procedure
+        {
 
         // With no file is open it's a simple macro. "Now doing file: ..."
-        if (!isFileOpen()) { announceOpen(1, path); break; }
+        if (!isFileOpen())
+          {
+            announceOpen(1, path); break;
+          }
 
         // Too deep? The firmware has to bail.
-        if (file_subcall_ctr > SD_PROCEDURE_DEPTH - 1) {
+        if (file_subcall_ctr > SD_PROCEDURE_DEPTH - 1)
+        {
           SERIAL_ERROR_MSG("Exceeded max SUBROUTINE depth:", SD_PROCEDURE_DEPTH);
           kill(GET_TEXT_F(MSG_KILL_SUBCALL_OVERFLOW));
           return;
         }
 
         // Store current filename (based on workDirParents) and position
-        getAbsFilenameInCWD(proc_filenames[file_subcall_ctr]);
-        filespos[file_subcall_ctr] = sdpos;
+        f_getcwd(proc_filenames[file_subcall_ctr], MAXPATHNAMELENGTH);
+        uint16_t slen = strlen(proc_filenames[file_subcall_ctr]);
+        proc_filenames[file_subcall_ctr][slen] = '/';
+        slen++;
+        proc_filenames[file_subcall_ctr][slen] = 0;
+        strncat(proc_filenames[file_subcall_ctr], curfilinfo.fname, (MAXPATHNAMELENGTH - slen));
+        filespos[file_subcall_ctr] = getIndex();
 
         // For sub-procedures say 'SUBROUTINE CALL target: "..." parent: "..." pos12345'
-        SERIAL_ECHO_MSG("SUBROUTINE CALL target:\"", path, "\" parent:\"", proc_filenames[file_subcall_ctr], "\" pos", sdpos);
+        SERIAL_ECHO_MSG("SUBROUTINE CALL target:\"", path, "\" parent:\"", proc_filenames[file_subcall_ctr], "\" pos", getIndex());
         file_subcall_ctr++;
+        }
         break;
 
       case 2:      // Resuming previous file after sub-procedure
@@ -296,30 +313,30 @@ void CardReader::openFileRead(const char * const path, const uint8_t subcall_typ
 
   abortFilePrintNow();
 
-  SdFile *diveDir;
-  const char * const fname = diveToFile(true, diveDir, path);
-  if (!fname) return;
-
-  if (file.open(diveDir, fname, O_READ)) {
-    filesize = file.fileSize();
-    sdpos = 0;
-
+  if (f_stat(path, &curfilinfo) == FR_OK && f_open(&curfile, path, FA_READ) == FR_OK)
+  {
     { // Don't remove this block, as the PORT_REDIRECT is a RAII
       PORT_REDIRECT(SerialMask::All);
-      SERIAL_ECHOLNPGM(STR_SD_FILE_OPENED, fname, STR_SD_SIZE, filesize);
+      SERIAL_ECHOLNPGM(STR_SD_FILE_OPENED, curfilinfo.fname, STR_SD_SIZE, curfilinfo.fsize);
       SERIAL_ECHOLNPGM(STR_SD_FILE_SELECTED);
     }
 
     if (subcall_type < 9)
     {
-    selectFileByName(fname);
-    ui.set_status(longFilename[0] ? longFilename : fname);
+//      selectFileByName(fname);
+      ui.set_status(curfilinfo.fname);
     }
   }
   else
-    openFailed(fname);
+  {
+    openFailed(curfilinfo.fname);
+    memset(&curfilinfo, 0, sizeof(curfilinfo));
+  }
 }
 
+
+
+#ifndef FF_DEBUG
 inline void echo_write_to_file(const char * const fname) {
   SERIAL_ECHOLNPGM(STR_SD_WRITE_TO_FILE, fname);
 }
@@ -920,9 +937,6 @@ void CardReader::selectFileByIndex(const uint16_t nr)
   DIR dir;
   FILINFO finfo;
 
-  card.longFilename[0] = 0;
-  card.filename[0] = 0;
-
   if (f_getcwd(curpath, sizeof(curpath)) != FR_OK)
     return;
   if (f_opendir(&dir, curpath) != FR_OK)
@@ -956,8 +970,7 @@ void CardReader::selectFileByIndex(const uint16_t nr)
 
   if (item_count == nr+1)
   {
-    strncpy(card.longFilename, finfo.fname, FF_LFN_BUF-1);
-    strncpy(card.filename, finfo.altname[0] ? finfo.altname : finfo.fname, FF_SFN_BUF-1);
+    memcpy(&curfilinfo, &finfo, sizeof(finfo));
     card.flag.filenameIsDir = (finfo.fattrib & AM_DIR);
   }
   f_closedir(&dir);
@@ -1172,11 +1185,11 @@ void CardReader::endFilePrintNow() {
 //
 void CardReader::printSelectedFilename() {
   if (isFileOpen() == true) {
-    SERIAL_ECHO(filename);
+    SERIAL_ECHO(curfilinfo.altname);
     #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
-      if (longFilename[0]) {
+      if (curfilinfo.fname[0]) {
         SERIAL_CHAR(' ');
-        SERIAL_ECHO(longFilename);
+        SERIAL_ECHO(curfilinfo.fname);
       }
     #endif
   }
