@@ -2676,7 +2676,7 @@ void MarlinSettings::postprocess() {
       else
         DEBUG_ECHO_MSG("EEPROM read success. Index: ", eeprom_index - (EEPROM_OFFSET), " Size: ", datasize());
 
-      delay(1000);
+//      delay(1000);
 
       if (!validating && !eeprom_error) postprocess();
 
@@ -2745,8 +2745,10 @@ void MarlinSettings::postprocess() {
   }
 
   bool MarlinSettings::load() {
-    if (validate()) {
-      const bool success = _load();
+    bool success = false;
+    if (success = validate())
+    {
+      success = _load();
       TERN_(EXTENSIBLE_UI, ExtUI::onSettingsLoaded(success));
       return success;
     }

@@ -121,9 +121,9 @@ public:
 
   // Print job
   static void getAbsFilenameInCWD(char *dst);
-  static void openAndPrintFile(const char *name);   // (working directory or full path)
   static void cdroot();
 */
+  static void openAndPrintFile(const char *name);   // (working directory or full path)
   static void report_status();
 
   static void fileHasFinished();

@@ -45,13 +45,11 @@ void GcodeSuite::M32() {
   if (card.isMounted()) {
     const uint8_t call_procedure = parser.boolval('P');
 
-#ifndef FF_DEBUG
     card.openFileRead(parser.string_arg, call_procedure);
 
     if (parser.seenval('S')) card.setIndex(parser.value_long());
 
     card.startOrResumeFilePrinting();
-#endif // FF_DEBUG
 
 
     // Procedure calls count as normal print time.

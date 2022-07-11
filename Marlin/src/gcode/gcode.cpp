@@ -526,7 +526,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 22: M22(); break;                                    // M22: Release SD card
         case 23:                                                  // M23: Select file
           #if ENABLED(MKS_WIFI)
-            mks_m23(parser.string_arg);
+//            mks_m23(parser.string_arg);
+            M23(); 
           #else
             M23(); 
           #endif

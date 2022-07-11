@@ -55,9 +55,7 @@ void lcd_sd_updir() {
 #endif
 
 inline void sdcard_start_selected_file() {
-#ifndef FF_DEBUG
-  card.openAndPrintFile(card.filename);
-#endif // FF_DEBUG
+  card.openAndPrintFile(card.longest_filename());
   ui.return_to_status();
   ui.reset_status();
 }
