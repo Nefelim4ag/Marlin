@@ -1117,19 +1117,27 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
 
       #if ENABLED(MKS_WIFI)
-				case 991: if(port.index == MKS_WIFI_SERIAL_NUM){mks_m991();}; return;
+				case 991:
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m991();
+          };
+          return;
       #endif
       
       #if ENABLED(MKS_WIFI)
       case 997: 
-        if(port.index == MKS_WIFI_SERIAL_NUM){
-            mks_m997();
-          }else{
+        if(port.index == MKS_WIFI_SERIAL_NUM)
+        {
+          mks_m997();
+        }
+        else
+        {
           #if ENABLED(PLATFORM_M997_SUPPORT)
             M997();
-            #endif
-          }; 
-          return;
+          #endif
+        }; 
+        return;
       #else
       #if ENABLED(PLATFORM_M997_SUPPORT)
         case 997: M997(); break;                                  // M997: Perform in-application firmware update
