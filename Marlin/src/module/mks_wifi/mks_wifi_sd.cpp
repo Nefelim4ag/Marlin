@@ -32,15 +32,16 @@ void mks_wifi_sd_ls(void){
    DIR dir;
    FILINFO fno;
    FRESULT res = f_opendir((DIR*)&dir, "0:");                       /* Open the directory */
-    if (res == FR_OK) {
-        for (;;) {
-            res = f_readdir((DIR*)&dir,(FILINFO*) &fno);                   /* Read a directory item */
-            if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-                DEBUG("%s\n", fno.fname);
-            }
-       }else{
-          ERROR("Opendir error %d",res);
-      }
+   if (res == FR_OK)
+   {
+      for (;;) {
+         res = f_readdir((DIR*)&dir,(FILINFO*) &fno);                   /* Read a directory item */
+         if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+               DEBUG("%s\n", fno.fname);
+         }
+      }else{
+         ERROR("Opendir error %d",res);
+   }
    f_closedir((DIR*)&dir);
 }
 

@@ -114,104 +114,6 @@ CardReader::CardReader()
 #endif
 }
 
-//
-// Get a DOS 8.3 filename in its useful form
-//
-#ifndef FF_DEBUG
-char *createFilename(char *const buffer, const dir_t &p)
-{
-    char *pos = buffer;
-    LOOP_L_N(i, 11)
-    {
-        if (p.name[i] == ' ')
-            continue;
-        if (i == 8)
-            *pos++ = '.';
-        *pos++ = p.name[i];
-    }
-    *pos++ = 0;
-    return buffer;
-}
-
-//
-// Return 'true' if the item is a folder or G-code file
-//
-bool CardReader::is_dir_or_gcode(const dir_t &p)
-{
-    // uint8_t pn0 = p.name[0];
-
-    if ((p.attributes & DIR_ATT_HIDDEN) // Hidden by attribute
-                                        // When readDir() > 0 these must be false:
-                                        //|| pn0 == DIR_NAME_FREE || pn0 == DIR_NAME_DELETED  // Clear or Deleted entry
-                                        //|| pn0 == '.' || longFilename[0] == '.'             // Hidden file
-                                        //|| !DIR_IS_FILE_OR_SUBDIR(&p)                       // Not a File or Directory
-    )
-        return false;
-
-    flag.filenameIsDir = DIR_IS_SUBDIR(&p); // We know it's a File or Folder
-
-    return (
-        flag.filenameIsDir                                             // All Directories are ok
-        || (p.name[8] == 'G' && p.name[9] != '~')                      // Non-backup *.G* files are accepted
-        || (p.name[8] == 'C' && p.name[9] == 'F' && p.name[10] == 'G') // *.CFG* files are accepted
-    );
-}
-
-//
-// Get the number of (compliant) items in the folder
-//
-int CardReader::countItems(SdFile dir)
-{
-    dir_t p;
-    int c = 0;
-    while (dir.readDir(&p, longFilename) > 0)
-        c += is_dir_or_gcode(p);
-
-#if ALL(SDCARD_SORT_ALPHA, SDSORT_USES_RAM, SDSORT_CACHE_NAMES)
-    nrFiles = c;
-#endif
-
-    return c;
-}
-
-//
-// Get file/folder info for an item by index
-//
-void CardReader::selectByIndex(SdFile dir, const uint8_t index)
-{
-    dir_t p;
-    for (uint8_t cnt = 0; dir.readDir(&p, longFilename) > 0;)
-    {
-        if (is_dir_or_gcode(p))
-        {
-            if (cnt == index)
-            {
-                createFilename(filename, p);
-                return; // 0 based index
-            }
-            cnt++;
-        }
-    }
-}
-
-//
-// Get file/folder info for an item by name
-//
-void CardReader::selectByName(SdFile dir, const char *const match)
-{
-    dir_t p;
-    for (uint8_t cnt = 0; dir.readDir(&p, longFilename) > 0; cnt++)
-    {
-        if (is_dir_or_gcode(p))
-        {
-            createFilename(filename, p);
-            if (strcasecmp(match, filename) == 0)
-                return;
-        }
-    }
-}
-
-#endif // FF_DEBUG
 
 /**
  * Open a G-code file and set Marlin to start processing it.
@@ -227,44 +129,6 @@ void CardReader::openAndPrintFile(const char *name)
     queue.inject(cmd);
 }
 
-#ifndef FF_DEBUG
-
-//
-// Get the root-relative DOS path of the selected file
-//
-void CardReader::getAbsFilenameInCWD(char *dst)
-{
-    *dst++ = '/';
-    uint8_t cnt = 1;
-
-    auto appendAtom = [&](SdFile &file)
-    {
-        file.getDosName(dst);
-        while (*dst && cnt < MAXPATHNAMELENGTH)
-        {
-            dst++;
-            cnt++;
-        }
-        if (cnt < MAXPATHNAMELENGTH)
-        {
-            *dst = '/';
-            dst++;
-            cnt++;
-        }
-    };
-
-    LOOP_L_N(i, workDirDepth) // Loop down to current work dir
-    appendAtom(workDirParents[i]);
-
-    if (cnt < MAXPATHNAMELENGTH - (FILENAME_LENGTH)-1)
-    { // Leave room for filename and nul
-        appendAtom(file);
-        --dst;
-    }
-    *dst = '\0';
-}
-
-#endif // FF_DEBUG
 
 void openFailed(const char *const fname)
 {
@@ -405,38 +269,6 @@ void CardReader::openFileWrite(const char *const path)
 #endif
 }
 
-#ifndef FF_DEBUG
-//
-// Check if a file exists by absolute or workDir-relative path
-// If the file exists, the long name can also be fetched.
-//
-bool CardReader::fileExists(const char *const path)
-{
-    if (!isMounted())
-        return false;
-
-    DEBUG_ECHOLNPGM("fileExists: ", path);
-
-    // Dive to the file's directory and get the base name
-    SdFile *diveDir = nullptr;
-    const char *const fname = diveToFile(false, diveDir, path);
-    if (!fname)
-        return false;
-
-    // Get the longname of the checked file
-    // diveDir->rewind();
-    // selectByName(*diveDir, fname);
-    // diveDir->close();
-
-    // Try to open the file and return the result
-    SdFile tmpFile;
-    const bool success = tmpFile.open(diveDir, fname, O_READ);
-    if (success)
-        tmpFile.close();
-    return success;
-}
-
-#endif // FF_DEBUG
 
 #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
 
@@ -594,6 +426,8 @@ void CardReader::printListing(const bool includeLongNames /*=true*/
     }
     if (f_chdir(curpath) != FR_OK)
         return;
+    if (f_getcwd(curpath, sizeof(curpath)) != FR_OK)
+        return;
 
     serial_index_t port = queue.ring_buffer.command_port();
 
@@ -648,26 +482,32 @@ void CardReader::printListing(const bool includeLongNames /*=true*/
                 mks_wifi_out_add((uint8_t *)"\n", 1);
             }
         }
+        f_closedir(&dir);
     }
     else // Not WiFi
     {
-        while (f_readdir(&dir, &finfo) == FR_OK)
+        if (f_opendir(&dir, curpath) == FR_OK)
         {
-            if (finfo.fname[0] == 0)
-                break;
-            if (isDirMustShow(&finfo))
+            while (f_readdir(&dir, &finfo) == FR_OK)
             {
-                depth++;
-                printListing(includeLongNames, finfo.fname);
+                if (finfo.fname[0] == 0)
+                    break;
+                if (isDirMustShow(&finfo))
+                {
+                    depth++;
+                    printListing(includeLongNames, finfo.fname);
+                }
+                else if (isFileMustShow(&finfo))
+                {
+                    SERIAL_ECHO(curpath);
+                    if (prepend != NULL)
+                        SERIAL_CHAR('/');
+                    SERIAL_ECHO(finfo.fname);
+                    SERIAL_CHAR(' ');
+                    SERIAL_ECHOLN(finfo.fsize);
+                }
             }
-            else if (isFileMustShow(&finfo))
-            {
-                SERIAL_ECHO(curpath);
-                SERIAL_CHAR('/');
-                SERIAL_ECHO(finfo.fname);
-                SERIAL_CHAR(' ');
-                SERIAL_ECHOLN(finfo.fsize);
-            }
+            f_closedir(&dir);
         }
     }
     if (depth > 0)
@@ -777,11 +617,10 @@ void CardReader::closefile(const bool store_location /*=false*/)
 void CardReader::selectFileByName(const char *const match)
 {
     TCHAR curpath[256];
-    TCHAR curname[256];
-    char    *fname;
+    TCHAR curname[256], fname[256];
+    char    *src_fname;
     DIR dir;
     FILINFO finfo;
-    static uint8_t depth = 0;
 
     if (match == NULL || match[0] == 0)
         return;
@@ -809,158 +648,30 @@ void CardReader::selectFileByName(const char *const match)
         return;
     }
 
-    fname = FATFS_GetFilenameFromPathUTF((char*)match);
-    strncpy(curname, fname, sizeof(curname));
+    src_fname = FATFS_GetFilenameFromPathUTF((char *)match);
+    strncpy(curname, src_fname, sizeof(curname));
     strupper_utf(curname);
 
     while (f_readdir(&dir, &finfo) == FR_OK)
     {
         if (finfo.fname[0] == 0)
         {
-            openFailed(match);
-            return;
+            break;
         }
         strncpy(fname, finfo.fname, sizeof(fname));
         strupper_utf(fname);
         if (strcmp(fname, curname) == 0)
         {
             memcpy(&curfilinfo, &finfo, sizeof(curfilinfo));
-            return;
-        }
-    }
-
-    openFailed(match);
-}
-
-#ifndef FF_DEBUG
-uint16_t CardReader::countFilesInWorkDir()
-{
-    workDir.rewind();
-    return countItems(workDir);
-}
-
-/**
- * Dive to the given DOS 8.3 file path, with optional echo of the dive paths.
- *
- * On entry:
- *  - The workDir points to the last-set navigation target by cd, cdup, cdroot, or diveToFile(true, ...)
- *
- * On exit:
- *  - Your curDir pointer contains an SdFile reference to the file's directory.
- *  - If update_cwd was 'true' the workDir now points to the file's directory.
- *
- * Returns a pointer to the last segment (filename) of the given DOS 8.3 path.
- * On exit, inDirPtr contains an SdFile reference to the file's directory.
- *
- * A nullptr result indicates an unrecoverable error.
- *
- * NOTE: End the path with a slash to dive to a folder. In this case the
- *       returned filename will be blank (points to the end of the path).
- */
-const char *CardReader::diveToFile(const bool update_cwd, SdFile *&inDirPtr, const char *const path, const bool echo /*=false*/)
-{
-    DEBUG_SECTION(est, "diveToFile", true);
-
-    // Track both parent and subfolder
-    static SdFile newDir1, newDir2;
-    SdFile *sub = &newDir1, *startDirPtr;
-
-    // Parsing the path string
-    const char *atom_ptr = path;
-
-    DEBUG_ECHOLNPGM(" path = '", path, "'");
-
-    if (path[0] == '/')
-    { // Starting at the root directory?
-        inDirPtr = &root;
-        atom_ptr++;
-        DEBUG_ECHOLNPGM(" CWD to root: ", hex_address((void *)inDirPtr));
-        if (update_cwd)
-            workDirDepth = 0; // The cwd can be updated for the benefit of sub-programs
-    }
-    else
-        inDirPtr = &workDir; // Dive from workDir (as set by the UI)
-
-    startDirPtr = inDirPtr;
-
-    DEBUG_ECHOLNPGM(" startDirPtr = ", hex_address((void *)startDirPtr));
-
-    while (atom_ptr)
-    {
-        // Find next subdirectory delimiter
-        const char *const name_end = strchr(atom_ptr, '/');
-
-        // Last atom in the path? Item found.
-        if (name_end <= atom_ptr)
-            break;
-
-        // Isolate the next subitem name
-        const uint8_t len = name_end - atom_ptr;
-        char dosSubdirname[len + 1];
-        strncpy(dosSubdirname, atom_ptr, len);
-        dosSubdirname[len] = 0;
-
-        if (echo)
-            SERIAL_ECHOLN(dosSubdirname);
-
-        DEBUG_ECHOLNPGM(" sub = ", hex_address((void *)sub));
-
-        // Open inDirPtr (closing first)
-        sub->close();
-        if (!sub->open(inDirPtr, dosSubdirname, O_READ))
-        {
-            openFailed(dosSubdirname);
-            atom_ptr = nullptr;
             break;
         }
-
-        // Close inDirPtr if not at starting-point
-        if (inDirPtr != startDirPtr)
-        {
-            DEBUG_ECHOLNPGM(" closing inDirPtr: ", hex_address((void *)inDirPtr));
-            inDirPtr->close();
-        }
-
-        // inDirPtr now subDir
-        inDirPtr = sub;
-        DEBUG_ECHOLNPGM(" inDirPtr = sub: ", hex_address((void *)inDirPtr));
-
-        // Update workDirParents and workDirDepth
-        if (update_cwd)
-        {
-            DEBUG_ECHOLNPGM(" update_cwd");
-            if (workDirDepth < MAX_DIR_DEPTH)
-                workDirParents[workDirDepth++] = *inDirPtr;
-        }
-
-        // Point sub at the other scratch object
-        sub = (inDirPtr != &newDir1) ? &newDir1 : &newDir2;
-        DEBUG_ECHOLNPGM(" swapping sub = ", hex_address((void *)sub));
-
-        // Next path atom address
-        atom_ptr = name_end + 1;
     }
 
-    if (update_cwd)
-    {
-        workDir = *inDirPtr;
-        DEBUG_ECHOLNPGM(" final workDir = ", hex_address((void *)inDirPtr));
-        flag.workDirIsRoot = (workDirDepth == 0);
-        TERN_(SDCARD_SORT_ALPHA, presort());
-    }
-
-    DEBUG_ECHOLNPGM(" returning string ", atom_ptr ?: "nullptr");
-    return atom_ptr;
+    f_closedir(&dir);
+    if (finfo.fname[0] == 0)
+        openFailed(match);
 }
 
-void CardReader::cdroot()
-{
-    workDir = root;
-    flag.workDirIsRoot = true;
-    workDirDepth = 0;
-}
-
-#endif // FF_DEBUG
 
 int8_t CardReader::cdup()
 {
@@ -1142,7 +853,6 @@ void CardReader::fileHasFinished()
     f_close(&curfile);
     curfile.obj.fs = 0;
 
-#ifndef FF_DEBUG
 #if HAS_MEDIA_SUBCALLS
     if (file_subcall_ctr > 0)
     { // Resume calling file after closing procedure
@@ -1152,7 +862,6 @@ void CardReader::fileHasFinished()
         startOrResumeFilePrinting();
         return;
     }
-#endif
 #endif
     endFilePrintNow(TERN_(SD_RESORT, true));
 
@@ -1287,9 +996,7 @@ void CardReader::manage_media()
 #if ENABLED(POWER_LOSS_RECOVERY)
                 recovery.check(); // Check for PLR file. (If not there then call autofile_begin)
 #elif DISABLED(NO_SD_AUTOSTART)
-#ifndef FF_DEBUG
                 autofile_begin(); // Look for auto0.g on the next loop
-#endif
 #endif
             }
         }

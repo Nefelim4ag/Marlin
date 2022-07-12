@@ -61,8 +61,6 @@ typedef struct
 class CardReader {
 public:
   static card_flags_t flag;                         // Flags (above)
-  // static char filename[FF_SFN_BUF],            // DOS 8.3 filename of the selected item
-  //             longFilename[FF_LFN_BUF];   // Long name of the selected item
 
 
   // // // Methods // // //
@@ -93,9 +91,6 @@ public:
   // Basic file ops
   static void openFileRead(const char * const path, const uint8_t subcall=0);
   static void openFileWrite(const char * const path);
-/*   
-  static bool fileExists(const char * const name);
-*/
   static void removeFile(const char * const name);
   static void closefile(const bool store_location=false);
   static char* longest_filename() { return curfilinfo.fname[0] ? curfilinfo.fname : curfilinfo.altname; }
@@ -108,19 +103,10 @@ public:
   static void cd(const char *relpath);
   static int8_t cdup();
 
-/*
-  static uint16_t countFilesInWorkDir();
-*/
-
   // Select a file
   static void selectFileByIndex(const uint16_t nr);
   static void selectFileByName(const char * const match);  // (working directory only)
 
-/*
-  // Print job
-  static void getAbsFilenameInCWD(char *dst);
-  static void cdroot();
-*/
   static void openAndPrintFile(const char *name);   // (working directory or full path)
   static void report_status();
 
@@ -168,17 +154,11 @@ public:
 
   static void ls(bool includeLongNames = true);
 
-/*
   #if ENABLED(POWER_LOSS_RECOVERY)
     static bool jobRecoverFileExists();
     static void openJobRecoveryFile(const bool read);
     static void removeJobRecoveryFile();
   #endif
-
-  // Current Working Dir - Set by cd, cdup, cdroot, and diveToFile(true, ...)
-  static char* getWorkDirName()  { workDir.getDosName(filename); return filename; }
-  static SdFile& getWorkDir()    { return workDir.isOpen() ? workDir : root; }
-*/
 
   // Print File stats
   static uint32_t getFileSize()  { if (isFileOpen()) return curfilinfo.fsize; else return 0; }
@@ -216,20 +196,7 @@ public:
     static char proc_filenames[SD_PROCEDURE_DEPTH][MAXPATHNAMELENGTH];
   #endif
 
-/*
-  //
-  // Directory items
-  //
-  static bool is_dir_or_gcode(const dir_t &p);
-  static int countItems(SdFile dir);
-  static void selectByIndex(SdFile dir, const uint8_t index);
-  static void selectByName(SdFile dir, const char * const match);
-*/
-
-  static void printListing(
-              const bool includeLongNames = true
-            , const char * const prepend = nullptr
-          );
+  static void printListing(const bool includeLongNames = true, const char * const prepend = nullptr);
 
 };
 
