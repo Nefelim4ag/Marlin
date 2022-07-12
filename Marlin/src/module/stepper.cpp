@@ -2014,24 +2014,15 @@ uint32_t Stepper::block_phase_isr() {
          */
 
         #if ENABLED(LASER_POWER_TRAP)
-          if (cutter.cutter_mode == CUTTER_MODE_CONTINUOUS) {
-            if (planner.laser_inline.status.isPowered && planner.laser_inline.status.isEnabled) {
-              if (current_block->laser.trap_ramp_entry_incr > 0) {
+          if (cutter.cutter_mode == CUTTER_MODE_CONTINUOUS)
+          {
+            if (planner.laser_inline.status.isPowered && planner.laser_inline.status.isEnabled)
+            {
+              if (current_block->laser.trap_ramp_entry_incr > 0)
+              {
                 cutter.apply_power(current_block->laser.trap_ramp_active_pwr);
                 current_block->laser.trap_ramp_active_pwr += current_block->laser.trap_ramp_entry_incr;
               }
-            #else
-              if (laser_trap.till_update)
-                laser_trap.till_update--;
-              else {
-                laser_trap.till_update = LASER_POWER_INLINE_TRAPEZOID_CONT_PER;
-                laser_trap.cur_power = (current_block->laser.power * acc_step_rate) / current_block->nominal_rate;
-                cutter.ocr_set_power(laser_trap.cur_power); // Cycle efficiency is irrelevant it the last line was many cycles
-              }
-            }
-            // Not a powered move.
-            else cutter.apply_power(0);
-          }
         #endif
       }
       // Are we in Deceleration phase ?

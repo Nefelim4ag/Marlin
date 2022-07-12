@@ -188,102 +188,109 @@ typedef struct {
  * The "nominal" values are as-specified by G-code, and
  * may never actually be reached due to acceleration limits.
  */
-typedef struct block_t {
+  typedef struct block_t
+  {
 
-  volatile block_flags_t flag;              // Block flags
+    volatile block_flags_t flag; // Block flags
 
-  volatile bool is_fan_sync() { return TERN0(LASER_SYNCHRONOUS_M106_M107, flag.sync_fans); }
-  volatile bool is_pwr_sync() { return TERN0(LASER_POWER_SYNC, flag.sync_laser_pwr); }
-  volatile bool is_sync() { return flag.sync_position || is_fan_sync() || is_pwr_sync(); }
-  volatile bool is_page() { return TERN0(DIRECT_STEPPING, flag.page); }
-  volatile bool is_move() { return !(is_sync() || is_page()); }
+    volatile bool is_fan_sync() { return TERN0(LASER_SYNCHRONOUS_M106_M107, flag.sync_fans); }
+    volatile bool is_pwr_sync() { return TERN0(LASER_POWER_SYNC, flag.sync_laser_pwr); }
+    volatile bool is_sync() { return flag.sync_position || is_fan_sync() || is_pwr_sync(); }
+    volatile bool is_page() { return TERN0(DIRECT_STEPPING, flag.page); }
+    volatile bool is_move() { return !(is_sync() || is_page()); }
 
-  // Fields used by the motion planner to manage acceleration
-  float nominal_speed_sqr,                  // The nominal speed for this block in (mm/sec)^2
-        entry_speed_sqr,                    // Entry speed at previous-current junction in (mm/sec)^2
-        max_entry_speed_sqr,                // Maximum allowable junction entry speed in (mm/sec)^2
-        millimeters,                        // The total travel of this block in mm
-        acceleration;                       // acceleration mm/sec^2
+    // Fields used by the motion planner to manage acceleration
+    float nominal_speed_sqr, // The nominal speed for this block in (mm/sec)^2
+        entry_speed_sqr,     // Entry speed at previous-current junction in (mm/sec)^2
+        max_entry_speed_sqr, // Maximum allowable junction entry speed in (mm/sec)^2
+        millimeters,         // The total travel of this block in mm
+        acceleration;        // acceleration mm/sec^2
 
-  union {
-    abce_ulong_t steps;                     // Step count along each axis
-    abce_long_t position;                   // New position to force when this sync block is executed
-  };
-  uint32_t step_event_count;                // The number of step events required to complete this block
+    union
+    {
+      abce_ulong_t steps;   // Step count along each axis
+      abce_long_t position; // New position to force when this sync block is executed
+    };
+    uint32_t step_event_count; // The number of step events required to complete this block
 
-  #if HAS_MULTI_EXTRUDER
-    uint8_t extruder;                       // The extruder to move (if E move)
-  #else
-    static constexpr uint8_t extruder = 0;
-  #endif
+#if HAS_MULTI_EXTRUDER
+    uint8_t extruder; // The extruder to move (if E move)
+#else
+  static constexpr uint8_t extruder = 0;
+#endif
 
-  #if ENABLED(MIXING_EXTRUDER)
-    mixer_comp_t b_color[MIXING_STEPPERS];  // Normalized color for the mixing steppers
-  #endif
+#if ENABLED(MIXING_EXTRUDER)
+    mixer_comp_t b_color[MIXING_STEPPERS]; // Normalized color for the mixing steppers
+#endif
 
-  // Settings for the trapezoid generator
-  uint32_t accelerate_until,                // The index of the step event on which to stop acceleration
-           decelerate_after;                // The index of the step event on which to start decelerating
+    // Settings for the trapezoid generator
+    uint32_t accelerate_until, // The index of the step event on which to stop acceleration
+        decelerate_after;      // The index of the step event on which to start decelerating
 
-  #if ENABLED(S_CURVE_ACCELERATION)
-    uint32_t cruise_rate,                   // The actual cruise rate to use, between end of the acceleration phase and start of deceleration phase
-             acceleration_time,             // Acceleration time and deceleration time in STEP timer counts
-             deceleration_time,
-             acceleration_time_inverse,     // Inverse of acceleration and deceleration periods, expressed as integer. Scale depends on CPU being used
-             deceleration_time_inverse;
-  #else
-    uint32_t acceleration_rate;             // The acceleration rate used for acceleration calculation
-  #endif
+#if ENABLED(S_CURVE_ACCELERATION)
+    uint32_t cruise_rate,  // The actual cruise rate to use, between end of the acceleration phase and start of deceleration phase
+        acceleration_time, // Acceleration time and deceleration time in STEP timer counts
+        deceleration_time,
+        acceleration_time_inverse, // Inverse of acceleration and deceleration periods, expressed as integer. Scale depends on CPU being used
+        deceleration_time_inverse;
+#else
+  uint32_t acceleration_rate; // The acceleration rate used for acceleration calculation
+#endif
 
-  axis_bits_t direction_bits;               // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
+    axis_bits_t direction_bits; // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
 
   // Advance extrusion
-  #if ENABLED(LIN_ADVANCE)
+#if ENABLED(LIN_ADVANCE)
     bool use_advance_lead;
-    uint16_t advance_speed,                 // STEP timer value for extruder speed offset ISR
-             max_adv_steps,                 // max. advance steps to get cruising speed pressure (not always nominal_speed!)
-             final_adv_steps;               // advance steps due to exit speed
+    uint16_t advance_speed, // STEP timer value for extruder speed offset ISR
+        max_adv_steps,      // max. advance steps to get cruising speed pressure (not always nominal_speed!)
+        final_adv_steps;    // advance steps due to exit speed
     float e_D_ratio;
-  #endif
+#endif
 
-  uint32_t nominal_rate,                    // The nominal step rate for this block in step_events/sec
-           initial_rate,                    // The jerk-adjusted step rate at start of block
-           final_rate,                      // The minimal rate at exit
-           acceleration_steps_per_s2;       // acceleration steps/sec^2
+    uint32_t nominal_rate,         // The nominal step rate for this block in step_events/sec
+        initial_rate,              // The jerk-adjusted step rate at start of block
+        final_rate,                // The minimal rate at exit
+        acceleration_steps_per_s2; // acceleration steps/sec^2
 
-  #if ENABLED(DIRECT_STEPPING)
-    page_idx_t page_idx;                    // Page index used for direct stepping
-  #endif
+#if ENABLED(DIRECT_STEPPING)
+    page_idx_t page_idx; // Page index used for direct stepping
+#endif
 
-  #if HAS_CUTTER
-    cutter_power_t cutter_power;            // Power level for Spindle, Laser, etc.
-  #endif
+#if HAS_CUTTER
+    cutter_power_t cutter_power; // Power level for Spindle, Laser, etc.
+#endif
 
-  #if HAS_FAN
+#if HAS_FAN
     uint8_t fan_speed[FAN_COUNT];
-  #endif
+#endif
 
-  #if ENABLED(BARICUDA)
+#if ENABLED(BARICUDA)
     uint8_t valve_pressure, e_to_p_pressure;
-  #endif
+#endif
 
-  #if HAS_WIRED_LCD
+#if HAS_WIRED_LCD
     uint32_t segment_time_us;
-  #endif
+#endif
 
-  #if ENABLED(POWER_LOSS_RECOVERY)
+#if ENABLED(POWER_LOSS_RECOVERY)
     uint32_t sdpos;
     xyze_pos_t start_position;
-  #endif
+#endif
 
-  #if ENABLED(LASER_FEATURE)
+#if ENABLED(LASER_FEATURE)
     block_laser_t laser;
-  #endif
+#endif
 
-} block_t;
+    void reset()
+    {
+      memset((char *)this, 0, sizeof(*this));
+    }
+
+  } block_t;
 
 #if ANY(LIN_ADVANCE, SCARA_FEEDRATE_SCALING, GRADIENT_MIX, LCD_SHOW_E_TOTAL, POWER_LOSS_RECOVERY)
-  #define HAS_POSITION_FLOAT 1
+#define HAS_POSITION_FLOAT 1
 #endif
 
 #define BLOCK_MOD(n) ((n)&(BLOCK_BUFFER_SIZE-1))

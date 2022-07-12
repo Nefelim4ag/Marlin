@@ -2960,23 +2960,26 @@ bool Planner::_populate_block(
  *
  * @param sync_flag  The sync flag to set, determining the type of sync the block will do
  */
-void Planner::buffer_sync_block(const BlockFlagBit sync_flag/*=BLOCK_BIT_SYNC_POSITION*/) {
+void Planner::buffer_sync_block(const BlockFlagBit sync_flag /*=BLOCK_BIT_SYNC_POSITION*/)
+{
 
   // Wait for the next available block
   uint8_t next_buffer_head;
-  block_t * const block = get_next_free_block(next_buffer_head);
+  block_t *const block = get_next_free_block(next_buffer_head);
 
   // Clear block
   block->reset();
   block->flag.apply(sync_flag);
 
   block->position = position;
-  #if ENABLED(BACKLASH_COMPENSATION)
-    LOOP_NUM_AXES(axis) block->position[axis] += backlash.get_applied_steps((AxisEnum)axis);
-  #endif
-  #if BOTH(HAS_FAN, LASER_SYNCHRONOUS_M106_M107)
-    FANS_LOOP(i) block->fan_speed[i] = thermalManager.fan_speed[i];
-  #endif
+#if ENABLED(BACKLASH_COMPENSATION)
+  LOOP_NUM_AXES(axis)
+  block->position[axis] += backlash.get_applied_steps((AxisEnum)axis);
+#endif
+#if BOTH(HAS_FAN, LASER_SYNCHRONOUS_M106_M107)
+  FANS_LOOP(i)
+  block->fan_speed[i] = thermalManager.fan_speed[i];
+#endif
 
   /**
    * M3-based power setting can be processed inline with a laser power sync block.
@@ -2985,7 +2988,8 @@ void Planner::buffer_sync_block(const BlockFlagBit sync_flag/*=BLOCK_BIT_SYNC_PO
   TERN_(LASER_POWER_SYNC, block->laser.power = cutter.power);
 
   // If this is the first added movement, reload the delay, otherwise, cancel it.
-  if (block_buffer_head == block_buffer_tail) {
+  if (block_buffer_head == block_buffer_tail)
+  {
     // If it was the first queued block, restart the 1st block delivery delay, to
     // give the planner an opportunity to queue more movements and plan them
     // As there are no queued movements, the Stepper ISR will not touch this
