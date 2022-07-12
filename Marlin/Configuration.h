@@ -3346,4 +3346,6 @@ EEPROM_W25Q
   #define THUMBNAILS_PREVIEW
 #endif
 
+#define DELAYED_BACKLIGHT_INIT  // backlight enabled after LCD initialization
+
 //  #define BOOT_MARLIN_RB_LOGO

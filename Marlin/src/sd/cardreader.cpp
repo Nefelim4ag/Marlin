@@ -436,9 +436,6 @@ void CardReader::printListing(const bool includeLongNames /*=true*/
         // search for path
         if (prepend == NULL && parser.string_arg != 0)
         {
-            mks_wifi_out_add((uint8_t *)"STRING_ARG: ", strlen("STRING_ARG: "));
-            mks_wifi_out_add((uint8_t *)parser.string_arg, strlen(parser.string_arg));
-            mks_wifi_out_add((uint8_t *)"\n", 1);
             uint32_t ind = strlen(parser.string_arg);
             if (ind > 0)
             {
@@ -449,9 +446,6 @@ void CardReader::printListing(const bool includeLongNames /*=true*/
                 if (slen != ind && parser.string_arg[ind] == '/')
                 {
                     strncpy(curpath, parser.string_arg + ind + 1, sizeof(curpath) - 1);
-                    mks_wifi_out_add((uint8_t *)"PATHN: ", strlen("PATHN: "));
-                    mks_wifi_out_add((uint8_t *)curpath, strlen(curpath));
-                    mks_wifi_out_add((uint8_t *)"\n", 1);
                 }
             }
         }

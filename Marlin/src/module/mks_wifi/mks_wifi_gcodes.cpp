@@ -91,17 +91,17 @@ void mks_m20(bool longnames)
 	if(IS_SD_PRINTING())
 		return;
 
+	mks_wifi_out_add ((uint8_t*)STR_BEGIN_FILE_LIST, strlen(STR_BEGIN_FILE_LIST));
+	mks_wifi_out_add ((uint8_t*)"\n", 1);
 	if (card.isMounted())
 	{
 
-		mks_wifi_out_add ((uint8_t*)parser.string_arg, strlen(parser.string_arg));
-		mks_wifi_out_add ((uint8_t*)"\n", 1);
-		mks_wifi_out_add ((uint8_t*)STR_BEGIN_FILE_LIST, strlen(STR_BEGIN_FILE_LIST));
-		mks_wifi_out_add ((uint8_t*)"\n", 1);
+//		mks_wifi_out_add ((uint8_t*)parser.string_arg, strlen(parser.string_arg));
+//		mks_wifi_out_add ((uint8_t*)"\n", 1);
 		card.ls(TERN_(LONG_FILENAME_HOST_SUPPORT, longnames));
-		mks_wifi_out_add ((uint8_t*)STR_END_FILE_LIST, strlen(STR_END_FILE_LIST));
-		mks_wifi_out_add ((uint8_t*)"\n", 1);
 	}
+	mks_wifi_out_add ((uint8_t*)STR_END_FILE_LIST, strlen(STR_END_FILE_LIST));
+	mks_wifi_out_add ((uint8_t*)"\n", 1);
 }
 
 /*

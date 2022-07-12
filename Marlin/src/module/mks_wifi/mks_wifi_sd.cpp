@@ -110,7 +110,7 @@ uint8_t get_dos_filename(char *filename, char* dosfilename)
 
 void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet)
 {
-	char str[100];
+	char str[256];
    UINT bytes_writen=0;
 	uint32_t file_size, file_inc_size, file_size_writen;
    #if ENABLED(SHOW_PROGRESS)
@@ -150,7 +150,7 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet)
    DEBUG("Start file %s size %d",file_name,file_size);
    
    //Отмонтировать SD от Marlin, Монтировать FATFs 
-   if(mks_wifi_sd_init()){
+   if(!mks_wifi_sd_init()){
       ERROR("Error SD mount");
       ui.set_status((const char *)"Error SD mount",true);
       ui.update();
@@ -258,7 +258,8 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet)
 
    data_packet = 0;
 
-   while(--dma_timeout > 0){
+   while(--dma_timeout > 0)
+   {
 
       if(buffer_ready > 0){
          
@@ -276,6 +277,11 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet)
 
          if(*data_packet != ESP_PROTOC_HEAD){
             ERROR("Wrong packet head");
+            break;
+         }
+
+         if(data_packet[1] != ESP_TYPE_FILE_FRAGMENT){
+            ERROR("Not file fragment head");
             break;
          }
 
@@ -337,7 +343,12 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet)
             WRITE(MKS_WIFI_IO4, HIGH); //Остановить передачу от ESP
             DEBUG("Last packet");
 
-            if(file_data_size != 0 ){
+            if(file_data_size != 0 )
+            {
+               // Fixing bug with adding g-codes to the end of the file
+               if ((file_inc_size + file_data_size) > file_size)
+                  file_data_size -= (file_inc_size + file_data_size) - file_size;
+
                file_inc_size += file_data_size; 
 
                DEBUG("Save last %d bytes from buffer (%d of %d) ",file_data_size,file_inc_size,file_size);
