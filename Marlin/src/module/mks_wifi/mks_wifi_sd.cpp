@@ -126,7 +126,7 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet)
 
    uint32_t data_to_write=0;
    uint8_t *data_packet;
-   char file_name[100];
+   char file_name[256];
    FRESULT res = FR_OK;
    FIL upload_file;
 
@@ -444,7 +444,9 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet)
          DEBUG("Upload ok");
          BUZZ(1000,260);
 
-         if(!strcmp(file_name,"0:/Robin_Nano35.bin")){
+         int32_t cres = strcmp(file_name, "0:/Robin_nano35.bin");
+         if(cres == 0)
+         {
             TERN_(USE_WATCHDOG, hal.watchdog_refresh());
             DEBUG("Firmware found, reboot");
             safe_delay(1000);

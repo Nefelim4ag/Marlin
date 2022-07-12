@@ -114,7 +114,7 @@ void mks_wifi_out_add(uint8_t *data, uint32_t size){
 }
 
 uint8_t mks_wifi_input(uint8_t data){
-	DEBUG("Received data %0X (%c)",data, data);
+//	DEBUG("Received data %0X (%c)",data, data);
 	ESP_PROTOC_FRAME esp_frame;
 	#ifdef MKS_WIFI_ENABLED_WIFI_CONFIG 
 	static uint8_t get_packet_from_esp=0;
