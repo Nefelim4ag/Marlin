@@ -25,11 +25,7 @@
 
 #include "ui_common.h"
 
-#if ENABLED(RS_STYLE_COLOR_UI)
-  #define TFT_STATUS_TOP_Y       0
-#else
-  #define TFT_STATUS_TOP_Y       4
-#endif
+#define TFT_STATUS_TOP_Y       0
 
 #define TFT_TOP_LINE_Y         4
 

@@ -88,22 +88,20 @@ class MenuItem_back : public MenuItemBase {
     FORCE_INLINE static void action(FSTR_P const=nullptr) { ui.go_back(); }
 };
 
-#if ENABLED(RS_STYLE_COLOR_UI)
-  // CONFIRM_ITEM(LABEL,Y,N,FY,FN,...),
-  // YESNO_ITEM(LABEL,FY,FN,...)
-  class MenuItem_fileconfirm : public MenuItemBase {
-    public:
-      FORCE_INLINE static void draw(const bool sel, const uint8_t row, FSTR_P const ftpl, ...) {
-        _draw(sel, row, ftpl, '>', LCD_STR_ARROW_RIGHT[0]);
-      }
-      // Implemented for HD44780 and DOGM
-      // Draw the prompt, buttons, and state
-      static void draw_select_screen(
-        const char * const string  // Prompt runtime string
-      );
-      static void select_screen(selectFunc_t yesFunc, selectFunc_t noFunc, const char * const string=nullptr);
-  };
-#endif
+// CONFIRM_ITEM(LABEL,Y,N,FY,FN,...),
+// YESNO_ITEM(LABEL,FY,FN,...)
+class MenuItem_fileconfirm : public MenuItemBase {
+  public:
+    FORCE_INLINE static void draw(const bool sel, const uint8_t row, FSTR_P const ftpl, ...) {
+      _draw(sel, row, ftpl, '>', LCD_STR_ARROW_RIGHT[0]);
+    }
+    // Implemented for HD44780 and DOGM
+    // Draw the prompt, buttons, and state
+    static void draw_select_screen(
+      const char * const string  // Prompt runtime string
+    );
+    static void select_screen(selectFunc_t yesFunc, selectFunc_t noFunc, const char * const string=nullptr);
+};
 
 // CONFIRM_ITEM(LABEL,Y,N,FY,FN,...),
 // YESNO_ITEM(LABEL,FY,FN,...)
@@ -278,9 +276,7 @@ void _lcd_draw_homing();
   void touch_screen_calibration();
 #endif
 
-#if ENABLED(RS_STYLE_COLOR_UI)
-  void poweroff_wait();
-#endif
+void poweroff_wait();
 
 extern uint8_t screen_history_depth;
 inline void clear_menu_history() { screen_history_depth = 0; }

@@ -236,7 +236,7 @@ void change_Z_edit_mesh();
 
     uint16_t xc = 0, yc = 0, wc = 0, hc = 0;
     float z_intencity;
-    uint16_t z_color, cur_z_color;
+    uint16_t z_color = 0, cur_z_color = 0;
 
 //    tft.add_rectangle(0, 0, F_WIDTH+2, F_HEIGHT+2, COLOR_MESH_FRAME);
 

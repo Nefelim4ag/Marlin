@@ -226,8 +226,7 @@ void menu_configuration();
 void menu_main() {
   const bool busy = printingIsActive()
     #if ENABLED(SDSUPPORT)
-      , card_detected = card.isMounted()
-      , card_open = card_detected && card.isFileOpen()
+//      , card_detected = card.isMounted()
     #endif
   ;
 
@@ -240,44 +239,6 @@ void menu_main() {
       #define MEDIA_MENU_AT_TOP
     #endif
 
-    #if !ENABLED(RS_STYLE_COLOR_UI)
-      #if ENABLED(SDSUPPORT)
-        const bool card_detected = card.isMounted();
-        const bool card_open = card_detected && card.isFileOpen();
-      #endif
-      #if BOTH(SDSUPPORT, MEDIA_MENU_AT_TOP)
-    auto sdcard_menu_items = [&]{
-      #if ENABLED(MENU_ADDAUTOSTART)
-        ACTION_ITEM(MSG_RUN_AUTO_FILES, card.autofile_begin); // Run Auto Files
-      #endif
-
-      if (card_detected) {
-        if (!card_open) {
-          #if HAS_SD_DETECT
-            GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21"));        // M21 Change Media
-          #else                                             // - or -
-            ACTION_ITEM(MSG_RELEASE_MEDIA, []{              // M22 Release Media
-              queue.inject(F("M22"));
-              #if ENABLED(TFT_COLOR_UI)
-                // Menu display issue on item removal with multi language selection menu
-                if (encoderTopLine > 0) encoderTopLine--;
-                ui.refresh(LCDVIEW_CALL_REDRAW_NEXT);
-              #endif
-            });
-          #endif
-          SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);      // Media Menu (or Password First)
-        }
-      }
-      else {
-        #if HAS_SD_DETECT
-          ACTION_ITEM(MSG_NO_MEDIA, nullptr);               // "No Media"
-        #else
-          GCODES_ITEM(MSG_ATTACH_MEDIA, F("M21"));          // M21 Attach Media
-        #endif
-      }
-    };
-      #endif  // BOTH(SDSUPPORT, MEDIA_MENU_AT_TOP)
-    #endif    // !ENABLED(RS_STYLE_COLOR_UI)
   #endif
 
   if (busy) {

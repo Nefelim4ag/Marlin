@@ -71,10 +71,8 @@ extern const uint8_t slider_8x16x4[];
 
 enum MarlinImage : uint8_t {
   imgBootScreen = 0x00,
-  #if ENABLED(RS_STYLE_COLOR_UI)
-    imgFeedRate,
-    imgFlowRate,
-  #endif
+  imgFeedRate,
+  imgFlowRate,
   imgHotEnd,
   imgBed,
   imgBedHeated,
@@ -85,10 +83,6 @@ enum MarlinImage : uint8_t {
   imgFanSlow1,
   imgFanFast0,
   imgFanFast1,
-  #if DISABLED(RS_STYLE_COLOR_UI)
-    imgFeedRate,
-    imgFlowRate,
-  #endif
   imgSD,
   imgMenu,
   imgSettings,

@@ -86,10 +86,8 @@ const tImage Images[imgCount] = {
   #else
     TERN(SHOW_BOOTSCREEN, TERN(BOOT_MARLIN_LOGO_SMALL, MarlinLogo195x59x16, MARLIN_LOGO_FULL_SIZE), NoLogo),
   #endif
-  #if ENABLED(RS_STYLE_COLOR_UI)
-    FeedRate_64x64x4,
-    FlowRate_64x64x4,
-  #endif
+  FeedRate_64x64x4,
+  FlowRate_64x64x4,
   HotEnd_64x64x4,
   Bed_64x64x4,
   Bed_Heated_64x64x4,
@@ -100,10 +98,6 @@ const tImage Images[imgCount] = {
   Fan_Slow1_64x64x4,
   Fan_Fast0_64x64x4,
   Fan_Fast1_64x64x4,
-  #if DISABLED(RS_STYLE_COLOR_UI)
-    Feedrate_32x32x4,
-    Flowrate_32x32x4,
-  #endif
   SD_64x64x4,
   Menu_64x64x4,
   Settings_64x64x4,

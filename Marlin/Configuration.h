@@ -3342,16 +3342,8 @@ EEPROM_W25Q
 
 
 
-#if ENABLED(TOUCH_SCREEN)
-  #if ENABLED(TFT_COLOR_UI)
-    #define RS_STYLE_COLOR_UI
-  #endif
-#endif
-
 #ifdef MCU_STM32F407VE
-  #if ENABLED(RS_STYLE_COLOR_UI)
-    #define THUMBNAILS_PREVIEW
-  #endif
+  #define THUMBNAILS_PREVIEW
 #endif
 
 //  #define BOOT_MARLIN_RB_LOGO

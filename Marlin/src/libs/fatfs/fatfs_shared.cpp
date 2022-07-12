@@ -17,7 +17,7 @@ char*		FATFS_GetFileExtension(char *fname)
 	while (fname[i] != 0 && fname[i] != '.' && i >= 0)
 		i--;
 	if (i < 0)
-		return "";
+		return (char*)"";
 	
 	return (fname+i+1);
 }
@@ -41,7 +41,7 @@ char*		FATFS_GetFileExtensionUTF(char *fname)
 			i--;
 	}
 	if (i < 0)
-		return "";
+		return (char*)"";
 	
 	return (fname+i+1);
 }
