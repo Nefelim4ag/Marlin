@@ -2,9 +2,9 @@
 #define LOG_H
 
 #ifdef MARLIN_CONFIG_MY
-    #define DEBUG_TO_UART
+//    #define DEBUG_TO_UART
 #endif
-//#define DEBUG_TO_SEGGER_RTT
+#define DEBUG_TO_SEGGER_RTT
 
 #ifdef DEBUG_TO_UART
     #include <stdarg.h>
