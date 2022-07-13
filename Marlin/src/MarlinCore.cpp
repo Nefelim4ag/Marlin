@@ -1166,7 +1166,41 @@ void setup() {
   #else
     #define SETUP_LOG(...) NOOP
   #endif
+
   #define SETUP_RUN(C) do{ SETUP_LOG(STRINGIFY(C)); C; }while(0)
+
+  SETUP_RUN(hal.init_board());
+
+  // UI must be initialized before EEPROM
+  // (because EEPROM code calls the UI).
+
+  SETUP_RUN(ui.init());
+
+  #if PIN_EXISTS(SAFE_POWER)
+    #if HAS_DRIVER_SAFE_POWER_PROTECT
+      SETUP_RUN(stepper_driver_backward_check());
+    #else
+      SETUP_LOG("SAFE_POWER");
+      OUT_WRITE(SAFE_POWER_PIN, HIGH);
+    #endif
+  #endif
+
+  #if BOTH(SDSUPPORT, SDCARD_EEPROM_EMULATION)
+    SETUP_RUN(card.mount());          // Mount media with settings before first_load
+  #endif
+
+  delay(100);   // delay while display filled by black
+  #if BOTH(HAS_WIRED_LCD, SHOW_BOOTSCREEN)
+    SETUP_RUN(ui.show_bootscreen());
+    const millis_t bootscreen_ms = millis();
+  #endif
+
+  #if PIN_EXISTS(TFT_BACKLIGHT)
+//    WRITE(TFT_BACKLIGHT_PIN, 1);
+    #if HAS_LCD_BRIGHTNESS
+      ui._set_brightness();
+    #endif
+  #endif
 
   MYSERIAL1.begin(BAUDRATE);
   millis_t serial_connect_timeout = millis() + 1000UL;
@@ -1278,8 +1312,6 @@ void setup() {
     SETUP_RUN(disableStepperDrivers());
   #endif
 
-  SETUP_RUN(hal.init_board());
-
   SETUP_RUN(esp_wifi_init());
 
   // Report Reset Reason
@@ -1322,29 +1354,6 @@ void setup() {
   #endif
 
   TERN_(HAS_FANCHECK, fan_check.init());
-
-  // UI must be initialized before EEPROM
-  // (because EEPROM code calls the UI).
-
-  SETUP_RUN(ui.init());
-
-  #if PIN_EXISTS(SAFE_POWER)
-    #if HAS_DRIVER_SAFE_POWER_PROTECT
-      SETUP_RUN(stepper_driver_backward_check());
-    #else
-      SETUP_LOG("SAFE_POWER");
-      OUT_WRITE(SAFE_POWER_PIN, HIGH);
-    #endif
-  #endif
-
-  #if BOTH(SDSUPPORT, SDCARD_EEPROM_EMULATION)
-    SETUP_RUN(card.mount());          // Mount media with settings before first_load
-  #endif
-
-  #if BOTH(HAS_WIRED_LCD, SHOW_BOOTSCREEN)
-    SETUP_RUN(ui.show_bootscreen());
-    const millis_t bootscreen_ms = millis();
-  #endif
 
   SETUP_RUN(settings.first_load()); // Load data from EEPROM if available (or use defaults)
                                       // This also updates variables in the planner, elsewhere

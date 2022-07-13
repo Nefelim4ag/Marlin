@@ -464,6 +464,7 @@ namespace Language_ru {
   LSTR  MSG_ADVANCE_K                       = _UxGT("К-фактор LA");
   LSTR  MSG_ADVANCE_K_E                     = _UxGT("К-фактор LA *");
   LSTR  MSG_CONTRAST                        = _UxGT("Контраст экрана");
+  LSTR  MSG_BRIGHTNESS                      = _UxGT("Яркость экрана");
   LSTR  MSG_STORE_EEPROM                    = _UxGT("Сохранить настройки");
   LSTR  MSG_LOAD_EEPROM                     = _UxGT("Загрузить настройки");
   #if LCD_WIDTH > 21 || HAS_DWIN_E3V2

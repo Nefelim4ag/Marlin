@@ -238,7 +238,7 @@
 
 
 #define FF_FS_NORTC		0
-#define FF_NORTC_MON	1
+#define FF_NORTC_MON	   1
 #define FF_NORTC_MDAY	1
 #define FF_NORTC_YEAR	2020
 /* The option FF_FS_NORTC switches timestamp functiton. If the system does not have

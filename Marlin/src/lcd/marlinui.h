@@ -257,7 +257,7 @@ public:
       #define LCD_BRIGHTNESS_MAX 255
     #endif
     #ifndef LCD_BRIGHTNESS_DEFAULT
-      #define LCD_BRIGHTNESS_DEFAULT LCD_BRIGHTNESS_MAX
+      #define LCD_BRIGHTNESS_DEFAULT 64
     #endif
     static uint8_t brightness;
     static bool backlight;

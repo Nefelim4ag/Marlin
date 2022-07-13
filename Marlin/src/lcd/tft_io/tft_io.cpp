@@ -74,13 +74,6 @@ if (lcd_id != 0xFFFFFFFF) return;
     WRITE(TFT_RESET_PIN, HIGH);
   #endif
 
-  #if PIN_EXISTS(TFT_BACKLIGHT)
-    WRITE(TFT_BACKLIGHT_PIN, DISABLED(DELAYED_BACKLIGHT_INIT));
-    #if HAS_LCD_BRIGHTNESS && DISABLED(DELAYED_BACKLIGHT_INIT)
-      ui._set_brightness();
-    #endif
-  #endif
-
   // io.Init();
   delay(100);
 
@@ -151,9 +144,6 @@ if (lcd_id != 0xFFFFFFFF) return;
     #error "Unsupported TFT driver"
   #endif
 
-  #if PIN_EXISTS(TFT_BACKLIGHT) && ENABLED(DELAYED_BACKLIGHT_INIT)
-    TERN(HAS_LCD_BRIGHTNESS, ui._set_brightness(), WRITE(TFT_BACKLIGHT_PIN, HIGH));
-  #endif
 }
 
 void TFT_IO::set_window(uint16_t Xmin, uint16_t Ymin, uint16_t Xmax, uint16_t Ymax) {
