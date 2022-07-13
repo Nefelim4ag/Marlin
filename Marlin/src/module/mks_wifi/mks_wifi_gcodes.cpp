@@ -172,7 +172,7 @@ void mks_m994(void)
 		l = strlen(buffer);
 		buffer[l++] = ';';
 		buffer[l] = 0;
-    sprintf(buffer+l, "%d\r\n", card.getFileSize()*1000);
+    sprintf(buffer+l, "%lu\r\n", card.getFileSize()*1000);
 		l = strlen(buffer);
 
     mks_wifi_out_add((uint8_t *)buffer,strlen(buffer));
