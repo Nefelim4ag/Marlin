@@ -102,6 +102,7 @@ public:
   // Working Directory for SD card menu
   static void cd(const char *relpath);
   static int8_t cdup();
+  static void getCurrentDir(char *dir, uint32_t buflen);
 
   // Select a file
   static void selectFileByIndex(const uint16_t nr);
@@ -134,19 +135,6 @@ public:
     if (isFileOpen() && curfilinfo.fsize) return curfile.fptr / ((curfilinfo.fsize + 99) / 100);
     return 0;
   }
-
-/*
-  //  * Dive down to a relative or absolute path.
-  //  * Relative paths apply to the workDir.
-  //  *
-  //  * update_cwd: Pass 'true' to update the workDir on success.
-  //  *   inDirPtr: On exit your pointer points to the target SdFile.
-  //  *             A nullptr indicates failure.
-  //  *       path: Start with '/' for abs path. End with '/' to get a folder ref.
-  //  *       echo: Set 'true' to print the path throughout the loop.
-
-  static const char* diveToFile(const bool update_cwd, SdFile* &inDirPtr, const char * const path, const bool echo=false);
-*/
 
   FORCE_INLINE static void getfilename_sorted(const uint16_t nr) { selectFileByIndex(nr); }
   FORCE_INLINE static bool isFileMustShow(FILINFO *finfo);

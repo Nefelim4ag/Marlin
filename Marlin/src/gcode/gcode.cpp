@@ -528,44 +528,55 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #if ENABLED(SDSUPPORT)
         case 20:                                                  // M20: List SD card
           DEBUG("Command M20 with param: %s", parser.string_arg);
-          #if ENABLED(MKS_WIFI)
-            if(port.index == MKS_WIFI_SERIAL_NUM){
-              mks_m20(parser.string_arg);
-            }else{
-              M20();           
-            }
-          #else
-            M20(); 
-          #endif
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m20(parser.string_arg);
+          }
+          else
+          {
+            M20();           
+          }
           break;
 
         case 21: M21(); break;                                    // M21: Init SD card
         case 22: M22(); break;                                    // M22: Release SD card
         case 23:                                                  // M23: Select file
-          #if ENABLED(MKS_WIFI)
-//            mks_m23(parser.string_arg);
-            M23(); 
-          #else
-            M23(); 
-          #endif
+          M23(); 
           break;
 
-        case 24: M24(); break;                                    // M24: Start SD print
+        case 24:
+          M24();
+          break;                                                  // M24: Start SD print
         case 25: M25(); break;                                    // M25: Pause SD print
-        case 26: M26(); break;                                    // M26: Set SD index
-        case 27: M27(); break;                                    // M27: Get SD status
+        case 26:
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m26();                           // MKS M26: Stop printing
+          }
+          else
+          {
+            M26();                                                // M26: Set SD index
+          }
+          break;
+        case 27:
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m27();
+          }
+          else
+          {
+            M27();
+          }
+          break;
         case 28: M28(); break;                                    // M28: Start SD write
         case 29: M29(); break;                                    // M29: Stop SD write
         case 30: M30();                                           // M30 <filename> Delete File
-          #if ENABLED(MKS_WIFI)
-            if(port.index == MKS_WIFI_SERIAL_NUM){
-              mks_m30(parser.string_arg);
-            }else{
-              M30();           
-            }
-          #else
-          M30(); 
-          #endif
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m30(parser.string_arg);
+          }else{
+            M30();           
+          }
           break;
 
         #if HAS_MEDIA_SUBCALLS
@@ -1123,24 +1134,36 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
             mks_m991();
           };
           return;
-      #endif
-      
-      #if ENABLED(MKS_WIFI)
-      case 997: 
-        if(port.index == MKS_WIFI_SERIAL_NUM)
-        {
-          mks_m997();
-        }
-        else
-        {
-          #if ENABLED(PLATFORM_M997_SUPPORT)
-            M997();
-          #endif
-        }; 
-        return;
+
+        case 992:
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m992();
+          };
+          return;
+
+        case 994:
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m994();
+          };
+          return;
+
+        case 997: 
+          if(port.index == MKS_WIFI_SERIAL_NUM)
+          {
+            mks_m997();
+          }
+          else
+          {
+            #if ENABLED(PLATFORM_M997_SUPPORT)
+              M997();
+            #endif
+          }; 
+          return;
       #else
-      #if ENABLED(PLATFORM_M997_SUPPORT)
-        case 997: M997(); break;                                  // M997: Perform in-application firmware update
+        #if ENABLED(PLATFORM_M997_SUPPORT)
+          case 997: M997(); break;                                  // M997: Perform in-application firmware update
         #endif
       #endif
 

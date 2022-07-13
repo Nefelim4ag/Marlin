@@ -319,6 +319,7 @@ void mks_wifi_parse_packet(ESP_PROTOC_FRAME *packet){
 						gcode_cmd[cmd_index++] = packet->data[i];
 					}else{
 						GCodeQueue::ring_buffer.enqueue((const char *)gcode_cmd, false, MKS_WIFI_SERIAL_NUM);
+//						GCodeQueue::inject((const char *)gcode_cmd, false, MKS_WIFI_SERIAL_NUM);
 						cmd_index = 0;
 						memset(gcode_cmd,0,50);
 					}

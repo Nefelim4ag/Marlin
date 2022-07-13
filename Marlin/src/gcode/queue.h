@@ -93,7 +93,7 @@ public:
 
     void ok_to_send();
 
-    inline bool full(uint8_t cmdCount=1) const { return length > (BUFSIZE - cmdCount); }
+    inline bool full(uint8_t cmdCount=4) const { return length > (BUFSIZE - cmdCount); }
 
     inline bool occupied() const { return length != 0; }
 

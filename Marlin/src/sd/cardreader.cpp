@@ -682,6 +682,22 @@ int8_t CardReader::cdup()
     return 0;
 }
 
+void CardReader::getCurrentDir(char *buf, uint32_t buflen)
+{
+    if (buf == 0)
+        return;
+    if (f_getcwd(buf, buflen) != FR_OK)
+    {
+        buf[0] = 0;
+        return;
+    }
+    if (buf[1] == ':')
+    {
+        uint32_t l = strlen(buf);
+        memcpy(buf, buf+2, l+1);
+    }
+}
+
 void CardReader::cd(const char *relpath)
 {
     if (f_chdir(relpath) == FR_OK)
