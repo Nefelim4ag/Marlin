@@ -230,8 +230,6 @@ void menu_tune();
 //////// Menu Item Helper Functions ////////
 ////////////////////////////////////////////
 
-void lcd_move_axis(const AxisEnum);
-void lcd_move_z();
 void _lcd_draw_homing();
 
 #define HAS_LINE_TO_Z 1
