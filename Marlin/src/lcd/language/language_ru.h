@@ -399,7 +399,7 @@ namespace Language_ru {
 
   LSTR  MSG_SELECT                          = _UxGT("Выбор");
   LSTR  MSG_SELECT_E                        = _UxGT("Выбор *");
-  LSTR  MSG_ACC                             = _UxGT("Ускор. печати");
+  LSTR  MSG_ACC                             = _UxGT("Ускорения при печати");
   LSTR  MSG_JERK                            = _UxGT("Рывки, мм/с");
   LSTR MSG_VA_JERK                          = _UxGT("V") STR_A _UxGT("-рывок");
   LSTR MSG_VB_JERK                          = _UxGT("V") STR_B _UxGT("-рывок");
@@ -413,30 +413,32 @@ namespace Language_ru {
   #else
     LSTR  MSG_JUNCTION_DEVIATION            = _UxGT("Отклон. узла");
   #endif
+  
+  LSTR  MSG_MAX_SPEED                       = _UxGT("Макс. скорость (мм/с)");
   LSTR  MSG_VELOCITY                        = _UxGT("Скорости, мм/с");
-  LSTR  MSG_VMAX_A                          = _UxGT("Макс.скор ") STR_A;
-  LSTR  MSG_VMAX_B                          = _UxGT("Макс.скор ") STR_B;
-  LSTR  MSG_VMAX_C                          = _UxGT("Макс.скор ") STR_C;
-  LSTR  MSG_VMAX_I                          = _UxGT("Макс.скор ") STR_I;
-  LSTR  MSG_VMAX_J                          = _UxGT("Макс.скор ") STR_J;
-  LSTR  MSG_VMAX_K                          = _UxGT("Макс.скор ") STR_K;
-  LSTR  MSG_VMAX_E                          = _UxGT("Макс.скор ") STR_E;
-  LSTR  MSG_VMAX_EN                         = _UxGT("Макс.скор *");
-  LSTR  MSG_VMIN                            = _UxGT("Мин.скор ");
-  LSTR  MSG_VTRAV_MIN                       = _UxGT("Мин.перемещ ");
+  LSTR  MSG_VMAX_A                          = _UxGT("Максимальная скорость ") STR_A;
+  LSTR  MSG_VMAX_B                          = _UxGT("Максимальная скорость ") STR_B;
+  LSTR  MSG_VMAX_C                          = _UxGT("Максимальная скорость ") STR_C;
+  LSTR  MSG_VMAX_I                          = _UxGT("Максимальная скорость ") STR_I;
+  LSTR  MSG_VMAX_J                          = _UxGT("Максимальная скорость ") STR_J;
+  LSTR  MSG_VMAX_K                          = _UxGT("Максимальная скорость ") STR_K;
+  LSTR  MSG_VMAX_E                          = _UxGT("Максимальная скорость ") STR_E;
+  LSTR  MSG_VMAX_EN                         = _UxGT("Максимальная скорость *");
+  LSTR  MSG_VMIN                            = _UxGT("Минимальная скорость ");
+  LSTR  MSG_VTRAV_MIN                       = _UxGT("Мин. скорость перемещений ");
   LSTR  MSG_ACCELERATION                    = _UxGT("Ускорения, мм/с2");
-  LSTR  MSG_AMAX_A                          = _UxGT("Макс.ускор ") STR_A;
-  LSTR  MSG_AMAX_B                          = _UxGT("Макс.ускор ") STR_B;
-  LSTR  MSG_AMAX_C                          = _UxGT("Макс.ускор ") STR_C;
-  LSTR  MSG_AMAX_I                          = _UxGT("Макс.ускор ") STR_I;
-  LSTR  MSG_AMAX_J                          = _UxGT("Макс.ускор ") STR_J;
-  LSTR  MSG_AMAX_K                          = _UxGT("Макс.ускор ") STR_K;
-  LSTR  MSG_AMAX_E                          = _UxGT("Макс.ускор ") STR_E;
-  LSTR  MSG_AMAX_EN                         = _UxGT("Макс.ускор *");
-  LSTR  MSG_A_RETRACT                       = _UxGT("Ускор.отката");
-  LSTR  MSG_A_TRAVEL                        = _UxGT("Ускор.перемещ.");
-  LSTR  MSG_XY_FREQUENCY_LIMIT              = _UxGT("Макс.частота.");
-  LSTR  MSG_XY_FREQUENCY_FEEDRATE           = _UxGT("Мин.подача.");
+  LSTR  MSG_AMAX_A                          = _UxGT("Максимальное ускорение ") STR_A;
+  LSTR  MSG_AMAX_B                          = _UxGT("Максимальное ускорение ") STR_B;
+  LSTR  MSG_AMAX_C                          = _UxGT("Максимальное ускорение ") STR_C;
+  LSTR  MSG_AMAX_I                          = _UxGT("Максимальное ускорение ") STR_I;
+  LSTR  MSG_AMAX_J                          = _UxGT("Максимальное ускорение ") STR_J;
+  LSTR  MSG_AMAX_K                          = _UxGT("Максимальное ускорение ") STR_K;
+  LSTR  MSG_AMAX_E                          = _UxGT("Максимальное ускорение ") STR_E;
+  LSTR  MSG_AMAX_EN                         = _UxGT("Максимальное ускорение *");
+  LSTR  MSG_A_RETRACT                       = _UxGT("Ускорение отката");
+  LSTR  MSG_A_TRAVEL                        = _UxGT("Ускорение перемещений");
+  LSTR  MSG_XY_FREQUENCY_LIMIT              = _UxGT("Максимальная частота.");
+  LSTR  MSG_XY_FREQUENCY_FEEDRATE           = _UxGT("Минимальная подача");
   LSTR  MSG_STEPS_PER_MM                    = _UxGT("Шагов/мм");
   LSTR  MSG_A_STEPS                         = STR_A _UxGT(" шаг/мм");
   LSTR  MSG_B_STEPS                         = STR_B _UxGT(" шаг/мм");
@@ -923,6 +925,7 @@ namespace Language_ru {
   LSTR MSG_POWEROFF_AT_END              = _UxGT("Выключить после печати");
   LSTR MSG_MENU_THERMISTORS             = _UxGT("Типы термисторов");
   LSTR MSG_HOTEND_AUTO_FAN              = _UxGT("Автовкл. вент. хотэнда");
+  LSTR MSG_PSU_MODULE_ON                = _UxGT("PSU-модуль подключен");
   LSTR MSG_BEDLEVEL_SETTINGS            = _UxGT("Настройка сетки кривизны стола");
   LSTR MSG_BLTOUCH_ON                   = _UxGT("BL-touch подключен");
 

@@ -62,6 +62,7 @@ uint16_t GCodeParser::codenum;
   // Optimized Parameters
   uint32_t GCodeParser::codebits;  // found bits
   uint8_t GCodeParser::param[26];  // parameter offsets from command_ptr
+  char *GCodeParser::command_args; // start of parameters
 #else
   char *GCodeParser::command_args; // start of parameters
 #endif
@@ -265,6 +266,7 @@ void GCodeParser::parse(char *p) {
   // The command parameters (if any) start here, for sure!
 
   IF_DISABLED(FASTER_GCODE_PARSER, command_args = p); // Scan for parameters in seen()
+  command_args = p;
 
   // Only use string_arg for these M codes
   if (letter == 'M') switch (codenum) {

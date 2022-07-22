@@ -544,11 +544,13 @@ void menu_bedlevel_points();
     START_MENU();
     // BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
-    LOOP_NUM_AXES(a)
-      EDIT_ITEM_FAST_N(float5, a, MSG_VMAX_N, &planner.settings.max_feedrate_mm_s[a], 1, max_fr_edit_scaled[a]);
+//    LOOP_NUM_AXES(a)
+    EDIT_ITEM_FAST_N(float5, X_AXIS, MSG_VMAX_A, &planner.settings.max_feedrate_mm_s[X_AXIS], 1, max_fr_edit_scaled[X_AXIS]);
+    EDIT_ITEM_FAST_N(float5, Y_AXIS, MSG_VMAX_B, &planner.settings.max_feedrate_mm_s[Y_AXIS], 1, max_fr_edit_scaled[Y_AXIS]);
+    EDIT_ITEM_FAST_N(float5, Z_AXIS, MSG_VMAX_C, &planner.settings.max_feedrate_mm_s[Z_AXIS], 1, max_fr_edit_scaled[Z_AXIS]);
 
     #if E_STEPPERS
-      EDIT_ITEM_FAST_N(float5, E_AXIS, MSG_VMAX_N, &planner.settings.max_feedrate_mm_s[E_AXIS_N(active_extruder)], 1, max_fr_edit_scaled.e);
+      EDIT_ITEM_FAST_N(float5, E_AXIS, MSG_VMAX_E, &planner.settings.max_feedrate_mm_s[E_AXIS_N(active_extruder)], 1, max_fr_edit_scaled.e);
     #endif
     #if ENABLED(DISTINCT_E_FACTORS)
       LOOP_L_N(n, E_STEPPERS)
@@ -598,13 +600,19 @@ void menu_bedlevel_points();
     // M204 T Travel Acceleration
     EDIT_ITEM_FAST(float5_25, MSG_A_TRAVEL, &planner.settings.travel_acceleration, 25, max_accel);
 
+/*
     #define EDIT_AMAX(Q,L) EDIT_ITEM_FAST_N(long5_25, _AXIS(Q), MSG_AMAX_N, &planner.settings.max_acceleration_mm_per_s2[_AXIS(Q)], L, max_accel_edit_scaled[_AXIS(Q)], []{ planner.refresh_acceleration_rates(); })
     NUM_AXIS_CODE(
       EDIT_AMAX(A, 100), EDIT_AMAX(B, 100), EDIT_AMAX(C, 10),
       EDIT_AMAX(I,  10), EDIT_AMAX(J,  10), EDIT_AMAX(K, 10),
       EDIT_AMAX(U,  10), EDIT_AMAX(V,  10), EDIT_AMAX(W, 10)
     );
-
+*/
+    EDIT_ITEM_FAST_N(long5_25, X_AXIS, MSG_AMAX_A, &planner.settings.max_acceleration_mm_per_s2[X_AXIS], 100, max_accel_edit_scaled[X_AXIS], []{ planner.refresh_acceleration_rates(); });
+    EDIT_ITEM_FAST_N(long5_25, Y_AXIS, MSG_AMAX_B, &planner.settings.max_acceleration_mm_per_s2[Y_AXIS], 100, max_accel_edit_scaled[Y_AXIS], []{ planner.refresh_acceleration_rates(); });
+    EDIT_ITEM_FAST_N(long5_25, Z_AXIS, MSG_AMAX_C, &planner.settings.max_acceleration_mm_per_s2[Z_AXIS], 10, max_accel_edit_scaled[Z_AXIS], []{ planner.refresh_acceleration_rates(); });
+    
+    
     #if ENABLED(DISTINCT_E_FACTORS)
       EDIT_ITEM_FAST(long5_25, MSG_AMAX_E, &planner.settings.max_acceleration_mm_per_s2[E_AXIS_N(active_extruder)], 100, max_accel_edit_scaled.e, []{ planner.refresh_acceleration_rates(); });
       LOOP_L_N(n, E_STEPPERS)
@@ -648,12 +656,19 @@ void menu_bedlevel_points();
         #endif
       ;
 
+/*
       LOOP_LOGICAL_AXES(a) {
         if (a == C_AXIS || TERN0(HAS_EXTRUDERS, a == E_AXIS))
           EDIT_ITEM_FAST_N(float52sign, a, MSG_VN_JERK, &planner.max_jerk[a], 0.1f, max_jerk_edit[a]);
         else
           EDIT_ITEM_FAST_N(float3, a, MSG_VN_JERK, &planner.max_jerk[a], 1.0f, max_jerk_edit[a]);
       }
+*/
+
+      EDIT_ITEM_FAST_N(float3, X_AXIS, MSG_VA_JERK, &planner.max_jerk[X_AXIS], 1.0f, max_jerk_edit[X_AXIS]);
+      EDIT_ITEM_FAST_N(float3, Y_AXIS, MSG_VB_JERK, &planner.max_jerk[Y_AXIS], 1.0f, max_jerk_edit[Y_AXIS]);
+      EDIT_ITEM_FAST_N(float3, Z_AXIS, MSG_VC_JERK, &planner.max_jerk[Z_AXIS], 0.1f, max_jerk_edit[Z_AXIS]);
+      EDIT_ITEM_FAST_N(float3, E_AXIS, MSG_VE_JERK, &planner.max_jerk[E_AXIS], 0.1f, max_jerk_edit[E_AXIS]);
 
       END_MENU();
     }
@@ -690,8 +705,14 @@ void menu_advanced_steps_per_mm() {
   START_MENU();
   // BACK_ITEM(MSG_ADVANCED_SETTINGS);
 
+/*
   LOOP_NUM_AXES(a)
     EDIT_ITEM_FAST_N(float61, a, MSG_N_STEPS, &planner.settings.axis_steps_per_mm[a], 5, 3200, []{ planner.refresh_positioning(); });
+*/
+
+  EDIT_ITEM_FAST_N(float61, X_AXIS, MSG_A_STEPS, &planner.settings.axis_steps_per_mm[X_AXIS], 5, 3200, []{ planner.refresh_positioning(); });
+  EDIT_ITEM_FAST_N(float61, Y_AXIS, MSG_B_STEPS, &planner.settings.axis_steps_per_mm[Y_AXIS], 5, 3200, []{ planner.refresh_positioning(); });
+  EDIT_ITEM_FAST_N(float61, Z_AXIS, MSG_C_STEPS, &planner.settings.axis_steps_per_mm[Z_AXIS], 5, 3200, []{ planner.refresh_positioning(); });
 
   #if ENABLED(DISTINCT_E_FACTORS)
     LOOP_L_N(n, E_STEPPERS)
@@ -703,7 +724,7 @@ void menu_advanced_steps_per_mm() {
           planner.mm_per_step[E_AXIS_N(e)] = 1.0f / planner.settings.axis_steps_per_mm[E_AXIS_N(e)];
       });
   #elif E_STEPPERS
-    EDIT_ITEM_FAST_N(float61, E_AXIS, MSG_N_STEPS, &planner.settings.axis_steps_per_mm[E_AXIS], 5, 3200, []{ planner.refresh_positioning(); });
+    EDIT_ITEM_FAST_N(float61, E_AXIS, MSG_E_STEPS, &planner.settings.axis_steps_per_mm[E_AXIS], 5, 3200, []{ planner.refresh_positioning(); });
   #endif
 
   END_MENU();

@@ -35,8 +35,12 @@
  */
 void GcodeSuite::M23() {
   // Simplify3D includes the size, so zero out all spaces (#7227)
-  for (char *fn = parser.string_arg; *fn; ++fn) if (*fn == ' ') *fn = '\0';
-  card.openFileRead(parser.string_arg);
+//  for (char *fn = parser.string_arg; *fn; ++fn) if (*fn == ' ') *fn = '\0';
+
+  SERIAL_ECHOLNPGM("M23: file - \"", parser.command_args, "\"");
+
+  card.openFileRead(parser.command_args);
+
 
   TERN_(LCD_SET_PROGRESS_MANUALLY, ui.set_progress(0));
 }
