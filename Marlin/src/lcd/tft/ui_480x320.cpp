@@ -323,7 +323,7 @@ void MarlinUI::draw_status_screen() {
   tft.add_text(110 - tft_string.width(), y, COLOR_TOP_FRAME_TEXT, tft_string);
 
   // Moving speed
-  tft_string.set(ftostr5rj(SQRT(planner.get_current_block()->nominal_speed)));
+  tft_string.set(ftostr5rj(planner.get_current_block()->nominal_speed));
   tft_string.trim();
   tft_string.add(" ");
   tft_string.add("mm/s");
