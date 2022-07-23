@@ -263,6 +263,7 @@ public:
     #endif
     static uint8_t brightness;
     static bool backlight;
+    static bool freeze_max_update_time;
     static void _set_brightness(); // Implementation-specific
     static void set_brightness(const uint8_t value);
     FORCE_INLINE static void refresh_brightness() { set_brightness(brightness); }

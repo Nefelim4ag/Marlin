@@ -108,6 +108,7 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
 #if HAS_LCD_BRIGHTNESS
   uint8_t MarlinUI::brightness = LCD_BRIGHTNESS_DEFAULT;
   bool MarlinUI::backlight = true;
+  bool MarlinUI::freeze_max_update_time = false;
 
   void MarlinUI::set_brightness(const uint8_t value) {
     backlight = !!value;
@@ -256,6 +257,7 @@ void MarlinUI::init() {
   TERN_(HAS_ENCODER_ACTION, encoderDiff = 0);
 
   reset_status(); // Set welcome message
+  freeze_max_update_time = false;
 }
 
 #if HAS_WIRED_LCD
@@ -1158,7 +1160,10 @@ void MarlinUI::init() {
         // Keeping track of the longest time for an individual LCD update.
         // Used to do screen throttling when the planner starts to fill up.
         if (on_status_screen())
-          NOLESS(max_display_update_time, millis() - ms);
+          if (freeze_max_update_time)
+            freeze_max_update_time = false;
+          else
+            NOLESS(max_display_update_time, millis() - ms);
       }
 
       #if SCREENS_CAN_TIME_OUT
@@ -1624,13 +1629,13 @@ void MarlinUI::init() {
     IF_DISABLED(SDSUPPORT, print_job_timer.stop());
     TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_open(PROMPT_INFO, F("UI Aborted"), FPSTR(DISMISS_STR)));
     LCD_MESSAGE(MSG_PRINT_ABORTED);
-    TERN_(HAS_MARLINUI_MENU, return_to_status());
 
     queue.clear();
     quickstop_stepper();
     do_blocking_move_to_z(current_position.z+10, 20);
 //    queue.inject("G01 Z20");
-
+    TERN_(HAS_MARLINUI_MENU, goto_previous_screen());
+    ui.freeze_max_update_time = true;
   }
 
   #if BOTH(HAS_MARLINUI_MENU, PSU_CONTROL)
