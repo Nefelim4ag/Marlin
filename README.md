@@ -133,8 +133,8 @@
 - [Timofey Titovets](https://github.com/Nefelim4ag) с небольшой моей помощью обновил базу Марлина до последней версии 2.1
 - работа с файлами на SD-карте полностью переведена на более современную и удобную файловую библиотеку FatFS
 - подправлена работа модуля WiFi - теперь он корректно отдает статус интерфейсу Beeprint
-- доработана утилита MKS_WIFI_PS_uploader - корректная передача имени файла из PrusaSlicer и возможность отправлять на принтер бинарные файлы
-- появилась возможность обновления прошивки принтера через MKS_WIFI_PS_uploader - при отправке файла прошивки с именем Robin_nano35.bin принтер после успешного приема этого файла автоматически перезагрузится и обновит прошивку
+- доработана утилита [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - корректная передача имени файла из PrusaSlicer и возможность отправлять на принтер бинарные файлы
+- появилась возможность обновления прошивки принтера через [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - при отправке файла прошивки с именем Robin_nano35.bin принтер после успешного приема этого файла автоматически перезагрузится и обновит прошивку
 - исправлены переводы на русский язык некоторых пунктов настроек
 - применены все последние изменения и багфиксы оригинального Марлина вплоть до 23.07.2022
 
@@ -270,7 +270,7 @@ Based on [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin) 
 * [Version history](#version-history)
 
 ## The main thing
-Updated 07/06/2022
+Updated 07/23/2022
 - activated Linear Advance
 - WiFi interface for printer control and file transfer
 - the filament end sensor is active
@@ -373,6 +373,16 @@ The **M73** command is inserted into the g-code by the slicer. In this command, 
 When the firmware encounters this command in the code, it outputs data from it to the print progress and the remaining time counter. If the time counter is green, then it is receiving data from the **M73** command. If the slicer does not support this command or if for some reason the firmware does not meet this command within 3 minutes, then it switches to calculating the progress and the remaining time using the internal method - based on the file size and the number of bytes already read from it. In this case, the time counter is a normal gray color.
 
 ## Version history
+
+### 07/23/2022
+**v2.0**
+- [Timofey Titovets](https://github.com/Nefelim4ag) updated the Marlin base to the latest version 2.1 with a little help from me
+- work with files on the SD card has been completely transferred to a more modern and convenient file library FatFS
+- fixed the work of the WiFi module - now it correctly gives the status to the Beeprint interface
+- improved utility [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - correct transmission of the file name from PrusaSlicer and the ability to send binary files to the printer
+- added the ability to update the printer firmware via [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - when sending a firmware file named Robin_nano35.bin printer after successfully receiving this file, it will automatically reboot and update the firmware
+- fixed translations into Russian of some settings items
+- applied all the latest changes and bug fixes of the original Marlin up to 07/23/2022
 
 ### 06/29/2022
 **v1.9.1**
