@@ -47,14 +47,14 @@
 
 ## Соответствие вариантов прошивки разным платам
 Прошивка собрана в нескольких вариантах, каждый из которых подходит к определенной плате, которая встречается в принтере Reborn.
-1. **v_Robin_Nano_1.1_x16** - предназначена для плат MKS Robin Nano v1.1, известной так же как Flyingbear Reborn v2.0 в стоковой конфигурации.
+1. **v_Robin_Nano_1.1** - предназначена для плат MKS Robin Nano v1.1, известной так же как Flyingbear Reborn v2.0 в стоковой конфигурации.
 <p align="left"><img src="IMG/robin_nano_12_.jpg" width="600px"></p>
 
-2. **v_Robin_Nano_1.3_x32** - предназначена для плат MKS Robin Nano v1.3 со съемными драйверами в стоковой конфигурации.
+2. **v_Robin_Nano_1.3** - предназначена для плат MKS Robin Nano v1.3 со съемными драйверами в стоковой конфигурации.
 <p align="left"><img src="IMG/robin_nano_13.jpg" width="600px"></p>
 
-3. **v_Robin_Nano_S_1.3_x16** - предназначена для плат MKS Robin Nano S v1.3 с четырьмя впаянными и одним съемным драйверами в стоковой конфигурации.
-Вариант **v_Robin_Nano_SM_1.3_x16** подходит для этих же плат если пользователем были переставлены разъемы E0 и E1, то есть мотор экструдера был подключен к съемному драйверу
+3. **v_Robin_Nano_S_1.3** - предназначена для плат MKS Robin Nano S v1.3 с четырьмя впаянными и одним съемным драйверами в стоковой конфигурации.
+Вариант **v_Robin_Nano_SM_1.3** подходит для этих же плат если пользователем были переставлены разъемы E0 и E1, то есть мотор экструдера был подключен к съемному драйверу
 <p align="left"><img src="IMG/robin_nano_s13.jpg" width="600px"></p>
 
 ## Новый главный экран интерфейса
@@ -293,14 +293,14 @@ Updated 07/23/2022
 
 ## Correspondence of firmware variants to different boards
 The firmware is assembled in several variants, each of which is suitable for a specific board that is found in the Reborn printer.
-1. **v_Robin_Nano_1.1_x16** - designed for MKS Robin Nano v1.1 boards, also known as Flyingbear Reborn v2.0 in the stock configuration.
+1. **v_Robin_Nano_1.1** - designed for MKS Robin Nano v1.1 boards, also known as Flyingbear Reborn v2.0 in the stock configuration.
 <p align = "left"><img src = "IMG/robin_nano_12_.jpg" width = "600px"></p>
 
-2. **v_Robin_Nano_1.3_x32** - intended for MKS Robin Nano v1.3 boards with removable drivers in the stock configuration.
+2. **v_Robin_Nano_1.3** - intended for MKS Robin Nano v1.3 boards with removable drivers in the stock configuration.
 <p align = "left"><img src = "IMG/robin_nano_13.jpg" width = "600px"></p>
 
-3. **v_Robin_Nano_S_1.3_x16** - designed for MKS Robin Nano S v1.3 boards with four soldered and one removable drivers in the stock configuration.
-Variant **v_Robin_Nano_SM_1.3_x16** is suitable for the same boards if the user rearranged connectors E0 and E1, that is, the extruder motor was connected to the removable driver.
+3. **v_Robin_Nano_S_1.3** - designed for MKS Robin Nano S v1.3 boards with four soldered and one removable drivers in the stock configuration.
+Variant **v_Robin_Nano_SM_1.3** is suitable for the same boards if the user rearranged connectors E0 and E1, that is, the extruder motor was connected to the removable driver.
 <p align = "left"><img src = "IMG/robin_nano_s13.jpg" width = "600px"></p>
 
 # New main interface screen
