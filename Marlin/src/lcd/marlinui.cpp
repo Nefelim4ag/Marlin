@@ -1162,10 +1162,12 @@ void MarlinUI::init() {
         // Keeping track of the longest time for an individual LCD update.
         // Used to do screen throttling when the planner starts to fill up.
         if (on_status_screen())
+        {
           if (freeze_max_update_time)
             freeze_max_update_time = false;
           else
             NOLESS(max_display_update_time, millis() - ms);
+        }
       }
 
       #if SCREENS_CAN_TIME_OUT
