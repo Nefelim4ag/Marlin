@@ -31,7 +31,9 @@
  */
 void GcodeSuite::M256() {
   if (parser.seenval('B'))
-    ui.set_brightness(parser.value_int());
+  {
+    ui._set_brightness(parser.value_int());
+  }
   else
     M256_report();
 }

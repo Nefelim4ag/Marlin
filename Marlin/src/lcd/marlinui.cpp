@@ -111,11 +111,20 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
   uint8_t MarlinUI::brightness = LCD_BRIGHTNESS_DEFAULT;
   bool MarlinUI::backlight = true;
   bool MarlinUI::freeze_max_update_time = false;
+  uint8_t MarlinUI::brightnessPWM[LCD_BRIGHTNESS_STEPS] = {  3,  6,  8,  11,  16,  21,  28,  35,  44,  54,
+                                                            66, 80, 95, 110, 129, 150, 173, 198, 225, 255 };
+
 
   void MarlinUI::set_brightness(const uint8_t value) {
-    backlight = !!value;
-    if (backlight) brightness = constrain(value, LCD_BRIGHTNESS_MIN, LCD_BRIGHTNESS_MAX);
+//    backlight = !!value;
+//    if (backlight) brightness = constrain(value, LCD_BRIGHTNESS_MIN, LCD_BRIGHTNESS_MAX);
+    if (value <= LCD_BRIGHTNESS_STEPS) brightness = value;
     _set_brightness();
+  }
+
+  void MarlinUI::set_brightness_raw(const uint8_t value) {
+    backlight = !!value;
+    if (backlight) _set_brightness(constrain(value, LCD_BRIGHTNESS_MIN, LCD_BRIGHTNESS_MAX));
   }
 #endif
 

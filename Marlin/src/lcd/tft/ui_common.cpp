@@ -215,11 +215,14 @@ void MarlinUI::clear_lcd() {
 
 #if HAS_LCD_BRIGHTNESS
 
-  void MarlinUI::_set_brightness() {
+  void MarlinUI::_set_brightness(uint8_t raw /* = 0 */) {
     #if PIN_EXISTS(TFT_BACKLIGHT)
       if (PWM_PIN(TFT_BACKLIGHT_PIN))
       {
-        analogWrite(pin_t(TFT_BACKLIGHT_PIN), backlight ? brightness : 0);
+        if (raw > 0)
+          analogWrite(pin_t(TFT_BACKLIGHT_PIN), backlight ? raw : 0);
+        else
+          analogWrite(pin_t(TFT_BACKLIGHT_PIN), backlight ? brightnessPWM[brightness-1] : 0);
       }
     #endif
   }

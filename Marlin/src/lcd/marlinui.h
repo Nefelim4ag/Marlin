@@ -263,11 +263,16 @@ public:
     #ifndef LCD_BRIGHTNESS_DEFAULT
       #define LCD_BRIGHTNESS_DEFAULT 64
     #endif
+    #ifndef LCD_BRIGHTNESS_STEPS
+      #define LCD_BRIGHTNESS_STEPS 20
+    #endif
     static uint8_t brightness;
     static bool backlight;
     static bool freeze_max_update_time;
-    static void _set_brightness(); // Implementation-specific
+    static uint8_t brightnessPWM[LCD_BRIGHTNESS_STEPS];
+    static void _set_brightness(uint8_t raw = 0); // Implementation-specific
     static void set_brightness(const uint8_t value);
+    static void set_brightness_raw(const uint8_t value);
     FORCE_INLINE static void refresh_brightness() { set_brightness(brightness); }
   #endif
 
