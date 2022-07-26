@@ -90,7 +90,7 @@ public:
 
   // Basic file ops
   static void openFileRead(const char * const path, const uint8_t subcall=0);
-  static void openFileWrite(const char * const path);
+  static bool openFileWrite(const char * const path, bool owerwrite = false);
   static void removeFile(const char * const name);
   static void closefile(const bool store_location=false);
   static char* longest_filename() { return curfilinfo.fname[0] ? curfilinfo.fname : curfilinfo.altname; }

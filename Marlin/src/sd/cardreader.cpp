@@ -241,32 +241,41 @@ inline void echo_write_to_file(const char *const fname)
 //
 // Open a file by DOS path for write
 //
-void CardReader::openFileWrite(const char *const path)
+bool CardReader::openFileWrite(const char *const path, bool owerwrite /*= false*/)
 {
     if (!isMounted())
-        return;
+        return false;
 
     announceOpen(2, path);
     TERN_(HAS_MEDIA_SUBCALLS, file_subcall_ctr = 0);
 
     abortFilePrintNow();
 
-    char *fname = FATFS_GetFilenameFromPathUTF((char*)path);
+    char *fname = FATFS_GetFilenameFromPathUTF((char*)path); 
 
 #if ENABLED(SDCARD_READONLY)
         openFailed(fname);
 #else
-        if (f_open(&curfile, path, FA_WRITE | FA_OPEN_ALWAYS | FA_OPEN_APPEND) == FR_OK)
+    BYTE flags = FA_WRITE;
+    if (owerwrite)
+        flags |= FA_CREATE_ALWAYS;
+    else
+        flags |= FA_OPEN_ALWAYS | FA_OPEN_APPEND;
+    if (f_open(&curfile, path, flags) == FR_OK)
     {
         flag.saving = true;
         selectFileByName(path);
         TERN_(EMERGENCY_PARSER, emergency_parser.disable());
         echo_write_to_file(fname);
         ui.set_status(fname);
+        return true;
     }
     else
+    {
         openFailed(path);
+    }
 #endif
+    return false;
 }
 
 

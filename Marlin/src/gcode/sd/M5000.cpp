@@ -13,17 +13,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
+#include "../../inc/MarlinConfig.h"
 
-#include "../inc/MarlinConfig.h"
+#include "../gcode.h"
+#include "../../lcd/marlinui.h"
 
-class FileSettings {
-  public:
-    bool SaveSettings(char *fname = NULL);
+#include "../../module/filesettings.h"
 
-  private:
-    void postprocess();
-};
+/**
+ * M23: Open a file
+ *
+ * The path is relative to the root directory
+ */
+void GcodeSuite::M5000()
+{
+  SERIAL_ECHOLNPGM("M5000: file - \"", parser.command_args, "\"");
 
-extern FileSettings fileSettings;
+  if (fileSettings.SaveSettings(parser.command_args))
+    SERIAL_ECHOLNPGM("M5000: success");
+  else
+    SERIAL_ECHOLNPGM("M5000: failure");
+
+}
+

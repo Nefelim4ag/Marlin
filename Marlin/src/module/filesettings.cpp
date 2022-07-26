@@ -23,6 +23,7 @@
 //#define DEBUG_EEPROM_READWRITE
 
 #include "filesettings.h"
+#include "filesettings_strings.h"
 
 #include "endstops.h"
 #include "planner.h"
@@ -150,8 +151,110 @@ FileSettings fileSettings;
 #include "../core/debug_out.h"
 
 
+
+
+bool FileSettings::SaveSettings(char *fname)
+{
+  if (card.isFileOpen())
+    return false;
+
+  char *filename;
+  char curline[512];
+  bool wres = false;
+  uint32_t len = 0;
+
+  if (fname == NULL)
+    filename = (char*)"/printer_settings.ini";
+  else
+    filename = fname;
+  
+  if (!card.openFileWrite(filename, true))
+    return false;
+  
+  do
+  {
+    /******** MOTION ***********/
+    sprintf(curline, "%s", (char*)"# ====== MOTION SETTINGS ======\r\n");
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    // planner settings
+    sprintf(curline, "%s = %ld %s\r\n", FSS_MOTION_ACCEL_MAX_X, planner.settings.max_acceleration_mm_per_s2[X_AXIS], FSSC_MOTION_ACCEL_MAX_X);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %ld %s\r\n", FSS_MOTION_ACCEL_MAX_Y, planner.settings.max_acceleration_mm_per_s2[Y_AXIS], FSSC_MOTION_ACCEL_MAX_Y);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %ld %s\r\n", FSS_MOTION_ACCEL_MAX_Z, planner.settings.max_acceleration_mm_per_s2[Z_AXIS], FSSC_MOTION_ACCEL_MAX_Z);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %ld %s\r\n", FSS_MOTION_ACCEL_MAX_E, planner.settings.max_acceleration_mm_per_s2[E_AXIS], FSSC_MOTION_ACCEL_MAX_E);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %.2f %s\r\n", FSS_MOTION_PRINT_ACCEL, planner.settings.acceleration, FSSC_MOTION_PRINT_ACCEL);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %.2f %s\r\n", FSS_MOTION_RETRACT_ACCEL, planner.settings.retract_acceleration, FSSC_MOTION_RETRACT_ACCEL);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %.2f %s\r\n", FSS_MOTION_TRAVEL_ACCEL, planner.settings.travel_acceleration, FSSC_MOTION_TRAVEL_ACCEL);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %ld %s\r\n", FSS_MOTION_MIN_SEGMENT_TIME, planner.settings.min_segment_time_us, FSSC_MOTION_MIN_SEGMENT_TIME);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_STEPS_PER_MM_X, planner.settings.axis_steps_per_mm[X_AXIS], FSSC_MOTION_STEPS_PER_MM_X);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_STEPS_PER_MM_Y, planner.settings.axis_steps_per_mm[Y_AXIS], FSSC_MOTION_STEPS_PER_MM_Y);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_STEPS_PER_MM_Z, planner.settings.axis_steps_per_mm[Z_AXIS], FSSC_MOTION_STEPS_PER_MM_Z);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_STEPS_PER_MM_E, planner.settings.axis_steps_per_mm[E_AXIS], FSSC_MOTION_STEPS_PER_MM_E);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_MAX_SPEED_X, planner.settings.max_feedrate_mm_s[X_AXIS], FSSC_MOTION_MAX_SPEED_X);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_MAX_SPEED_Y, planner.settings.max_feedrate_mm_s[Y_AXIS], FSSC_MOTION_MAX_SPEED_Y);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_MAX_SPEED_Z, planner.settings.max_feedrate_mm_s[Z_AXIS], FSSC_MOTION_MAX_SPEED_Z);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_MOTION_MAX_SPEED_E, planner.settings.max_feedrate_mm_s[E_AXIS], FSSC_MOTION_MAX_SPEED_E);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+
+    wres = true;
+  } while (0);
+
+  card.closefile();
+  return wres;
+}
+
+
 void FileSettings::postprocess()
 {
+
 }
 
 
