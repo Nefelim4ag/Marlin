@@ -1,0 +1,1 @@
+d:\MKS_WIFI_PS_upload.exe 192.168.1.211 no Robin_nano35.bin

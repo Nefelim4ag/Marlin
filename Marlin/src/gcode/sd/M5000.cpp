@@ -30,10 +30,13 @@ void GcodeSuite::M5000()
 {
   SERIAL_ECHOLNPGM("M5000: file - \"", parser.command_args, "\"");
 
+  uint32_t msecs = millis();
   if (fileSettings.SaveSettings(parser.command_args))
     SERIAL_ECHOLNPGM("M5000: success");
   else
     SERIAL_ECHOLNPGM("M5000: failure");
+  msecs = millis() - msecs;
+  SERIAL_ECHOLNPGM("M5000: total msec - ", msecs);
 
 }
 

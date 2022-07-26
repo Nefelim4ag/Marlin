@@ -814,7 +814,30 @@ void CardReader::selectFileByIndex(const uint16_t nr)
 bool CardReader::isFileMustShow(FILINFO *finfo)
 {
     char *fext = FATFS_GetFileExtensionUTF(finfo->fname);
-    if ((strcmp(fext, "gcode") == 0) && !(finfo->fattrib & AM_HID))
+    if ((strcmp(fext, "gcode") == 0 || strcmp(fext, "ini") == 0) && !(finfo->fattrib & AM_HID))
+        return true;
+
+    return false;
+}
+
+bool CardReader::isFilePrintable(FILINFO *finfo /*= NULL*/)
+{
+    FILINFO *fi = finfo;
+    if (fi == NULL)
+        fi = &curfilinfo;
+    char *fext = FATFS_GetFileExtensionUTF(fi->fname);
+    if ((strcmp(fext, "gcode") == 0) && !(fi->fattrib & AM_HID) && !(fi->fattrib & AM_DIR))
+        return true;
+
+    return false;
+}
+
+bool CardReader::isFileDir(FILINFO *finfo /*= NULL*/)
+{
+    FILINFO *fi = finfo;
+    if (fi == NULL)
+        fi = &curfilinfo;
+    if (!(fi->fattrib & AM_HID) && (fi->fattrib & AM_DIR))
         return true;
 
     return false;

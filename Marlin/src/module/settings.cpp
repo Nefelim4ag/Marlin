@@ -1165,7 +1165,7 @@ void MarlinSettings::postprocess() {
     //
     {
       _FIELD_TEST(lcd_brightness);
-      const uint8_t lcd_brightness = TERN(HAS_LCD_BRIGHTNESS, ui.brightness, 255);
+      const uint8_t lcd_brightness = TERN(HAS_LCD_BRIGHTNESS, ui.brightness, 19);
       EEPROM_WRITE(lcd_brightness);
     }
 
@@ -2138,6 +2138,8 @@ void MarlinSettings::postprocess() {
         uint8_t lcd_brightness;
         _FIELD_TEST(lcd_brightness);
         EEPROM_READ(lcd_brightness);
+        if (lcd_brightness > 19)
+          lcd_brightness = 19;
         TERN_(HAS_LCD_BRIGHTNESS, if (!validating) ui.brightness = lcd_brightness);
       }
 

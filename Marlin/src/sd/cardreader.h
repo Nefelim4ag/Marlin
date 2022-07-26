@@ -136,9 +136,11 @@ public:
     return 0;
   }
 
-  FORCE_INLINE static void getfilename_sorted(const uint16_t nr) { selectFileByIndex(nr); }
-  FORCE_INLINE static bool isFileMustShow(FILINFO *finfo);
-  FORCE_INLINE static bool isDirMustShow(FILINFO *finfo);
+  static void getfilename_sorted(const uint16_t nr) { selectFileByIndex(nr); }
+  static bool isFileMustShow(FILINFO *finfo);
+  static bool isFilePrintable(FILINFO *finfo = NULL);
+  static bool isFileDir(FILINFO *finfo = NULL);
+  static bool isDirMustShow(FILINFO *finfo);
 
   static void ls(bool includeLongNames = true);
 

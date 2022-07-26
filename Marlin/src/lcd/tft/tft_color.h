@@ -186,6 +186,12 @@
 #ifndef COLOR_MENU_TEXT
   #define COLOR_MENU_TEXT         COLOR_YELLOW
 #endif
+#ifndef COLOR_MENU_INIFILE
+  #define COLOR_MENU_INIFILE      COLOR_LIGHT_BLUE
+#endif
+#ifndef COLOR_MENU_DIR
+  #define COLOR_MENU_DIR          COLOR_WHITE
+#endif
 #ifndef COLOR_MENU_VALUE
   #define COLOR_MENU_VALUE        COLOR_WHITE
 #endif

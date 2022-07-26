@@ -181,7 +181,12 @@ void MenuItem_static::draw(const uint8_t row, FSTR_P const fstr, const uint8_t s
     menu_item(row, sel);
     if (isDir) tft.add_image(MENU_ITEM_ICON_X, MENU_ITEM_ICON_Y, imgDirectory, COLOR_MENU_TEXT, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
     constexpr uint8_t maxlen = (MENU_ITEM_HEIGHT) - (MENU_TEXT_Y_OFFSET) + 1;
-    tft.add_text(MENU_ITEM_ICON_SPACE, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, ui.scrolled_filename(theCard, maxlen, row, sel));
+    uint16_t color = COLOR_MENU_TEXT;
+    if (isDir)
+      color = COLOR_MENU_DIR;
+    else if (!card.isFilePrintable())
+      color = COLOR_MENU_INIFILE;
+    tft.add_text(MENU_ITEM_ICON_SPACE, MENU_TEXT_Y_OFFSET, color, ui.scrolled_filename(theCard, maxlen, row, sel));
   }
 
 #endif

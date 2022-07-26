@@ -254,14 +254,8 @@ public:
   #endif
 
   #if HAS_LCD_BRIGHTNESS
-    #ifndef LCD_BRIGHTNESS_MIN
-      #define LCD_BRIGHTNESS_MIN   1
-    #endif
-    #ifndef LCD_BRIGHTNESS_MAX
-      #define LCD_BRIGHTNESS_MAX 255
-    #endif
     #ifndef LCD_BRIGHTNESS_DEFAULT
-      #define LCD_BRIGHTNESS_DEFAULT 64
+      #define LCD_BRIGHTNESS_DEFAULT 19
     #endif
     #ifndef LCD_BRIGHTNESS_STEPS
       #define LCD_BRIGHTNESS_STEPS 20
