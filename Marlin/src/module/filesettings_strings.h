@@ -227,3 +227,7 @@ const char FSSC_LCD_TOUCH_OFFSET_Y[] = " # do not change!";
 const char FSS_LCD_LANGUAGE[] = "LCD_Language";
 const char FSSC_LCD_LANGUAGE[] = " # 0 - English, 1 - Русский";
 
+/******** PSU ***********/
+const char FSS_PSU_ENABLED[] = "PSU_Enabled";
+const char FSSC_PSU_ENABLED[] = " ";
+

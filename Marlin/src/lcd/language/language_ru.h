@@ -467,8 +467,9 @@ namespace Language_ru {
   LSTR  MSG_ADVANCE_K_E                     = _UxGT("К-фактор LA *");
   LSTR  MSG_CONTRAST                        = _UxGT("Контраст экрана");
   LSTR  MSG_BRIGHTNESS                      = _UxGT("Яркость экрана");
-  LSTR  MSG_STORE_EEPROM                    = _UxGT("Сохранить настройки");
-  LSTR  MSG_LOAD_EEPROM                     = _UxGT("Загрузить настройки");
+  LSTR  MSG_STORE_EEPROM                    = _UxGT("Сохранить настройки в EPROM");
+  LSTR  MSG_STORE_CONFIG_FILE               = _UxGT("Сохранить настройки в файл");
+  LSTR  MSG_LOAD_EEPROM                     = _UxGT("Загрузить настройки из EPROM");
   #if LCD_WIDTH > 21 || HAS_DWIN_E3V2
     LSTR  MSG_RESTORE_DEFAULTS              = _UxGT("Сброс на заводские");
     LSTR  MSG_INIT_EEPROM                   = _UxGT("Инициализация EEPROM");

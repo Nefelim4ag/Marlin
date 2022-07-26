@@ -560,6 +560,7 @@ void menu_configuration() {
   #if ENABLED(EEPROM_SETTINGS)
     ACTION_ITEM(MSG_STORE_EEPROM, ui.store_settings);
     if (!busy) ACTION_ITEM(MSG_LOAD_EEPROM, ui.load_settings);
+    if (!busy) ACTION_ITEM(MSG_STORE_CONFIG_FILE, []{ queue.enqueue_now_P("M5000"); });
   #endif
 
   if (!busy) ACTION_ITEM(MSG_RESTORE_DEFAULTS, ui.reset_settings);

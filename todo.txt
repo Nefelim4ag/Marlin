@@ -50,4 +50,4 @@ https://t.me/Reborn_3D/163630 - Вместо 0.025 теперь процент �
 
 
 
-Commits applyed up to 8cf4c0515dd0de31e586b735c9f5b0a476a72f56 on 23.07.2022
+Commits applyed up to 4ffa2e80e4db3413425a575aed14be30bbf2bb24 on 25.07.2022

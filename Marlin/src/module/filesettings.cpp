@@ -519,6 +519,16 @@ bool FileSettings::SaveSettings(char *fname)
     if (card.write(curline, len) != len)
       break;
 
+    /******** PSU ***********/
+    sprintf(curline, "%s", (char*)"\r\n# ====== PSU ======\r\n");
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    sprintf(curline, "%s = %s %s\r\n", FSS_PSU_ENABLED, (psu_settings.psu_enabled ? "Yes" : "No"), FSSC_PSU_ENABLED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+
     
 
 
@@ -526,6 +536,12 @@ bool FileSettings::SaveSettings(char *fname)
   } while (0);
 
   card.closefile();
+
+  if (wres)
+    OKAY_BUZZ();
+  else
+    ERR_BUZZ();
+
   return wres;
 }
 
