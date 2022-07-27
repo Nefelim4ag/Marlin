@@ -444,12 +444,6 @@ bool FileSettings::SaveSettings(char *fname /*= NULL*/)
       break;
     lines++;
 
-    sprintf(curline, "%s = %d, %d %s\r\n", FSS_SERVO_ANGLES, servo_angles[0][0], servo_angles[0][1], FSSC_SERVO_ANGLES);
-    len = strlen(curline);
-    if (card.write(curline, len) != len)
-      break;
-    lines++;
-    
     /******** ENDSTOPS ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== ENDSTOPS ======\r\n");
     len = strlen(curline);
@@ -608,7 +602,64 @@ bool FileSettings::SaveSettings(char *fname /*= NULL*/)
       break;
     lines++;
 
+    /******** FW RETRACT ***********/
+    sprintf(curline, "%s", (char*)"\r\n# ====== FW RETRACT ======\r\n");
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines += 2;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_LENGTH, fwretract.settings.retract_length, FSSC_FWRETRACT_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_SPEED, fwretract.settings.retract_feedrate_mm_s, FSSC_FWRETRACT_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_Z_HOP, fwretract.settings.retract_zraise, FSSC_FWRETRACT_Z_HOP);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_RECOVER_LENGTH, fwretract.settings.retract_recover_extra, FSSC_FWRETRACT_RECOVER_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_RECOVER_SPEED, fwretract.settings.retract_recover_feedrate_mm_s, FSSC_FWRETRACT_RECOVER_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_SWP_LENGTH, fwretract.settings.swap_retract_length, FSSC_FWRETRACT_SWP_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_RECOVER_SWP_LENGTH, fwretract.settings.swap_retract_recover_extra, FSSC_FWRETRACT_RECOVER_SWP_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.2f %s\r\n", FSS_FWRETRACT_RECOVER_SWP_SPEED, fwretract.settings.swap_retract_recover_feedrate_mm_s, FSSC_FWRETRACT_RECOVER_SWP_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
     
+    /******** LINEAR ADVANCE ***********/
+    sprintf(curline, "%s", (char*)"\r\n# ====== LINEAR ADVANCE ======\r\n");
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines += 2;
+    sprintf(curline, "%s = %0.4f %s\r\n", FSS_LA_KFACTOR, planner.extruder_advance_K[0], FSSC_LA_KFACTOR);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
 
 
     wres = true;
@@ -639,8 +690,10 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
   bool        wres = true;
 	uint16_t	  cnt = 0;
 	UINT		    readed = 0;
-	int16_t		  lines = 0;
+	int16_t		  lines = 0, params = 0, params_old = 0;
 	PARAM_VALUE	pval;
+
+  bool        fwretr_update = false;
 
   if (fname == NULL || strlen(fname) < 2)
     filename = (char*)"/printer_settings.ini";
@@ -727,6 +780,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           planner.settings.max_acceleration_mm_per_s2[X_AXIS] = (uint32_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_ACCEL_MAX_Y) == 0)
@@ -741,6 +795,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           planner.settings.max_acceleration_mm_per_s2[Y_AXIS] = (uint32_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_ACCEL_MAX_Z) == 0)
@@ -755,6 +810,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           planner.settings.max_acceleration_mm_per_s2[Z_AXIS] = (uint32_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_ACCEL_MAX_E) == 0)
@@ -769,6 +825,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           planner.settings.max_acceleration_mm_per_s2[E_AXIS] = (uint32_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PRINT_ACCEL) == 0)
@@ -783,6 +840,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           planner.settings.acceleration = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_RETRACT_ACCEL) == 0)
@@ -797,6 +855,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           planner.settings.retract_acceleration = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_TRAVEL_ACCEL) == 0)
@@ -811,6 +870,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           planner.settings.travel_acceleration = (float)pval.float_val;
+          params++;
           break;
         }
         break;
@@ -828,6 +888,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > 10000)
             pval.float_val = 10000;
           set_z_fade_height((float)pval.float_val, false);
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_ENABLED) == 0)
@@ -838,6 +899,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           bedlevel_settings.bltouch_enabled = pval.bool_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_INVERT) == 0)
@@ -848,6 +910,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           endstop_settings.Z_MIN_PROBE_INVERTING = pval.bool_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_OFFSET_X) == 0)
@@ -858,6 +921,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           probe.offset.x = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_OFFSET_Y) == 0)
@@ -868,6 +932,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           probe.offset.y = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_OFFSET_Z) == 0)
@@ -878,6 +943,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           probe.offset.z = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_POINTS_X) == 0)
@@ -892,6 +958,8 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > GRID_MAX_POINTS_X)
             pval.float_val = GRID_MAX_POINTS_X;
           bedlevel_settings.bedlevel_points.x = (uint8_t)pval.float_val;
+          bedlevel.refresh_bed_level();
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_POINTS_Y) == 0)
@@ -906,6 +974,8 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > GRID_MAX_POINTS_Y)
             pval.float_val = GRID_MAX_POINTS_Y;
           bedlevel_settings.bedlevel_points.y = (uint8_t)pval.float_val;
+          bedlevel.refresh_bed_level();
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_BEDLEVEL_VALUES) == 0)
@@ -935,6 +1005,8 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
               break;
             ix = 0;
           }
+          bedlevel.refresh_bed_level();
+          params++;
           break;
         }
         break;
@@ -948,6 +1020,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           endstop_settings.X_MIN_INVERTING = pval.bool_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_ENDSTOP_INVERT_Y) == 0)
@@ -958,6 +1031,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           endstop_settings.Y_MIN_INVERTING = pval.bool_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_ENDSTOP_INVERT_Z1) == 0)
@@ -968,6 +1042,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           endstop_settings.Z_MIN_INVERTING = pval.bool_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_ENDSTOP_INVERT_Z2) == 0)
@@ -978,6 +1053,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           endstop_settings.Z2_MIN_INVERTING = pval.bool_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_ENDSTOP_ADJUST_Z2) == 0)
@@ -988,6 +1064,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           endstops.z2_endstop_adj = pval.float_val;
+          params++;
           break;
         }
         break;
@@ -1003,6 +1080,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           runout.enabled = pval.bool_val;
           if (runout.enabled)
             runout.reset();
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_FILAMENTSENSOR_DISTANCE) == 0)
@@ -1015,6 +1093,119 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           runout.set_runout_distance((float)pval.float_val);
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.retract_length = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.retract_feedrate_mm_s = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_Z_HOP) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.retract_zraise = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_RECOVER_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.retract_recover_extra = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_RECOVER_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.retract_recover_feedrate_mm_s = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_SWP_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.swap_retract_length = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_RECOVER_SWP_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.swap_retract_recover_extra = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FWRETRACT_RECOVER_SWP_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          fwretract.settings.swap_retract_recover_feedrate_mm_s = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
           break;
         }
         break;
@@ -1028,6 +1219,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           home_offset.x = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_HOME_OFFSET_Y) == 0)
@@ -1038,6 +1230,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           home_offset.y = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_HOME_OFFSET_Z) == 0)
@@ -1048,6 +1241,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           home_offset.z = (float)pval.float_val;
+          params++;
           break;
         }
         break;
@@ -1061,6 +1255,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           planner.max_jerk.x = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_MAX_JERK_Y) == 0)
@@ -1071,6 +1266,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           planner.max_jerk.y = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_MAX_JERK_Z) == 0)
@@ -1081,6 +1277,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           planner.max_jerk.z = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_MAX_JERK_E) == 0)
@@ -1091,6 +1288,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           planner.max_jerk.e = (float)pval.float_val;
+          params++;
           break;
         }
         break;
@@ -1108,6 +1306,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val > LCD_BRIGHTNESS_STEPS-1)
             pval.float_val = LCD_BRIGHTNESS_STEPS-1;
           ui.set_brightness((uint8_t)pval.float_val);
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_LCD_TOUCH_X) == 0)
@@ -1118,6 +1317,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           touch_calibration.calibration.x = (int32_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_LCD_TOUCH_Y) == 0)
@@ -1128,6 +1328,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           touch_calibration.calibration.y = (int32_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_LCD_TOUCH_OFFSET_X) == 0)
@@ -1138,6 +1339,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           touch_calibration.calibration.offset_x = (int16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_LCD_TOUCH_OFFSET_Y) == 0)
@@ -1148,6 +1350,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           touch_calibration.calibration.offset_y = (int16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_LCD_LANGUAGE) == 0)
@@ -1160,6 +1363,20 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val >= NUM_LANGUAGES || pval.float_val < 0)
             pval.float_val = 0;
           ui.language = (uint8_t)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_LA_KFACTOR) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          planner.extruder_advance_K[0] = (float)pval.float_val;
+          params++;
           break;
         }
         break;
@@ -1175,6 +1392,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           planner.settings.min_segment_time_us = (uint32_t)pval.float_val;
+          params++;
           break;
         }
         break;
@@ -1190,6 +1408,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           ui.material_preset[0].hotend_temp = (int16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PREHEAT_HOTEND_2) == 0)
@@ -1202,6 +1421,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           ui.material_preset[1].hotend_temp = (int16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PREHEAT_BED_1) == 0)
@@ -1214,6 +1434,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           ui.material_preset[0].bed_temp = (int16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PREHEAT_BED_2) == 0)
@@ -1226,6 +1447,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           ui.material_preset[1].bed_temp = (int16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PREHEAT_FAN_1) == 0)
@@ -1238,6 +1460,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           ui.material_preset[0].fan_speed = (uint16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PREHEAT_FAN_2) == 0)
@@ -1250,6 +1473,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           if (pval.float_val < 0)
             pval.float_val = 0;
           ui.material_preset[1].fan_speed = (uint16_t)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PID_HOTEND_P) == 0)
@@ -1260,6 +1484,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           thermalManager.temp_hotend[0].pid.Kp = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PID_HOTEND_I) == 0)
@@ -1270,6 +1495,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           thermalManager.temp_hotend[0].pid.Ki = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PID_HOTEND_D) == 0)
@@ -1280,6 +1506,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           thermalManager.temp_hotend[0].pid.Kd = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PID_BED_P) == 0)
@@ -1290,6 +1517,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           thermalManager.temp_bed.pid.Kp = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PID_BED_I) == 0)
@@ -1300,6 +1528,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           thermalManager.temp_bed.pid.Ki = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PID_BED_D) == 0)
@@ -1310,6 +1539,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           thermalManager.temp_bed.pid.Kd = (float)pval.float_val;
+          params++;
           break;
         }
         if (strcmp(lexem, FSS_PSU_ENABLED) == 0)
@@ -1320,14 +1550,245 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
             break;
           }
           psu_settings.psu_enabled = pval.bool_val;
+          params++;
           break;
         }
         break;
       
       case 'S':
+        if (strcmp(lexem, FSS_STEPS_PER_MM_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.axis_steps_per_mm[X_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPS_PER_MM_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.axis_steps_per_mm[Y_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPS_PER_MM_Z) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.axis_steps_per_mm[Z_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPS_PER_MM_E) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.axis_steps_per_mm[E_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_MAX_SPEED_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.max_feedrate_mm_s[X_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_MAX_SPEED_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.max_feedrate_mm_s[Y_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_MAX_SPEED_Z) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.max_feedrate_mm_s[Z_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_MAX_SPEED_E) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.max_feedrate_mm_s[E_AXIS] = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_MIN_PRINT_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.min_feedrate_mm_s = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_MIN_TRAVEL_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          planner.settings.min_travel_feedrate_mm_s = (float)pval.float_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPPER_INVERT_X) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          planner.invert_axis.invert_axis[X_AXIS] = pval.bool_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPPER_INVERT_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          planner.invert_axis.invert_axis[Y_AXIS] = pval.bool_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPPER_INVERT_Z1) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          planner.invert_axis.invert_axis[Z_AXIS] = pval.bool_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPPER_INVERT_Z2) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          planner.invert_axis.z2_vs_z_dir = pval.bool_val;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_STEPPER_INVERT_E) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          planner.invert_axis.invert_axis[E_AXIS] = pval.bool_val;
+          params++;
+          break;
+        }
+        break;
+      
+      case 'T':
+        if (strcmp(lexem, FSS_THERMISTOR_TYPE_HOTEND) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          if (pval.float_val >= THERMISTORS_TYPES_COUNT)
+            pval.float_val = 0;
+          thermistors_data.heater_type[0] = (uint8_t)pval.float_val;
+          thermistors_data.fan_auto_temp[0] = thermistor_types[(uint8_t)pval.float_val].fan_auto_temp;
+          thermistors_data.high_temp[0] = thermistor_types[(uint8_t)pval.float_val].high_temp;
+          thermalManager.hotend_maxtemp[0] = thermistor_types[(uint8_t)pval.float_val].max_temp;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_THERMISTOR_TYPE_BED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          if (pval.float_val >= THERMISTORS_TYPES_COUNT)
+            pval.float_val = 0;
+          thermistors_data.bed_type = (uint8_t)pval.float_val;
+          params++;
+          break;
+        }
+        break;
+
+      default:
         break;
     }
 
+    if (params == params_old)
+    {
+      SERIAL_ECHOPGM("M5001: unknown parameter - ", lexem);
+      SERIAL_ECHOLNPGM(" - in line - ", lines);
+    }
+    params_old = params;
 
 		if (!wres)
 			break;
@@ -1337,9 +1798,13 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
 
   card.closefile();
 
+  if (fwretr_update)
+    fwretract.refresh_autoretract();
+
   if (wres)
   {
     SERIAL_ECHOLNPGM("M5001: lines readed - ", lines);
+    SERIAL_ECHOLNPGM("M5001: parameters readed - ", params);
     OKAY_BUZZ();
   }
   else

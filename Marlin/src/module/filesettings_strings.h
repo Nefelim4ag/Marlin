@@ -146,9 +146,6 @@ const char FSSC_BEDLEVEL_POINTS_Y[] = " ";
 const char FSS_BEDLEVEL_VALUES[] = "BEDLEVEL_Z_VALUES";
 const char FSSC_BEDLEVEL_VALUES[] = " # mm";
 
-const char FSS_SERVO_ANGLES[] = "SERVO_ANGLES";
-const char FSSC_SERVO_ANGLES[] = " ";
-
 /******** ENDSTOPS ***********/
 const char FSS_ENDSTOP_INVERT_X[] = "ENDSTOP_INVERT_X";
 const char FSSC_ENDSTOP_INVERT_X[] = " ";
@@ -230,4 +227,33 @@ const char FSSC_LCD_LANGUAGE[] = " # 0 - English, 1 - Русский";
 /******** PSU ***********/
 const char FSS_PSU_ENABLED[] = "PSU_ENABLED";
 const char FSSC_PSU_ENABLED[] = " ";
+
+/******** FW RETRACT ***********/
+const char FSS_FWRETRACT_LENGTH[] = "FWRETRACT_LENGTH";
+const char FSSC_FWRETRACT_LENGTH[] = " # mm, M207 S - G10 Retract length";
+
+const char FSS_FWRETRACT_SPEED[] = "FWRETRACT_SPEED";
+const char FSSC_FWRETRACT_SPEED[] = " # mm/s, M207 F - G10 Retract feedrate";
+
+const char FSS_FWRETRACT_Z_HOP[] = "FWRETRACT_Z_HOP";
+const char FSSC_FWRETRACT_Z_HOP[] = " # mm, M207 Z - G10 Retract hop size";
+
+const char FSS_FWRETRACT_RECOVER_LENGTH[] = "FWRETRACT_RECOVER_LENGTH";
+const char FSSC_FWRETRACT_RECOVER_LENGTH[] = " # mm, M208 S - G11 Recover extra length";
+
+const char FSS_FWRETRACT_RECOVER_SPEED[] = "FWRETRACT_RECOVER_SPEED";
+const char FSSC_FWRETRACT_RECOVER_SPEED[] = " # mm/s, M208 F - G11 Recover feedrate";
+
+const char FSS_FWRETRACT_SWP_LENGTH[] = "FWRETRACT_SWP_LENGTH";
+const char FSSC_FWRETRACT_SWP_LENGTH[] = " # mm, M207 W - G10 Swap Retract length";
+
+const char FSS_FWRETRACT_RECOVER_SWP_LENGTH[] = "FWRETRACT_RECOVER_SWP_LENGTH";
+const char FSSC_FWRETRACT_RECOVER_SWP_LENGTH[] = " # mm, G11 Swap Recover length";
+
+const char FSS_FWRETRACT_RECOVER_SWP_SPEED[] = "FWRETRACT_RECOVER_SWP_SPEED";
+const char FSSC_FWRETRACT_RECOVER_SWP_SPEED[] = " # mm/s, G11 Swap Recover feedrate";
+
+/******** LINEAR ADVANCE ***********/
+const char FSS_LA_KFACTOR[] = "LA_KFACTOR";
+const char FSSC_LA_KFACTOR[] = " # Linear Advance K-factor, M900 K";
 

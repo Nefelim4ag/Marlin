@@ -48,7 +48,7 @@ void GcodeSuite::M5000()
  */
 void GcodeSuite::M5001()
 {
-  SERIAL_ECHOLNPGM("M5000: file - \"", parser.command_args, "\"");
+  SERIAL_ECHOLNPGM("M5001: file - \"", parser.command_args, "\"");
 
   uint32_t msecs = millis();
   if (fileSettings.LoadSettings(parser.command_args))
