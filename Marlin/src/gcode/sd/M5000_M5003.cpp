@@ -33,9 +33,15 @@ void GcodeSuite::M5000()
   SERIAL_ECHOLNPGM("M5000: file - \"", parser.command_args, "\"");
 
   if (fileSettings.SaveSettings(parser.command_args))
+  {
     SERIAL_ECHOLNPGM("M5000: success");
+    ui.set_status("Settings saved success");
+  }
   else
+  {
     SERIAL_ECHOLNPGM("M5000: failure");
+    ui.set_status("Settings saving fail");
+  }
 //  SERIAL_ECHOLNPGM("M5000: total msec - ", millis() - msecs);
 
 }
@@ -54,9 +60,15 @@ void GcodeSuite::M5001()
 
 //  uint32_t msecs = millis();
   if (fileSettings.LoadSettings(parser.command_args))
+  {
     SERIAL_ECHOLNPGM("M5001: success");
+    ui.set_status("Settings loaded success");
+  }
   else
+  {
     SERIAL_ECHOLNPGM("M5001: failure");
+    ui.set_status("Settings loading fail");
+  }
 //  SERIAL_ECHOLNPGM("M5001: total msec - ", millis() - msecs);
 
 }
