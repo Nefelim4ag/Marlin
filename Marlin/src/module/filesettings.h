@@ -18,12 +18,33 @@
 
 #include "../inc/MarlinConfig.h"
 
+typedef enum
+{
+	PARAMVAL_NONE = 0,
+	PARAMVAL_NUMERIC,
+	PARAMVAL_BOOL,
+	PARAMVAL_STRING
+} VALUE_TYPE;
+
+typedef struct
+{
+	double		  float_val;
+	bool  		  bool_val;
+	char			  *char_val;
+	VALUE_TYPE	type;
+} PARAM_VALUE;
+
+
 class FileSettings {
   public:
-    bool SaveSettings(char *fname = NULL);
+    static bool SaveSettings(char *fname = NULL);
+    static bool LoadSettings(char *fname /*= NULL*/);
 
   private:
-    void postprocess();
+    static char* _getParamName(char *src, char *dest, uint16_t maxlen);
+    static char* _getParamValue(char *src, PARAM_VALUE *val);
+    static void _skipToNextLine(char *src);
+    static void postprocess();
 };
 
 extern FileSettings fileSettings;

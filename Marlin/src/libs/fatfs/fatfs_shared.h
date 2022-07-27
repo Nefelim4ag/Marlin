@@ -24,6 +24,8 @@ void		FATFS_DelFileExtensionUTF(char *fname);
 char*		FATFS_GetPrevDir(char *fname);
 
 char*		strupper_utf(char *src);
+char*		strtrim(char *src);
+char*	  strcpy_utf(char *dst, char* src);
 
 
 #endif

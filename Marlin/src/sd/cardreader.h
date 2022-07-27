@@ -89,7 +89,7 @@ public:
   #endif
 
   // Basic file ops
-  static void openFileRead(const char * const path, const uint8_t subcall=0);
+  static bool openFileRead(const char * const path, const uint8_t subcall=0);
   static bool openFileWrite(const char * const path, bool owerwrite = false);
   static void removeFile(const char * const name);
   static void closefile(const bool store_location=false);

@@ -22,7 +22,7 @@
 #include "../../module/filesettings.h"
 
 /**
- * M23: Open a file
+ * M5000 - Store parameters in .ini file. 
  *
  * The path is relative to the root directory
  */
@@ -37,6 +37,26 @@ void GcodeSuite::M5000()
     SERIAL_ECHOLNPGM("M5000: failure");
   msecs = millis() - msecs;
   SERIAL_ECHOLNPGM("M5000: total msec - ", msecs);
+
+}
+
+
+/**
+ * M5001 - Load parameters from .ini file. 
+ *
+ * The path is relative to the root directory
+ */
+void GcodeSuite::M5001()
+{
+  SERIAL_ECHOLNPGM("M5000: file - \"", parser.command_args, "\"");
+
+  uint32_t msecs = millis();
+  if (fileSettings.LoadSettings(parser.command_args))
+    SERIAL_ECHOLNPGM("M5001: success");
+  else
+    SERIAL_ECHOLNPGM("M5001: failure");
+  msecs = millis() - msecs;
+  SERIAL_ECHOLNPGM("M5001: total msec - ", msecs);
 
 }
 

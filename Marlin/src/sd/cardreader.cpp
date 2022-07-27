@@ -156,10 +156,10 @@ void announceOpen(const uint8_t doing, const char *const path)
 //   - 2 : Resuming from a sub-procedure
 //   - 9 : Just open file
 //
-void CardReader::openFileRead(const char *const path, const uint8_t subcall_type /*=0*/)
+bool CardReader::openFileRead(const char *const path, const uint8_t subcall_type /*=0*/)
 {
     if (!isMounted() || path == 0)
-        return;
+        return false;
 
     switch (subcall_type)
     {
@@ -185,7 +185,7 @@ void CardReader::openFileRead(const char *const path, const uint8_t subcall_type
         {
             SERIAL_ERROR_MSG("Exceeded max SUBROUTINE depth:", SD_PROCEDURE_DEPTH);
             kill(GET_TEXT_F(MSG_KILL_SUBCALL_OVERFLOW));
-            return;
+            return false;
         }
 
         // Store current filename (based on workDirParents) and position
@@ -230,7 +230,10 @@ void CardReader::openFileRead(const char *const path, const uint8_t subcall_type
     {
         openFailed(curfilinfo.fname);
         memset(&curfilinfo, 0, sizeof(curfilinfo));
+        return false;
     }
+
+    return true;
 }
 
 inline void echo_write_to_file(const char *const fname)

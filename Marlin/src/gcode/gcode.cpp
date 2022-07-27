@@ -1190,7 +1190,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
 
 
-      case 5000: M5000(); break;                                // M5000: Store parameters in .ini file. 
+      case 5000: M5000(); break;                                // M5000: Store parameters in .ini file
+      case 5001: M5001(); break;                                // M5001 - Load parameters from .ini file
 
 
       default: parser.unknown_command_warning(); break;

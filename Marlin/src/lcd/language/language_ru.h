@@ -963,6 +963,9 @@ namespace Language_ru {
 
   LSTR MSG_CHANGE                         = _UxGT("Изменить");
 
+  LSTR MSG_CFG_LOAD_ERROR                 = _UxGT("Ошибка загрузки настроек из файла \"%s\", в строке %d");
+
+
 }
 
 #if FAN_COUNT == 1

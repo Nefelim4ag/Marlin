@@ -265,3 +265,67 @@ char*		strupper_utf(char *src)
 
 
 
+char*		strtrim(char *src)
+{
+	// begin spaces
+	char	*begin = src;
+	while (*begin > 0 && *begin < '!')
+		begin++;
+	if (begin != src)
+		strcpy_utf(src, begin);
+	if (*src == 0)
+		return src;
+	
+	// end spaces
+	begin = src;
+	while (*begin != 0)
+		begin++;
+	begin--;
+	if (begin == src)
+		return src;
+	while (*begin < '!')
+	{
+		begin--;
+		if (begin == src)
+		{
+			*begin = 0;
+			return src;
+		}
+	}
+	begin++;
+	*begin = 0;
+	
+	return src;
+}
+//==============================================================================
+
+
+
+
+char*	strcpy_utf(char *dst, char* src)
+{
+	char *cdst = dst;
+	
+	while (*src != 0)
+	{
+		if (*src < 0x80)
+		{
+			*cdst = *src;
+			cdst++;
+			src++;
+		}
+		else
+		{
+			*(uint16_t*)(cdst) = *(uint16_t*)(src);
+			cdst += 2;
+			src += 2;
+		}
+	}
+	*cdst = 0;
+	return dst;
+}
+//==============================================================================
+
+
+
+

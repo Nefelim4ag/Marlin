@@ -154,7 +154,7 @@ FileSettings fileSettings;
 
 
 
-bool FileSettings::SaveSettings(char *fname)
+bool FileSettings::SaveSettings(char *fname /*= NULL*/)
 {
   if (card.isFileOpen())
     return false;
@@ -163,6 +163,7 @@ bool FileSettings::SaveSettings(char *fname)
   char curline[512];
   bool wres = false;
   uint32_t len = 0;
+  uint16_t lines = 0;
 
   if (fname == NULL || strlen(fname) < 2)
     filename = (char*)"/printer_settings.ini";
@@ -179,212 +180,258 @@ bool FileSettings::SaveSettings(char *fname)
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %ld %s\r\n", FSS_ACCEL_MAX_X, planner.settings.max_acceleration_mm_per_s2[X_AXIS], FSSC_ACCEL_MAX_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %ld %s\r\n", FSS_ACCEL_MAX_Y, planner.settings.max_acceleration_mm_per_s2[Y_AXIS], FSSC_ACCEL_MAX_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %ld %s\r\n", FSS_ACCEL_MAX_Z, planner.settings.max_acceleration_mm_per_s2[Z_AXIS], FSSC_ACCEL_MAX_Z);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %ld %s\r\n", FSS_ACCEL_MAX_E, planner.settings.max_acceleration_mm_per_s2[E_AXIS], FSSC_ACCEL_MAX_E);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
-    sprintf(curline, "%s = %.2f %s\r\n", FSS_PRINT_ACCEL, planner.settings.acceleration, FSSC_PRINT_ACCEL);
+     lines++;
+   sprintf(curline, "%s = %.2f %s\r\n", FSS_PRINT_ACCEL, planner.settings.acceleration, FSSC_PRINT_ACCEL);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %.2f %s\r\n", FSS_RETRACT_ACCEL, planner.settings.retract_acceleration, FSSC_RETRACT_ACCEL);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %.2f %s\r\n", FSS_TRAVEL_ACCEL, planner.settings.travel_acceleration, FSSC_TRAVEL_ACCEL);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %ld %s\r\n", FSS_MIN_SEGMENT_TIME, planner.settings.min_segment_time_us, FSSC_MIN_SEGMENT_TIME);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     
     /******** STEPS PER MM ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== STEPS PER MM ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_STEPS_PER_MM_X, planner.settings.axis_steps_per_mm[X_AXIS], FSSC_STEPS_PER_MM_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_STEPS_PER_MM_Y, planner.settings.axis_steps_per_mm[Y_AXIS], FSSC_STEPS_PER_MM_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_STEPS_PER_MM_Z, planner.settings.axis_steps_per_mm[Z_AXIS], FSSC_STEPS_PER_MM_Z);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_STEPS_PER_MM_E, planner.settings.axis_steps_per_mm[E_AXIS], FSSC_STEPS_PER_MM_E);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
-    
+    lines++;
+   
     /******** SPEED ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== SPEED ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_SPEED_X, planner.settings.max_feedrate_mm_s[X_AXIS], FSSC_MAX_SPEED_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_SPEED_Y, planner.settings.max_feedrate_mm_s[Y_AXIS], FSSC_MAX_SPEED_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_SPEED_Z, planner.settings.max_feedrate_mm_s[Z_AXIS], FSSC_MAX_SPEED_Z);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_SPEED_E, planner.settings.max_feedrate_mm_s[E_AXIS], FSSC_MAX_SPEED_E);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     
     /******** JERKS ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== JERKS ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_JERK_X, planner.max_jerk.x, FSSC_MAX_JERK_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_JERK_Y, planner.max_jerk.y, FSSC_MAX_JERK_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_JERK_Z, planner.max_jerk.z, FSSC_MAX_JERK_Z);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_MAX_JERK_E, planner.max_jerk.e, FSSC_MAX_JERK_E);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
 
     /******** STEPPERS ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== STEPPERS ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_X, (planner.invert_axis.invert_axis[X_AXIS] ? "Yes" : "No"), FSSC_STEPPER_INVERT_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_Y, (planner.invert_axis.invert_axis[Y_AXIS] ? "Yes" : "No"), FSSC_STEPPER_INVERT_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_Z1, (planner.invert_axis.invert_axis[Z_AXIS] ? "Yes" : "No"), FSSC_STEPPER_INVERT_Z1);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_Z2, (planner.invert_axis.z2_vs_z_dir ? "Yes" : "No"), FSSC_STEPPER_INVERT_Z2);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_E, (planner.invert_axis.invert_axis[E_AXIS] ? "Yes" : "No"), FSSC_STEPPER_INVERT_E);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
 
     /******** HOME OFFSET ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== HOME OFFSET ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_HOME_OFFSET_X, home_offset.x, FSSC_HOME_OFFSET_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_HOME_OFFSET_Y, home_offset.y, FSSC_HOME_OFFSET_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_HOME_OFFSET_Z, home_offset.z, FSSC_HOME_OFFSET_Z);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     
     /******** FILAMENT RUNOUT SENSOR ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== FILAMENT RUNOUT SENSOR ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %s %s\r\n", FSS_FILAMENTSENSOR_ENABLED, (runout.enabled ? "Yes" : "No"), FSSC_FILAMENTSENSOR_ENABLED);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_FILAMENTSENSOR_DISTANCE, runout.runout_distance(), FSSC_FILAMENTSENSOR_DISTANCE);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     
     /******** BED LEVELING ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== BED LEVELING ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_BEDLEVEL_FADE_HEIGHT, planner.z_fade_height, FSSC_BEDLEVEL_FADE_HEIGHT);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_BEDLEVEL_BLTOUCH_ENABLED, (bedlevel_settings.bltouch_enabled ? "Yes" : "No"), FSSC_BEDLEVEL_BLTOUCH_ENABLED);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_BEDLEVEL_BLTOUCH_INVERT, (endstop_settings.Z_MIN_PROBE_INVERTING ? "Yes" : "No"), FSSC_BEDLEVEL_BLTOUCH_INVERT);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_BEDLEVEL_BLTOUCH_OFFSET_X, probe.offset.x, FSSC_BEDLEVEL_BLTOUCH_OFFSET_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.2f %s\r\n", FSS_BEDLEVEL_BLTOUCH_OFFSET_Y, probe.offset.y, FSSC_BEDLEVEL_BLTOUCH_OFFSET_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.3f %s\r\n", FSS_BEDLEVEL_BLTOUCH_OFFSET_Z, probe.offset.z, FSSC_BEDLEVEL_BLTOUCH_OFFSET_Z);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_BEDLEVEL_POINTS_X, bedlevel_settings.bedlevel_points.x, FSSC_BEDLEVEL_POINTS_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_BEDLEVEL_POINTS_Y, bedlevel_settings.bedlevel_points.y, FSSC_BEDLEVEL_POINTS_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
 
     sprintf(curline, "%s = ", FSS_BEDLEVEL_VALUES);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
-    for (uint8_t i = 0; i < GRID_MAX_POINTS_Y; i++)
+    for (uint8_t iy = 0; iy < GRID_MAX_POINTS_Y; iy++)
     {
-      for (uint8_t j = 0; j < GRID_MAX_POINTS_X; j++)
+      for (uint8_t ix = 0; ix < GRID_MAX_POINTS_X; ix++)
       {
         sprintf(curline, "%0.3f%s ",
-                    isnan(bedlevel.z_values[i][j]) ? 0 : bedlevel.z_values[i][j],
-                    (i == GRID_MAX_POINTS_Y-1 && j == GRID_MAX_POINTS_X-1) ? "" : ","
+                    isnan(bedlevel.z_values[ix][iy]) ? 0 : bedlevel.z_values[ix][iy],
+                    (iy == GRID_MAX_POINTS_Y-1 && ix == GRID_MAX_POINTS_X-1) ? "" : ","
                 );
         len = strlen(curline);
         if (card.write(curline, len) != len)
@@ -395,139 +442,171 @@ bool FileSettings::SaveSettings(char *fname)
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
 
     sprintf(curline, "%s = %d, %d %s\r\n", FSS_SERVO_ANGLES, servo_angles[0][0], servo_angles[0][1], FSSC_SERVO_ANGLES);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     
     /******** ENDSTOPS ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== ENDSTOPS ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %s %s\r\n", FSS_ENDSTOP_INVERT_X, (endstop_settings.X_MIN_INVERTING ? "Yes" : "No"), FSSC_ENDSTOP_INVERT_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_ENDSTOP_INVERT_Y, (endstop_settings.Y_MIN_INVERTING ? "Yes" : "No"), FSSC_ENDSTOP_INVERT_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_ENDSTOP_INVERT_Z1, (endstop_settings.Z_MIN_INVERTING ? "Yes" : "No"), FSSC_ENDSTOP_INVERT_Z1);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %s %s\r\n", FSS_ENDSTOP_INVERT_Z2, (endstop_settings.Z2_MIN_INVERTING ? "Yes" : "No"), FSSC_ENDSTOP_INVERT_Z2);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.3f %s\r\n", FSS_ENDSTOP_ADJUST_Z2, endstops.z2_endstop_adj, FSSC_ENDSTOP_ADJUST_Z2);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     
     /******** TEMPERATURE ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== TEMPERATURE ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %d %s\r\n", FSS_PREHEAT_HOTEND_1, ui.material_preset[0].hotend_temp, FSSC_PREHEAT_HOTEND_1);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_PREHEAT_BED_1, ui.material_preset[0].bed_temp, FSSC_PREHEAT_BED_1);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_PREHEAT_FAN_1, ui.material_preset[0].fan_speed, FSSC_PREHEAT_FAN_1);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_PREHEAT_HOTEND_2, ui.material_preset[1].hotend_temp, FSSC_PREHEAT_HOTEND_2);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_PREHEAT_BED_2, ui.material_preset[1].bed_temp, FSSC_PREHEAT_BED_2);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_PREHEAT_FAN_2, ui.material_preset[1].fan_speed, FSSC_PREHEAT_FAN_2);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.5f %s\r\n", FSS_PID_HOTEND_P, thermalManager.temp_hotend[0].pid.Kp, FSSC_PID_HOTEND_P);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.5f %s\r\n", FSS_PID_HOTEND_I, thermalManager.temp_hotend[0].pid.Ki, FSSC_PID_HOTEND_I);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.5f %s\r\n", FSS_PID_HOTEND_D, thermalManager.temp_hotend[0].pid.Kd, FSSC_PID_HOTEND_D);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.5f %s\r\n", FSS_PID_BED_P, thermalManager.temp_bed.pid.Kp, FSSC_PID_BED_P);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.5f %s\r\n", FSS_PID_BED_I, thermalManager.temp_bed.pid.Ki, FSSC_PID_BED_I);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %0.5f %s\r\n", FSS_PID_BED_D, thermalManager.temp_bed.pid.Kd, FSSC_PID_BED_D);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_THERMISTOR_TYPE_HOTEND, thermistors_data.heater_type[0], FSSC_THERMISTOR_TYPE_HOTEND);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_THERMISTOR_TYPE_BED, thermistors_data.bed_type, FSSC_THERMISTOR_TYPE_BED);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
    
     /******** LCD ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== LCD ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %d %s\r\n", FSS_LCD_BRIGHTNESS, ui.brightness, FSSC_LCD_BRIGHTNESS);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %ld %s\r\n", FSS_LCD_TOUCH_X, touch_calibration.calibration.x, FSSC_LCD_TOUCH_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %ld %s\r\n", FSS_LCD_TOUCH_Y, touch_calibration.calibration.y, FSSC_LCD_TOUCH_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_LCD_TOUCH_OFFSET_X, touch_calibration.calibration.offset_x, FSSC_LCD_TOUCH_OFFSET_X);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_LCD_TOUCH_OFFSET_Y, touch_calibration.calibration.offset_y, FSSC_LCD_TOUCH_OFFSET_Y);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
     sprintf(curline, "%s = %d %s\r\n", FSS_LCD_LANGUAGE, ui.language, FSSC_LCD_LANGUAGE);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
 
     /******** PSU ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== PSU ======\r\n");
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines += 2;
     sprintf(curline, "%s = %s %s\r\n", FSS_PSU_ENABLED, (psu_settings.psu_enabled ? "Yes" : "No"), FSSC_PSU_ENABLED);
     len = strlen(curline);
     if (card.write(curline, len) != len)
       break;
+    lines++;
 
     
 
@@ -541,9 +620,854 @@ bool FileSettings::SaveSettings(char *fname)
     OKAY_BUZZ();
   else
     ERR_BUZZ();
+  SERIAL_ECHOLNPGM("M5000: lines writed - ", lines);
 
   return wres;
 }
+
+
+
+bool FileSettings::LoadSettings(char *fname /*= NULL*/)
+{
+  if (card.isFileOpen())
+    return false;
+
+  char        *filename;
+  char        msg[512];
+	char			  lexem[128];
+  char        *string;
+  bool        wres = true;
+	uint16_t	  cnt = 0;
+	UINT		    readed = 0;
+	int16_t		  lines = 0;
+	PARAM_VALUE	pval;
+
+  if (fname == NULL || strlen(fname) < 2)
+    filename = (char*)"/printer_settings.ini";
+  else
+    filename = fname;
+  
+  if (!card.openFileRead(filename, true))
+    return false;
+  
+  do
+  {
+		// read one string
+		cnt = 0;
+		readed = 0;
+		string = msg;
+		while (cnt < sizeof(msg))
+		{
+      readed = card.read(string, 1);
+			if (readed == 0 || *string == '\n')
+			{
+				*string = 0;
+				break;
+			}
+			cnt++;
+			string++;
+		}
+		if (cnt == sizeof(msg))
+		{
+			string--;
+			*string = 0;
+		}
+		lines++;
+		string = msg;
+		
+		// trim spaces/tabs at begin and end
+		strtrim(string);
+    		
+		// if string is empty
+		if (*string == 0)
+		{
+			// if end of file
+			if (readed == 0)
+      {
+        wres = true;
+				break;
+      }
+			else
+      {
+				continue;
+      }
+		}
+		
+		// upper all letters
+		strupper_utf(string);
+		
+		// get parameter name
+		string = _getParamName(string, lexem, sizeof(lexem));
+		
+		// skip comments
+		if (*lexem == '#')
+			continue;
+		
+		// get parameter value
+		string = _getParamValue(string, &pval);
+		if (pval.type == PARAMVAL_NONE)
+		{
+      wres = false;
+			break;
+		}
+		
+		// check and setup parameter
+    switch (*lexem)
+    {
+      case 'A':
+        if (strcmp(lexem, FSS_ACCEL_MAX_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          planner.settings.max_acceleration_mm_per_s2[X_AXIS] = (uint32_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_ACCEL_MAX_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          planner.settings.max_acceleration_mm_per_s2[Y_AXIS] = (uint32_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_ACCEL_MAX_Z) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          planner.settings.max_acceleration_mm_per_s2[Z_AXIS] = (uint32_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_ACCEL_MAX_E) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          planner.settings.max_acceleration_mm_per_s2[E_AXIS] = (uint32_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PRINT_ACCEL) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          planner.settings.acceleration = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_RETRACT_ACCEL) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          planner.settings.retract_acceleration = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_TRAVEL_ACCEL) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          planner.settings.travel_acceleration = (float)pval.float_val;
+          break;
+        }
+        break;
+
+      case 'B':
+        if (strcmp(lexem, FSS_BEDLEVEL_FADE_HEIGHT) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          if (pval.float_val > 10000)
+            pval.float_val = 10000;
+          set_z_fade_height((float)pval.float_val, false);
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_ENABLED) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          bedlevel_settings.bltouch_enabled = pval.bool_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_INVERT) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          endstop_settings.Z_MIN_PROBE_INVERTING = pval.bool_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_OFFSET_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          probe.offset.x = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_OFFSET_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          probe.offset.y = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_BLTOUCH_OFFSET_Z) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          probe.offset.z = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_POINTS_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 3)
+            pval.float_val = 3;
+          if (pval.float_val > GRID_MAX_POINTS_X)
+            pval.float_val = GRID_MAX_POINTS_X;
+          bedlevel_settings.bedlevel_points.x = (uint8_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_POINTS_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 3)
+            pval.float_val = 3;
+          if (pval.float_val > GRID_MAX_POINTS_Y)
+            pval.float_val = GRID_MAX_POINTS_Y;
+          bedlevel_settings.bedlevel_points.y = (uint8_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_BEDLEVEL_VALUES) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          uint8_t ix = 0, iy = 0;
+          for (; iy < GRID_MAX_POINTS_Y; iy++)
+          {
+            for (; ix < GRID_MAX_POINTS_X; ix++)
+            {
+              bedlevel.z_values[ix][iy] = (float)pval.float_val;
+              if (iy < GRID_MAX_POINTS_Y-1 || ix < GRID_MAX_POINTS_X-1)
+              {
+                string = _getParamValue(string, &pval);
+                if (pval.type != PARAMVAL_NUMERIC)
+                {
+                  wres = false;
+                  break;
+                }
+              }
+            }
+            if (!wres)
+              break;
+            ix = 0;
+          }
+          break;
+        }
+        break;
+      
+      case 'E':
+        if (strcmp(lexem, FSS_ENDSTOP_INVERT_X) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          endstop_settings.X_MIN_INVERTING = pval.bool_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_ENDSTOP_INVERT_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          endstop_settings.Y_MIN_INVERTING = pval.bool_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_ENDSTOP_INVERT_Z1) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          endstop_settings.Z_MIN_INVERTING = pval.bool_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_ENDSTOP_INVERT_Z2) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          endstop_settings.Z2_MIN_INVERTING = pval.bool_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_ENDSTOP_ADJUST_Z2) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          endstops.z2_endstop_adj = pval.float_val;
+          break;
+        }
+        break;
+
+      case 'F':
+        if (strcmp(lexem, FSS_FILAMENTSENSOR_ENABLED) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          runout.enabled = pval.bool_val;
+          if (runout.enabled)
+            runout.reset();
+          break;
+        }
+        if (strcmp(lexem, FSS_FILAMENTSENSOR_DISTANCE) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          runout.set_runout_distance((float)pval.float_val);
+          break;
+        }
+        break;
+      
+      case 'H':
+        if (strcmp(lexem, FSS_HOME_OFFSET_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          home_offset.x = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_HOME_OFFSET_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          home_offset.y = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_HOME_OFFSET_Z) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          home_offset.z = (float)pval.float_val;
+          break;
+        }
+        break;
+      
+      case 'J':
+        if (strcmp(lexem, FSS_MAX_JERK_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          planner.max_jerk.x = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_MAX_JERK_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          planner.max_jerk.y = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_MAX_JERK_Z) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          planner.max_jerk.z = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_MAX_JERK_E) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          planner.max_jerk.e = (float)pval.float_val;
+          break;
+        }
+        break;
+
+      case 'L':
+        if (strcmp(lexem, FSS_LCD_BRIGHTNESS) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          if (pval.float_val > LCD_BRIGHTNESS_STEPS-1)
+            pval.float_val = LCD_BRIGHTNESS_STEPS-1;
+          ui.set_brightness((uint8_t)pval.float_val);
+          break;
+        }
+        if (strcmp(lexem, FSS_LCD_TOUCH_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          touch_calibration.calibration.x = (int32_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_LCD_TOUCH_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          touch_calibration.calibration.y = (int32_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_LCD_TOUCH_OFFSET_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          touch_calibration.calibration.offset_x = (int16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_LCD_TOUCH_OFFSET_Y) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          touch_calibration.calibration.offset_y = (int16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_LCD_LANGUAGE) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val >= NUM_LANGUAGES || pval.float_val < 0)
+            pval.float_val = 0;
+          ui.language = (uint8_t)pval.float_val;
+          break;
+        }
+        break;
+      
+      case 'M':
+        if (strcmp(lexem, FSS_MIN_SEGMENT_TIME) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          planner.settings.min_segment_time_us = (uint32_t)pval.float_val;
+          break;
+        }
+        break;
+
+      case 'P':
+        if (strcmp(lexem, FSS_PREHEAT_HOTEND_1) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          ui.material_preset[0].hotend_temp = (int16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PREHEAT_HOTEND_2) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          ui.material_preset[1].hotend_temp = (int16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PREHEAT_BED_1) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          ui.material_preset[0].bed_temp = (int16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PREHEAT_BED_2) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          ui.material_preset[1].bed_temp = (int16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PREHEAT_FAN_1) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          ui.material_preset[0].fan_speed = (uint16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PREHEAT_FAN_2) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          ui.material_preset[1].fan_speed = (uint16_t)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PID_HOTEND_P) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          thermalManager.temp_hotend[0].pid.Kp = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PID_HOTEND_I) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          thermalManager.temp_hotend[0].pid.Ki = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PID_HOTEND_D) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          thermalManager.temp_hotend[0].pid.Kd = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PID_BED_P) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          thermalManager.temp_bed.pid.Kp = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PID_BED_I) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          thermalManager.temp_bed.pid.Ki = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PID_BED_D) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          thermalManager.temp_bed.pid.Kd = (float)pval.float_val;
+          break;
+        }
+        if (strcmp(lexem, FSS_PSU_ENABLED) == 0)
+        {
+          if (pval.type != PARAMVAL_BOOL)
+          {
+            wres = false;
+            break;
+          }
+          psu_settings.psu_enabled = pval.bool_val;
+          break;
+        }
+        break;
+      
+      case 'S':
+        break;
+    }
+
+
+		if (!wres)
+			break;
+		
+  } while (1);
+  
+
+  card.closefile();
+
+  if (wres)
+  {
+    SERIAL_ECHOLNPGM("M5001: lines readed - ", lines);
+    OKAY_BUZZ();
+  }
+  else
+  {
+    SERIAL_ECHOLNPGM("M5001: failure in line - ", lines);
+    ERR_BUZZ();
+  }
+
+  return wres;
+}
+
+
+
+char* FileSettings::_getParamName(char *src, char *dest, uint16_t maxlen)
+{
+	if (src == NULL || dest == NULL)
+		return src;
+	
+//	char *string = src;
+	// skip spaces
+	while (*src != 0 && maxlen > 0 && (*src == ' ' || *src == '\t' || *src == '\r' || *src > 126))
+	{
+		src++;
+		maxlen--;
+	}
+	// until first space symbol
+	while (maxlen > 0 && *src != 0 && *src != ' ' && *src != '\t' && *src != '\r' && *src != '\n' && *src != '=')
+	{
+		*dest = *src;
+		dest++;
+		src++;
+		maxlen--;
+	}
+	
+	if (maxlen == 0)
+		dest--;
+	
+	*dest = 0;
+
+  if (*src != 0)
+  {
+    // skip symbols to first value if one exists
+    while (*src > 0 && (*src == ' ' || *src == '\t' || *src == '='))
+      src++;
+  }
+
+	return src;
+}
+//==============================================================================
+
+
+
+
+char* FileSettings::_getParamValue(char *src, PARAM_VALUE *val)
+{
+	val->type = PARAMVAL_NONE;
+	val->float_val = 0;
+	val->bool_val = false;
+	val->char_val = (char*)"";
+	
+	if (src == NULL)
+		return src;
+	if (val == NULL)
+		return src;
+	
+	// skip spaces
+	while (*src != 0 && (*src == ' ' || *src == '\t' || *src == '\r'))
+		src++;
+  // End of line or begin comment
+	if (*src == 0 || *src == '#')
+		return src;
+
+	// check param if it numeric
+	if ((*src > 47 && *src < 58) || *src == '.' || (*src == '-' && ((*(src+1) > 47 && *(src+1) < 58) || *(src+1) == '.')))
+	{
+		val->type = PARAMVAL_NUMERIC;
+		val->float_val = atof(src);
+    val->bool_val = (val->float_val != 0);
+		val->char_val = src;
+	}
+  // check param if it boolean
+	else if (strncmp(src, "YES", 3) == 0 || strncmp(src, "NO", 2) == 0)
+  {
+		val->type = PARAMVAL_BOOL;
+    if (strncmp(src, "YES", 3) == 0)
+    {
+		  val->bool_val = true;
+  		val->float_val = 1;
+  		val->char_val = src;
+    }
+    else
+    {
+		  val->bool_val = false;
+  		val->float_val = 0;
+  		val->char_val = src;
+    }
+	}
+  // param is string
+  else
+  {
+		val->type = PARAMVAL_STRING;
+		val->char_val = src;
+  }
+	
+  if (val->type != PARAMVAL_NONE)
+  {
+    // skip symbols to next value if one exists
+    while (*src != ' ' && *src != '\t' && *src != '#' && *src != ',')
+      src++;
+    while (*src > 0 && (*src == ' ' || *src == '\t' || *src == ','))
+      src++;
+  }
+	return src;
+}
+//==============================================================================
+
+
+
+void FileSettings::_skipToNextLine(char *src)
+{
+  while (*src != 0 && *src != '\n')
+    src++;
+  if (*src == '\n')
+    src++;
+}
+//==============================================================================
+
+
 
 
 void FileSettings::postprocess()

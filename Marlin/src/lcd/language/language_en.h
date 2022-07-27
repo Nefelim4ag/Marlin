@@ -873,6 +873,8 @@ namespace Language_en {
 
   LSTR MSG_CHANGE                         = _UxGT("Change");
 
+  LSTR MSG_CFG_LOAD_ERROR                 = _UxGT("Error load settings from file \"%s\", in line %d");
+
 
   // These strings can be the same in all languages
   LSTR MSG_MARLIN                         = _UxGT("MarlinRB");

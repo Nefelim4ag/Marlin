@@ -326,6 +326,7 @@
  * 
  * 
  * M5000 - Store parameters in .ini file. 
+ * M5001 - Load parameters from .ini file. 
  */
 
 #include "../inc/MarlinConfig.h"
@@ -1244,6 +1245,7 @@ private:
 
 
     static void M5000();
+    static void M5001();
 };
 
 extern GcodeSuite gcode;
