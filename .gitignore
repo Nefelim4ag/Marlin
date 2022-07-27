@@ -43,6 +43,7 @@ applet/
 *.swp
 tags
 /__EXTRAS/
+/Releases/
 
 #
 # C++
