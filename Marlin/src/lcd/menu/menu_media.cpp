@@ -60,6 +60,14 @@ inline void sdcard_start_selected_file() {
   ui.reset_status();
 }
 
+inline void sdcard_load_config_file() {
+  char str[512];
+  sprintf(str, "M5001 %s", card.longest_filename());
+  queue.enqueue_one(str);
+  ui.return_to_status();
+  ui.reset_status();
+}
+
 class MenuItem_sdfile : public MenuItem_sdbase {
   public:
     static inline void draw(const bool sel, const uint8_t row, FSTR_P const fstr, CardReader &theCard) {
@@ -78,7 +86,14 @@ class MenuItem_sdfile : public MenuItem_sdbase {
           char buffer[strlen(longest) + 2];
           buffer[0] = ' ';
           strcpy(buffer + 1, longest);
-          MenuItem_fileconfirm::select_screen(sdcard_start_selected_file, ui.goto_previous_screen, buffer);
+          if (card.isFileConfig())
+          {
+            MenuItem_fileconfirm::select_screen(sdcard_load_config_file, ui.goto_previous_screen, buffer);
+          }
+          else
+          {
+            MenuItem_fileconfirm::select_screen(sdcard_start_selected_file, ui.goto_previous_screen, buffer);
+          }
         });
       #else
         sdcard_start_selected_file();

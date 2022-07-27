@@ -835,6 +835,18 @@ bool CardReader::isFilePrintable(FILINFO *finfo /*= NULL*/)
     return false;
 }
 
+bool CardReader::isFileConfig(FILINFO *finfo /*= NULL*/)
+{
+    FILINFO *fi = finfo;
+    if (fi == NULL)
+        fi = &curfilinfo;
+    char *fext = FATFS_GetFileExtensionUTF(fi->fname);
+    if ((strcmp(fext, "ini") == 0) && !(fi->fattrib & AM_HID) && !(fi->fattrib & AM_DIR))
+        return true;
+
+    return false;
+}
+
 bool CardReader::isFileDir(FILINFO *finfo /*= NULL*/)
 {
     FILINFO *fi = finfo;

@@ -612,7 +612,36 @@ void TFT::draw_edit_screen_buttons() {
   #endif
 }
 
-void MenuItem_fileconfirm::draw_select_screen(const char * const string/*=nullptr*/) {
+void MenuItem_fileconfirm::draw_select_config_screen(const char * const string) {
+
+    uint16_t line = 1;
+    char  str[256];
+
+    menu_line(line++);
+    strcpy(str, GET_TEXT(MSG_LOAD_SETTINGS_FROM_FILE));
+    strcat(str, " ?");
+    tft_string.set(str);
+    tft_string.trim();
+    tft.add_text(tft_string.center(TFT_WIDTH), 0, COLOR_MENU_TEXT, tft_string);
+
+    line++;
+    if (string) {
+      menu_line(line++);
+      tft_string.set(string);
+      tft_string.trim();
+      tft.add_text(tft_string.center(TFT_WIDTH), 0, COLOR_MENU_TEXT, tft_string);
+    }
+    else {
+      line++;
+    }
+
+  #if ENABLED(TOUCH_SCREEN)
+    add_control(406, TFT_HEIGHT - 64, CANCEL, imgCancel, true, HALF(COLOR_CONTROL_CANCEL));
+    add_control(240, TFT_HEIGHT - 64, CONFIRM, imgConfirm, true, COLOR_CONTROL_CONFIRM);
+  #endif
+}
+
+void MenuItem_fileconfirm::draw_select_screen(const char * const string) {
 
   #if ENABLED(THUMBNAILS_PREVIEW)
     char  str[256];

@@ -313,6 +313,7 @@ namespace Language_en {
   LSTR MSG_MOVE_EN                        = _UxGT("Move *");
   LSTR MSG_HOTEND_TOO_COLD                = _UxGT("Hotend too cold");
   LSTR MSG_MOVE_N_MM                      = _UxGT("Move $mm");
+  LSTR MSG_MOVE_0025MM                    = _UxGT("Move 0.025mm");
   LSTR MSG_MOVE_01MM                      = _UxGT("Move 0.1mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Move 1mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Move 10mm");
@@ -874,6 +875,7 @@ namespace Language_en {
   LSTR MSG_CHANGE                         = _UxGT("Change");
 
   LSTR MSG_CFG_LOAD_ERROR                 = _UxGT("Error load settings from file \"%s\", in line %d");
+  LSTR MSG_LOAD_SETTINGS_FROM_FILE        = _UxGT("Load settings from file");
 
 
   // These strings can be the same in all languages

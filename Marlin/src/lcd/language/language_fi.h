@@ -72,7 +72,7 @@ namespace Language_fi {
   LSTR MSG_MOVE_N                         = _UxGT("Liikuta @");
   LSTR MSG_MOVE_E                         = _UxGT("Extruder");
   LSTR MSG_MOVE_EN                        = _UxGT("Extruder *");
-  LSTR MSG_MOVE_N_MM                      = _UxGT("Liikuta $mm");
+  LSTR MSG_MOVE_N_MM                      = _UxGT("Liikuta $ mm");
   LSTR MSG_MOVE_01MM                      = _UxGT("Liikuta 0.1mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Liikuta 1mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Liikuta 10mm");

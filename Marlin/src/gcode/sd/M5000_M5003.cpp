@@ -28,15 +28,15 @@
  */
 void GcodeSuite::M5000()
 {
+  PORT_REDIRECT(SerialMask::All);
+ 
   SERIAL_ECHOLNPGM("M5000: file - \"", parser.command_args, "\"");
 
-  uint32_t msecs = millis();
   if (fileSettings.SaveSettings(parser.command_args))
     SERIAL_ECHOLNPGM("M5000: success");
   else
     SERIAL_ECHOLNPGM("M5000: failure");
-  msecs = millis() - msecs;
-  SERIAL_ECHOLNPGM("M5000: total msec - ", msecs);
+//  SERIAL_ECHOLNPGM("M5000: total msec - ", millis() - msecs);
 
 }
 
@@ -48,15 +48,16 @@ void GcodeSuite::M5000()
  */
 void GcodeSuite::M5001()
 {
+  PORT_REDIRECT(SerialMask::All);
+
   SERIAL_ECHOLNPGM("M5001: file - \"", parser.command_args, "\"");
 
-  uint32_t msecs = millis();
+//  uint32_t msecs = millis();
   if (fileSettings.LoadSettings(parser.command_args))
     SERIAL_ECHOLNPGM("M5001: success");
   else
     SERIAL_ECHOLNPGM("M5001: failure");
-  msecs = millis() - msecs;
-  SERIAL_ECHOLNPGM("M5001: total msec - ", msecs);
+//  SERIAL_ECHOLNPGM("M5001: total msec - ", millis() - msecs);
 
 }
 

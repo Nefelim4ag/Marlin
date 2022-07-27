@@ -71,6 +71,7 @@ void probe_offset_wizard_menu() {
   if ((FINE_MANUAL_MOVE) > 0.0f && (FINE_MANUAL_MOVE) < 0.1f)
     SUBMENU_f(F(STRINGIFY(FINE_MANUAL_MOVE)), MSG_MOVE_N_MM, []{ _goto_manual_move_z(float(FINE_MANUAL_MOVE)); });
 
+
   ACTION_ITEM(MSG_BUTTON_DONE, []{
     set_offset_and_go_back(calculated_z_offset);
     current_position.z = z_offset_ref;  // Set Z to z_offset_ref, as we can expect it is at probe height

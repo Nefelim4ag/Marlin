@@ -97,9 +97,8 @@ class MenuItem_fileconfirm : public MenuItemBase {
     }
     // Implemented for HD44780 and DOGM
     // Draw the prompt, buttons, and state
-    static void draw_select_screen(
-      const char * const string  // Prompt runtime string
-    );
+    static void draw_select_screen(const char * const string);  // Prompt runtime string
+    static void draw_select_config_screen(const char * const string);  // Prompt runtime string
     static void select_screen(selectFunc_t yesFunc, selectFunc_t noFunc, const char * const string=nullptr);
 };
 

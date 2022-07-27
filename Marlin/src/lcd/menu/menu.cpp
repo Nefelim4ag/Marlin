@@ -398,9 +398,14 @@ void MenuItem_confirm::select_screen(
 void MenuItem_fileconfirm::select_screen(selectFunc_t yesFunc, selectFunc_t noFunc, const char * const string/*=nullptr*/) {
   ui.defer_status_screen();
   const bool ui_selection = ui.update_selection(), got_click = ui.use_click();
-  if (got_click || ui.should_draw()) {
-    draw_select_screen(string);
-    if (got_click) {
+  if (got_click || ui.should_draw())
+  {
+    if (card.isFileConfig())
+      draw_select_config_screen(string);
+    else
+      draw_select_screen(string);
+    if (got_click)
+    {
       selectFunc_t callFunc = ui_selection ? yesFunc : noFunc;
       if (callFunc) callFunc(); else ui.goto_previous_screen();
     }
