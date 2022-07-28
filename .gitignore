@@ -43,7 +43,11 @@ applet/
 *.swp
 tags
 /__EXTRAS/
-/Releases/
+/Releases/V1.3/*
+/Releases/V1.3my/*
+/Releases/SV1.3/*
+/Releases/SMV1.3/*
+/Releases/V1.1/*
 
 #
 # C++
