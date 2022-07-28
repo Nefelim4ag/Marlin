@@ -257,3 +257,43 @@ const char FSSC_FWRETRACT_RECOVER_SWP_SPEED[] = " # mm/s, G11 Swap Recover feedr
 const char FSS_LA_KFACTOR[] = "LA_KFACTOR";
 const char FSSC_LA_KFACTOR[] = " # Linear Advance K-factor, M900 K";
 
+/******** PARKING / FILAMENT CHANGE ***********/
+const char FSS_PARK_POINT_X[] = "PARK_POINT_X";
+const char FSSC_PARK_POINT_X[] = " # mm, X coordinate for parking (pause or filament change)";
+
+const char FSS_PARK_POINT_Y[] = "PARK_POINT_Y";
+const char FSSC_PARK_POINT_Y[] = " # mm, Y coordinate for parking (pause or filament change)";
+
+const char FSS_PARK_POINT_Z[] = "PARK_POINT_Z";
+const char FSSC_PARK_POINT_Z[] = " # mm, Z lift for parking (pause or filament change)";
+
+const char FSS_PARK_MOVE_SPEED[] = "PARK_MOVE_SPEED";
+const char FSSC_PARK_MOVE_SPEED[] = " # mm/s, move to parking feedrate";
+
+const char FSS_PARK_RETR_SPEED[] = "PARK_RETR_SPEED";
+const char FSSC_PARK_RETR_SPEED[] = " # mm/s, feedrate of retract before parking";
+
+const char FSS_PARK_RETR_LENGTH[] = "PARK_RETR_LENGTH";
+const char FSSC_PARK_RETR_LENGTH[] = " # mm, length of retract before parking";
+
+const char FSS_PARK_HEATER_TIMEOUT[] = "PARK_HEATER_TIMEOUT";
+const char FSSC_PARK_HEATER_TIMEOUT[] = " # s, timeout for disable hotend heater";
+
+const char FSS_UNLOAD_SPEED[] = "UNLOAD_SPEED";
+const char FSSC_UNLOAD_SPEED[] = " # mm/s, feedrate of unload filament in filament change";
+
+const char FSS_UNLOAD_LENGTH[] = "UNLOAD_LENGTH";
+const char FSSC_UNLOAD_LENGTH[] = " # mm, length of unload filament in filament change";
+
+const char FSS_SLOW_LOAD_SPEED[] = "SLOW_LOAD_SPEED";
+const char FSSC_SLOW_LOAD_SPEED[] = " # mm/s, feedrate of slow load filament in filament change";
+
+const char FSS_SLOW_LOAD_LENGTH[] = "SLOW_LOAD_LENGTH";
+const char FSSC_SLOW_LOAD_LENGTH[] = " # mm, length of slow load filament in filament change";
+
+const char FSS_FAST_LOAD_SPEED[] = "FAST_LOAD_SPEED";
+const char FSSC_FAST_LOAD_SPEED[] = " # mm/s, feedrate of fast load filament in filament change";
+
+const char FSS_FAST_LOAD_LENGTH[] = "FAST_LOAD_LENGTH";
+const char FSSC_FAST_LOAD_LENGTH[] = " # mm, length of fast load filament in filament change";
+

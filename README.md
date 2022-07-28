@@ -21,10 +21,11 @@
 * [Настройка WiFi](#настройка-WiFi)
 * [Подключение Z-зонда 3D-touch/BL-touch](#Подключение-Z-зонда-3D-touch-BL-touch)
 * [Работа прошивки с командой M73](#работа-прошивки-с-командой-M73)
+* [Сохранение и загрузка параметров в файл .ini](#Сохранение-и-загрузка-параметров-в-файл-.ini)
 * [История](#история)
 
 ## Главное
-Обновлено 23.07.2022
+Обновлено 28.07.2022
 - WiFi интерфейс для управления принтером и передачи файлов
 - активирован Linear Advance
 - активирована возможность использовать встроенные в прошивку ретракты (командами G10, G11)
@@ -44,6 +45,7 @@
 - хранение настроек (EEPROM) во внешней SPI-флэш W25Q64
 - настраиваемое количества точек сетки выравнивания стола
 - цветовая карта высот сетки выравнивания стола
+- сохранение и загрузка настроек в файл .ini на SD-карте
 
 ## Соответствие вариантов прошивки разным платам
 Прошивка собрана в нескольких вариантах, каждый из которых подходит к определенной плате, которая встречается в принтере Reborn.
@@ -127,8 +129,47 @@
 Команда `M73` вставляется в g-код слайсером. В этой команде слайсер указывает текущий процент выполнения печати и оставшееся время в минутах. Как правило, слайсер оценивает эти параметры гораздо точнее принтера, поэтому предпочтительнее выводить процент печати и оставшееся время именно по данным из этой команды.
 Когда прошивка встречает эту команду в коде, она выводит данные из нее в прогресс печати и счетчик оставшегося времени. Если счетчик времени зеленого цвета - значит он получает данные из команды `M73`. Если слайсер не поддерживает эту команду или если по каким-то причинам прощивка не встречает эту команду в течении 3 минут, то она переходит на расчет прогресса и оставшегося времени по внутреннему методу - исходя из размера файла и количества уже считанных из него байт. В этом случае счетчик времени обычного серого цвета.
 
+## Сохранение и загрузка параметров в файл .ini
+В прошивке имеется возможность сохранить основные настройки принтера в файл на SD-карте и загрузить их из него. Это можно сделать как из меню, так и командами через терминал. Это может быть полезным, например, для того, чтобы не настраивать все заново при сбросе настроек принтера на заводские. После первой настройки всех параметров Вы можете сохранить настройки в файл и скопировать этот файл себе на компьютер на будущее. А когда появится необходимость восстановить настройки - скопировать этот файл на SD-карту и восстановить из него настройки на принтере.
+Для сохранения настроек из меню зайдите в меню Настройки и нажмите пункт `Сохранить настройки в файл`. Настройки будут сохранены в файл по умолчанию с именем `printer_settings.ini` в корне SD-карты.
+Чтобы загрузить настройки из файла зайдите в меню списка файлов, выберите файл с настройками (файл должен иметь расширение .ini) и подтвердите загрузку настроек из него.
+Сохранение и восстановление настроек командами через терминал производится с помощью команд `M5000` и `M5001`. После команды может следовать необязательный параметр - имя файла. Если имя файла не указано, то оно будет принято за имя по умолчанию - `printer_settings.ini` в корне SD-карты.
+Файл настроек - это текстовый файл с очень простой структурой. Вы можете менять его в любом текстовом редакторе. Структурно файл состоит из комментариев и пар "ИмяПараметра = Значение".
+Комментарием считается все, что следует за символом `#` до конца строки, причем этот символ и следующий за ним комментарий могут располагаться как на отдельных строках в любом месте файла, так и в строке с параметром после значения. Все, что находится в строке после символа `#` при чтении файла просто игнорируется.
+Примеры комментариев в отдельных строках:
+```
+# Это комментарий
+
+####### Это тоже комментарий #######
+
+####################################
+#         Комментарий на           #
+#         несколько строк          #
+####################################
+```
+Сами параметры хранятся в файле в виде имени параметра и его значения, разделяемые символом `=`. Порядок следования параметров в файле не имеет значения, как и регистр букв в имени или значении. Десятичные значения в числах отделяются символом точки, не запятой. Например - 123.45, но не 123,45. Имя параметра должно состоять из букв, цифр и символа подчеркивания "_" и не должно содержать пробело. Пробелы и знаки табуляции в начале и в конце строки, а так же между именем и значением параметра игнорируются.
+Примеры корректного указания значений параметров:
+```
+STEPS_PER_MM_X = 80.00  # это комментарий к параметру
+  sTePs_PeR_mM_y=80.00#это комментарий к параметру
+        STEPS_PER_MM_Z =           800          # это комментарий к параметру
+Steps_Per_Mm_E = 408.4
+```
+Если параметр требует нескольких значений, то они задаются после символа `=` через запятую. Например:
+```
+BEDLEVEL_Z_VALUES = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
+```
+В файле необязательно указывать все параметры, в нем может находиться любое количество нужных параметров, даже всего один.
+
 
 ## История
+### 29.07.2022
+**v2.1**
+- [X] Добавлена возможность выгрузки настроек в файл конфигурации .ini на SD-карте и загрузку настроек из него командами `M5000`, `M5001` и из меню принтера, сохраняется и загружается почти 90 параметров (подробнее)
+- [X] Добавлены настроки параметров парковки экструдера при паузе или замене прутка и параметры замены прутка в меню `Настройки` - `Доп. настройки` - `Пауза / Замена прутка`
+- [X] исправлен вывод некоторых текстов в меню
+- [X] применены все последние изменения и багфиксы оригинального Марлина вплоть до 28.07.2022
+
 ### 23.07.2022
 **v2.0**
 - [X] [Timofey Titovets](https://github.com/Nefelim4ag) с небольшой моей помощью обновил базу Марлина до последней версии 2.1
@@ -268,10 +309,11 @@ Based on [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin) 
 * [WiFi setup](#wifi-setup)
 * [Connecting the Z probe BL-touch (3D-touch)](#connecting-the-Z-probe-BL-touch-3D-touch)
 * [Firmware operation with **M73** command](#firmware-operation-with-M73-command)
+* [Saving and loading parameters to .ini file](#Saving-and-loading-parameters-to-.ini-file)
 * [Version history](#version-history)
 
 ## The main thing
-Updated 07/23/2022
+Updated 07/29/2022
 - activated Linear Advance
 - WiFi interface for printer control and file transfer
 - the filament end sensor is active
@@ -291,6 +333,7 @@ Updated 07/23/2022
 - storage of settings (EEPROM) in an external SPI flash W25Q64
 - configurable number of bed leveling grid points
 - bed leveling grid height color map
+- save and load settings to .ini file on SD card
 
 ## Correspondence of firmware variants to different boards
 The firmware is assembled in several variants, each of which is suitable for a specific board that is found in the Reborn printer.
@@ -373,7 +416,46 @@ Two-pin connector:
 The **M73** command is inserted into the g-code by the slicer. In this command, the slicer indicates the current percentage of printing completed and the remaining time in minutes. As a rule, the slicer estimates these parameters much more accurately than the printer, so it is preferable to display the print percentage and the remaining time based on the data from this command.
 When the firmware encounters this command in the code, it outputs data from it to the print progress and the remaining time counter. If the time counter is green, then it is receiving data from the **M73** command. If the slicer does not support this command or if for some reason the firmware does not meet this command within 3 minutes, then it switches to calculating the progress and the remaining time using the internal method - based on the file size and the number of bytes already read from it. In this case, the time counter is a normal gray color.
 
+## Saving and loading parameters to .ini file
+The firmware has the ability to save the basic printer settings to a file on the SD card and load them from it. This can be done both from the menu and commands through the terminal. This can be useful, for example, in order not to set everything up again when resetting the printer to factory settings. After setting all the parameters for the first time, you can save the settings to a file and copy this file to your computer for the future. And when it becomes necessary to restore the settings, copy this file to the SD card and restore the printer settings from it.
+To save settings from the menu, go to the Settings menu and click the `Save Settings to file` item. The settings will be saved to a default file called `printer_settings.ini` in the root of the SD card.
+To load settings from a file, go to the file list menu, select a file with settings (the file must have an .ini extension) and confirm the loading of settings from it.
+Saving and restoring settings by commands through the terminal is done using the commands `M5000` and `M5001`. The command may be followed by an optional parameter - the file name. If no filename is specified, it will be taken as the default `printer_settings.ini` at the root of the SD card.
+The settings file is a text file with a very simple structure. You can change it with any text editor. Structurally, the file consists of comments and "ParameterName = Value" pairs.
+Everything that follows the `#` symbol to the end of the line is considered a comment, and this symbol and the comment following it can be located both on separate lines anywhere in the file, and on the line with the parameter after the value. Anything on the line after the `#` character is simply ignored when the file is read.
+Examples of comments on separate lines:
+```
+# This is a comment
+
+####### This is also a comment #######
+
+####################################
+#            Comment on            #
+#          multiple lines          #
+####################################
+```
+The parameters themselves are stored in the file as the parameter name and its value, separated by the `=` character. The order of the parameters in the file does not matter, as does the case of the letters in the name or value. Decimal values ​​in numbers are separated by a dot, not a comma. For example - 123.45, but not 123.45. The parameter name must consist of letters, numbers, and the underscore "_" character, and must not contain a space. Spaces and tabs at the beginning and end of the line, as well as between the parameter name and value, are ignored.
+An few examples of correctly specifying the value of the same parameter:
+```
+STEPS_PER_MM_X = 80.00 # here is comment for this perameter
+  sTePs_PeR_mM_y=80.00#here is comment for this perameter
+        STEPS_PER_MM_Z = 8000            #      here is comment for this perameter
+Steps_Per_Mm_E = 408.4
+```
+If the parameter requires several values, then they are specified after the `=` symbol separated by commas. For example:
+```
+BEDLEVEL_Z_VALUES = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
+```
+It is not necessary to specify all the parameters in the file, it can contain any number of necessary parameters, even just one.
+
 ## Version history
+
+### 07/29/2022
+**v2.1**
+- [X] Added the ability to save settings to the .ini configuration file on the SD card and load settings from it using the `M5000`, `M5001` commands and from the printer menu, almost 90 parameters are saved and loaded (more info)
+- [X] Added settings for extruder parking parameters when pausing or changing filament and parameters for changing filament in the menu `Settings` - `Advanced settings` - `Pause / Filament change`
+- [X] fixed output of some texts in the menu
+- [X] applied all the latest changes and bug fixes of the original Marlin up to 07/28/2022
 
 ### 07/23/2022
 **v2.0**

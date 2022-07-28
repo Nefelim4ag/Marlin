@@ -661,6 +661,78 @@ bool FileSettings::SaveSettings(char *fname /*= NULL*/)
       break;
     lines++;
 
+    /******** PARKING / FILAMENT CHANGE ***********/
+    sprintf(curline, "%s", (char*)"\r\n# ====== PARKING / FILAMENT CHANGE ======\r\n");
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines += 2;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_PARK_POINT_X, moving_settings.pause.park_point_x, FSSC_PARK_POINT_X);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_PARK_POINT_Y, moving_settings.pause.park_point_y, FSSC_PARK_POINT_Y);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_PARK_POINT_Z, moving_settings.pause.park_point_z, FSSC_PARK_POINT_Z);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_PARK_MOVE_SPEED, moving_settings.pause.park_move_feedrate, FSSC_PARK_MOVE_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_PARK_RETR_SPEED, moving_settings.pause.retract_feedrate, FSSC_PARK_RETR_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_PARK_RETR_LENGTH, moving_settings.pause.retract_length, FSSC_PARK_RETR_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %ld %s\r\n", FSS_PARK_HEATER_TIMEOUT, moving_settings.pause.heater_timeout, FSSC_PARK_HEATER_TIMEOUT);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_UNLOAD_SPEED, moving_settings.filament_change.unload_feedrate, FSSC_UNLOAD_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_UNLOAD_LENGTH, moving_settings.filament_change.unload_length, FSSC_UNLOAD_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_SLOW_LOAD_SPEED, moving_settings.filament_change.slow_load_feedrate, FSSC_SLOW_LOAD_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_SLOW_LOAD_LENGTH, moving_settings.filament_change.slow_load_length, FSSC_SLOW_LOAD_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_FAST_LOAD_SPEED, moving_settings.filament_change.fast_load_feedrate, FSSC_FAST_LOAD_SPEED);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+    sprintf(curline, "%s = %0.1f %s\r\n", FSS_FAST_LOAD_LENGTH, moving_settings.filament_change.fast_load_length, FSSC_FAST_LOAD_LENGTH);
+    len = strlen(curline);
+    if (card.write(curline, len) != len)
+      break;
+    lines++;
+
 
     wres = true;
   } while (0);
@@ -767,7 +839,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
 		// check and setup parameter
     switch (*lexem)
     {
-      case 'A':
+      case 'A':   // ***************************  AAA  ********************************
         if (strcmp(lexem, FSS_ACCEL_MAX_X) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -875,7 +947,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
         }
         break;
 
-      case 'B':
+      case 'B':   // ***************************  BBB  ********************************
         if (strcmp(lexem, FSS_BEDLEVEL_FADE_HEIGHT) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1011,7 +1083,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
         }
         break;
       
-      case 'E':
+      case 'E':   // ***************************  EEE  ********************************
         if (strcmp(lexem, FSS_ENDSTOP_INVERT_X) == 0)
         {
           if (pval.type != PARAMVAL_BOOL)
@@ -1069,7 +1141,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
         }
         break;
 
-      case 'F':
+      case 'F':   // ***************************  FFF  ********************************
         if (strcmp(lexem, FSS_FILAMENTSENSOR_ENABLED) == 0)
         {
           if (pval.type != PARAMVAL_BOOL)
@@ -1208,9 +1280,37 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           params++;
           break;
         }
+        if (strcmp(lexem, FSS_FAST_LOAD_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0.1)
+            pval.float_val = 0.1;
+          moving_settings.filament_change.fast_load_feedrate = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_FAST_LOAD_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.filament_change.fast_load_length = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
         break;
       
-      case 'H':
+      case 'H':   // ***************************  HHH  ********************************
         if (strcmp(lexem, FSS_HOME_OFFSET_X) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1246,7 +1346,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
         }
         break;
       
-      case 'J':
+      case 'J':   // ***************************  JJJ  ********************************
         if (strcmp(lexem, FSS_MAX_JERK_X) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1293,7 +1393,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
         }
         break;
 
-      case 'L':
+      case 'L':   // ***************************  LLL  ********************************
         if (strcmp(lexem, FSS_LCD_BRIGHTNESS) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1381,7 +1481,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
         }
         break;
       
-      case 'M':
+      case 'M':   // ***************************  MMM  ********************************
         if (strcmp(lexem, FSS_MIN_SEGMENT_TIME) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1397,7 +1497,7 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
         }
         break;
 
-      case 'P':
+      case 'P':   // ***************************  PPP  ********************************
         if (strcmp(lexem, FSS_PREHEAT_HOTEND_1) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1553,9 +1653,107 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           params++;
           break;
         }
+        if (strcmp(lexem, FSS_PARK_POINT_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.pause.park_point_x = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_PARK_POINT_X) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.pause.park_point_y = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_PARK_POINT_Z) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.pause.park_point_z = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_PARK_MOVE_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.pause.park_move_feedrate = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_PARK_RETR_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.pause.retract_feedrate = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_PARK_RETR_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.pause.retract_length = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_PARK_HEATER_TIMEOUT) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.pause.heater_timeout = (uint32_t)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
         break;
       
-      case 'S':
+      case 'S':   // ***************************  SSS  ********************************
         if (strcmp(lexem, FSS_STEPS_PER_MM_X) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1741,9 +1939,37 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           params++;
           break;
         }
+        if (strcmp(lexem, FSS_SLOW_LOAD_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.filament_change.slow_load_feedrate = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_SLOW_LOAD_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.filament_change.slow_load_length = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
         break;
       
-      case 'T':
+      case 'T':   // ***************************  TTT  ********************************
         if (strcmp(lexem, FSS_THERMISTOR_TYPE_HOTEND) == 0)
         {
           if (pval.type != PARAMVAL_NUMERIC)
@@ -1778,6 +2004,38 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           break;
         }
         break;
+
+      case 'U':   // ***************************  UUU  ********************************
+        if (strcmp(lexem, FSS_UNLOAD_SPEED) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.filament_change.unload_feedrate = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        if (strcmp(lexem, FSS_UNLOAD_LENGTH) == 0)
+        {
+          if (pval.type != PARAMVAL_NUMERIC)
+          {
+            wres = false;
+            break;
+          }
+          if (pval.float_val < 0)
+            pval.float_val = 0;
+          moving_settings.filament_change.fast_load_length = (float)pval.float_val;
+          fwretr_update = true;
+          params++;
+          break;
+        }
+        break;
+      
 
       default:
         break;
