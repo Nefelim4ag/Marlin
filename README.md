@@ -166,127 +166,127 @@ BEDLEVEL_Z_VALUES = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
 ### 29.07.2022
 **v2.1**
 - [X] Добавлена возможность выгрузки настроек в файл конфигурации .ini на SD-карте и загрузку настроек из него командами `M5000`, `M5001` и из меню принтера, сохраняется и загружается почти 90 параметров (подробнее)
-- [X] Добавлены настроки параметров парковки экструдера при паузе или замене прутка и параметры замены прутка в меню `Настройки` - `Доп. настройки` - `Пауза / Замена прутка`
-- [X] исправлен вывод некоторых текстов в меню
-- [X] применены все последние изменения и багфиксы оригинального Марлина вплоть до 28.07.2022
+- [X] Добавлены настройки параметров парковки экструдера при паузе или замене прутка и параметры замены прутка в меню `Настройки` - `Доп. настройки` - `Пауза / Замена прутка`
+- [X] Исправлен вывод некоторых текстов в меню
+- [X] Применены все последние изменения и багфиксы оригинального Марлина вплоть до 28.07.2022
 
 ### 23.07.2022
 **v2.0**
 - [X] [Timofey Titovets](https://github.com/Nefelim4ag) с небольшой моей помощью обновил базу Марлина до последней версии 2.1
-- [X] работа с файлами на SD-карте полностью переведена на более современную и удобную файловую библиотеку FatFS
-- [X] подправлена работа модуля WiFi - теперь он корректно отдает статус интерфейсу Beeprint
-- [X] доработана утилита [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - корректная передача имени файла из PrusaSlicer и возможность отправлять на принтер бинарные файлы
-- [X] появилась возможность обновления прошивки принтера через [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - при отправке файла прошивки с именем Robin_nano35.bin принтер после успешного приема этого файла автоматически перезагрузится и обновит прошивку
-- [X] исправлены переводы на русский язык некоторых пунктов настроек
-- [X] применены все последние изменения и багфиксы оригинального Марлина вплоть до 23.07.2022
+- [X] Работа с файлами на SD-карте полностью переведена на более современную и удобную файловую библиотеку FatFS
+- [X] Подправлена работа модуля WiFi - теперь он корректно отдает статус интерфейсу Beeprint
+- [X] Доработана утилита [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - корректная передача имени файла из PrusaSlicer и возможность отправлять на принтер бинарные файлы
+- [X] Появилась возможность обновления прошивки принтера через [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - при отправке файла прошивки с именем Robin_nano35.bin принтер после успешного приема этого файла автоматически перезагрузится и обновит прошивку
+- [X] Исправлены переводы на русский язык некоторых пунктов настроек
+- [X] Применены все последние изменения и багфиксы оригинального Марлина вплоть до 23.07.2022
 
 ### 29.06.2022
 **v1.9.1**
-- [X] добавлена раздельная настройка количества точек сетки кривизны стола по осям X и Y
-- [X] в меню редактирования значений точек сетки кривизны стола добавлена для наглядности цветовая карта высот точек
-- [X] исправлена ошибка, из-за которой при отключенном 3D-touch сетка кривизны стола строилась только по максимальному количеству точек
+- [X] Добавлена раздельная настройка количества точек сетки кривизны стола по осям X и Y
+- [X] В меню редактирования значений точек сетки кривизны стола добавлена для наглядности цветовая карта высот точек
+- [X] Исправлена ошибка, из-за которой при отключенном 3D-touch сетка кривизны стола строилась только по максимальному количеству точек
 
 ### 25.06.2022
 **v1.9**
-- [X] **\*** добавлена поддержка 3D-touch (BL-touch), в доп. настройках его можно включить или выключить, по умолчанию выключен; по подключению 3D-touch смотрите выше в описании
-- [X] **\*** парковка стола осталась прежней - по штатным концевикам
-- [X] **\*** при выключенном 3D-touch все пункты, связанные с его работой, скрываются из меню (кроме возможности включить его)
-- [X] **\*** добавлена настройка инверсии сигнала от 3D-touch
-- [X] добавлена настройка количества точек сетки кривизны стола: 3х3, 4х4, 5х5 или 6х6
-- [X] построение сетки кривизны стола происходит автоматически если 3D-touch включен в настройках, или вручную если 3D-touch выключен
-- [X] **\*** активирован мастер определения смещения 3D-touch от сопла по Z
-- [X] **\*** активирован мастер выравнивания углов стола с помощью 3D-touch (если он включен)
-- [X] **\*** в мастере выравнивания углов добавлены подсказки в какую сторону и на сколько нужно подкрутить винт
+- [X] **\*** Добавлена поддержка 3D-touch (BL-touch), в доп. настройках его можно включить или выключить, по умолчанию выключен; по подключению 3D-touch смотрите выше в описании
+- [X] **\*** Парковка стола осталась прежней - по штатным концевикам
+- [X] **\*** При выключенном 3D-touch все пункты, связанные с его работой, скрываются из меню (кроме возможности включить его)
+- [X] **\*** Добавлена настройка инверсии сигнала от 3D-touch
+- [X] Добавлена настройка количества точек сетки кривизны стола: 3х3, 4х4, 5х5 или 6х6
+- [X] Построение сетки кривизны стола происходит автоматически если 3D-touch включен в настройках, или вручную если 3D-touch выключен
+- [X] **\*** Активирован мастер определения смещения 3D-touch от сопла по Z
+- [X] **\*** Активирован мастер выравнивания углов стола с помощью 3D-touch (если он включен)
+- [X] **\*** В мастере выравнивания углов добавлены подсказки в какую сторону и на сколько нужно подкрутить винт
 - [X] [SkyAlexV](https://github.com/SkyAlexV)-ом в настройки термисторов добавлен термистор Formbot b3950 100k (61)
-- [X] в настройках шагов на мм увеличено максимально возможное значение для оси Z с 1300 до 3200 шагов на мм
-- [X] добавлена поддержка команды M73 с прогрессом печати и оставшимся временем; более подробное описание логики работы прошивки с этой командой смотрите выше в описании
-- [X] убрана парковка по X/Y при прерывании печати пользователем, теперь принтер при прерывании печати просто поднимет сопло на 10 мм и остановится
-- [X] при выключении принтера кнопокй PWC (при подключенном этом модуле) принтер выключается не сразу, а после остывания сопла
+- [X] В настройках шагов на мм увеличено максимально возможное значение для оси Z с 1300 до 3200 шагов на мм
+- [X] Добавлена поддержка команды M73 с прогрессом печати и оставшимся временем; более подробное описание логики работы прошивки с этой командой смотрите выше в описании
+- [X] Убрана парковка по X/Y при прерывании печати пользователем, теперь принтер при прерывании печати просто поднимет сопло на 10 мм и остановится
+- [X] При выключении принтера кнопокй PWC (при подключенном этом модуле) принтер выключается не сразу, а после остывания сопла
 **\*** - работает только с платами Robin Nano v1.3 и Robin Nano S v1.3. На красных платах Robin Nano v1.1 (они же - Reborn 2.0) подключение BL-touch, к сожалению, не предусмотрено.
 
 ### 19.02.2022
 **v1.8**
-- [X] исправлена ошибка в Марлине, из-за которой при неудачной калибровке тача дисплей зависал на экране с крестиками в левом верхнем и правом нижнем углах, не реагируя на нажатия
-- [X] в меню Доп. настройки добавлен пункт настройки инверсии концевиков; это позволяет использовать неродные концевики, настраивая их режим работы
-- [X] в выбор термисторов добавлен Pt1000 4.7kΩ pullup (1047)
-- [X] с изменением типа термистора хотэнда меняется максимальная температура сопла (для каждого типа термистора - своя) и температура автоматического включения вентилятора радиатора
-- [X] при выборе высокотемпературных термисторов (D500 и PT-1000) включаются дополнительные функции, обеспечивающие их нормальную работу - MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED и MILLISECONDS_PREHEAT_TIME
-- [X] температура автоматического включения вентилятора радиатора может быть изменена через настройки (Настройки - Доп. настройки - Температура)
-- [X] в настройки вынесена активация модуля PSU; его отключение в настройках убирает пункты меню, относящиеся к управлению питанием, а так же блокирует отключение питания кнопкой или командой
-- [X] увеличено до 10 количество циклов в калибровке ПИД нагревателей
-- [X] из главного меню во время печати убраны пункты паузы/возобновления и остановки печати, и пункт тюнинга; эти действия доступны по кнопкам в главном окне
+- [X] Исправлена ошибка в Марлине, из-за которой при неудачной калибровке тача дисплей зависал на экране с крестиками в левом верхнем и правом нижнем углах, не реагируя на нажатия
+- [X] В меню Доп. настройки добавлен пункт настройки инверсии концевиков; это позволяет использовать неродные концевики, настраивая их режим работы
+- [X] В выбор термисторов добавлен Pt1000 4.7kΩ pullup (1047)
+- [X] С изменением типа термистора хотэнда меняется максимальная температура сопла (для каждого типа термистора - своя) и температура автоматического включения вентилятора радиатора
+- [X] При выборе высокотемпературных термисторов (D500 и PT-1000) включаются дополнительные функции, обеспечивающие их нормальную работу - MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED и MILLISECONDS_PREHEAT_TIME
+- [X] Температура автоматического включения вентилятора радиатора может быть изменена через настройки (Настройки - Доп. настройки - Температура)
+- [X] В настройки вынесена активация модуля PSU; его отключение в настройках убирает пункты меню, относящиеся к управлению питанием, а так же блокирует отключение питания кнопкой или командой
+- [X] Увеличено до 10 количество циклов в калибровке ПИД нагревателей
+- [X] Из главного меню во время печати убраны пункты паузы/возобновления и остановки печати, и пункт тюнинга; эти действия доступны по кнопкам в главном окне
 
 ### 29.01.2022
 **v1.7**
-- [X] на главный экран добавлены кнопки быстрого доступа к настройкам потока (flowrate) и скорости (feedrate) с показом текущего значения
-- [X] в меню настроек температуры добавлена настройка типов термисторов для сопла и стола; пока доступен выбор из 4 распространенных типов, при запросах на другие типы они будут добавляться
-- [X] ядро Марлина обновлено до версии 2.0.9.3
-- [X] сохранение настроек (EEPROM) переведено на внешнюю SPI-флэш W25Q64
-- [X] настройка отключения питания по окончанию печати продублирована в меню "Тюнинг", доступное с экрана статуса во время печати
-- [X] исправлено автовыключение по завершению печати - теперь принтер ждет остывания сопла перед тем как выключиться (при наличии модуля управления питанием PWC)
-- [X] при хоминге теперь первой двигается ось Y
-- [X] поправлены максимальные значения в настройках скорости (feedrate), потока (flowrate) и параметров ректракта
-- [X] в меню тюнинга добавлена настройка длины ретракта и убраны настройки скорости (feedrate) и потока (flowrate), т.к. они теперь доступны прямо с главного экрана
+- [X] На главный экран добавлены кнопки быстрого доступа к настройкам потока (flowrate) и скорости (feedrate) с показом текущего значения
+- [X] В меню настроек температуры добавлена настройка типов термисторов для сопла и стола; пока доступен выбор из 4 распространенных типов, при запросах на другие типы они будут добавляться
+- [X] Ядро Марлина обновлено до версии 2.0.9.3
+- [X] Сохранение настроек (EEPROM) переведено на внешнюю SPI-флэш W25Q64
+- [X] Настройка отключения питания по окончанию печати продублирована в меню "Тюнинг", доступное с экрана статуса во время печати
+- [X] Исправлено автовыключение по завершению печати - теперь принтер ждет остывания сопла перед тем как выключиться (при наличии модуля управления питанием PWC)
+- [X] При хоминге теперь первой двигается ось Y
+- [X] Поправлены максимальные значения в настройках скорости (feedrate), потока (flowrate) и параметров ректракта
+- [X] В меню тюнинга добавлена настройка длины ретракта и убраны настройки скорости (feedrate) и потока (flowrate), т.к. они теперь доступны прямо с главного экрана
 
 ### 17.01.2022
 **v1.6**
-- [X] активирована работа с модулем управления питания (PSU) MKS PWC; при наличии этого модуля принтер может автоматически отключаться от питания при обнаружении ошибки - например, неконтролируемого разогрева хотэнда или стола; отключение принтера по команде модуля деактивирована, чтобы принтер не выключался сам если модуля управления питанием нет
-- [X] в меню настроек добавлены настройки инверсии моторов
-- [X] изменена обработка команды паузы (M25) - теперь эта команда по умолчанию выводит сопло в позицию парковки и ожидает нажатия пользователем на экран
-- [X] активирована функция форсированного включения вентилятора обдува модели - при включении на вентилятор в течении 0.05 сек подается полное напряжение; это помогает вентилятору стартовать на низких оборотах
-- [X] изменена на 300 Гц частота ШИМ вентилятора охлаждения модели
-- [X] добавлена настройка автоматического выключения принтера по окончанию печати (если установлен модуль управления питанием PSU); срабатывает только при успешном завершении печати если установлена соответствующая галочка в меню настроек (появляется после начала печати); по умолчанию автовыключение не активно
+- [X] Активирована работа с модулем управления питания (PSU) MKS PWC; при наличии этого модуля принтер может автоматически отключаться от питания при обнаружении ошибки - например, неконтролируемого разогрева хотэнда или стола; отключение принтера по команде модуля деактивирована, чтобы принтер не выключался сам если модуля управления питанием нет
+- [X] В меню настроек добавлены настройки инверсии моторов
+- [X] Изменена обработка команды паузы (M25) - теперь эта команда по умолчанию выводит сопло в позицию парковки и ожидает нажатия пользователем на экран
+- [X] Активирована функция форсированного включения вентилятора обдува модели - при включении на вентилятор в течении 0.05 сек подается полное напряжение; это помогает вентилятору стартовать на низких оборотах
+- [X] Изменена на 300 Гц частота ШИМ вентилятора охлаждения модели
+- [X] Добавлена настройка автоматического выключения принтера по окончанию печати (если установлен модуль управления питанием PSU); срабатывает только при успешном завершении печати если установлена соответствующая галочка в меню настроек (появляется после начала печати); по умолчанию автовыключение не активно
 
 ### 07.01.2022
 **v1.5**
-- [X] увеличена максимальная температура сопла до 270°C
-- [X] по умолчанию значение коэффициента LINAER ADVANCE установлено в 0, при необходимости его всегда можно изменить в меню настроек
-- [X] небольшие изменения в настройках работы моторов (MINIMUM_STEPPER_PULSE установлен на 16 для микрошага 16, и на 8 для микрошага 32)
-- [X] изменено имя варианта для платы MKS Robin Nano v1.1 с v_Robin_Nano_1.2_x16 на v_Robin_Nano_1.1_x16
-- [X] увеличен период контроля нагрева стола для того, чтобы принтер не выдавал ошибку при медленном нагреве
-- [X] откорректировано определение вывода микроконтроллера MKS_WIFI_IO0
+- [X] Увеличена максимальная температура сопла до 270°C
+- [X] По умолчанию значение коэффициента LINAER ADVANCE установлено в 0, при необходимости его всегда можно изменить в меню настроек
+- [X] Небольшие изменения в настройках работы моторов (MINIMUM_STEPPER_PULSE установлен на 16 для микрошага 16, и на 8 для микрошага 32)
+- [X] Изменено имя варианта для платы MKS Robin Nano v1.1 с v_Robin_Nano_1.2_x16 на v_Robin_Nano_1.1_x16
+- [X] Увеличен период контроля нагрева стола для того, чтобы принтер не выдавал ошибку при медленном нагреве
+- [X] Откорректировано определение вывода микроконтроллера MKS_WIFI_IO0
 
 ### 06.11.2021
 **v1.4**
-- [X] **(только для плат Robin Nano v1.3 и Robin Nano S v1.3) добавлено отображение картинки предварительный просмотра из файла g-кода; на данный момент поддерживается только предварительный просмотр, генерируемый слайсером Prusaslicer**
-- [X] изменены условия работы двигателей при микрошаге 16 для облегчения работы Linear Advance на драйверах TMC2208/2225
-- [X] в окнах подтверждения изменены позиции кнопок-иконок "Подтвердить" и "Отмена" на более привычные - "Подтвердить" слева, "Отмена" справа
-- [X] исправлено отображение времени печати на главном экране
+- [X] **(только для плат Robin Nano v1.3 и Robin Nano S v1.3) Добавлено отображение картинки предварительный просмотра из файла g-кода; на данный момент поддерживается только предварительный просмотр, генерируемый слайсером Prusaslicer**
+- [X] Изменены условия работы двигателей при микрошаге 16 для облегчения работы Linear Advance на драйверах TMC2208/2225
+- [X] В окнах подтверждения изменены позиции кнопок-иконок "Подтвердить" и "Отмена" на более привычные - "Подтвердить" слева, "Отмена" справа
+- [X] Исправлено отображение времени печати на главном экране
 
 ### 02.11.2021
 **v1.3**
-- [X] **включены откаты в прошивке, числа в настройках этих откатов приведены в удобные для использование пределы**
-- [X] **добавлена парковка сопла на паузе в дальнем правом углу**
-- [X] добавлена информация о состоянии WiFi в меню информации
-- [X] построение всех конфигураций разбито на два варианта: для драйверов с микрошагом 16 и для драйверов с микрошагом 32
-- [X] Меню Подстройка почищено от лишних пунктов, доступных с главного экрана (температура, охлаждение)
+- [X] **Включены откаты в прошивке, числа в настройках этих откатов приведены в удобные для использование пределы**
+- [X] **Добавлена парковка сопла на паузе в дальнем правом углу**
+- [X] Добавлена информация о состоянии WiFi в меню информации
+- [X] Построение всех конфигураций разбито на два варианта: для драйверов с микрошагом 16 и для драйверов с микрошагом 32
+- [X] Меню `Подстройка` почищено от лишних пунктов, доступных с главного экрана (температура, охлаждение)
 
 ### 28.10.2021
 **v1.2**
-- [X] **добавлена поддержка WiFi (на основе исходников Сергея - https://github.com/Sergey1560)**
-- [X] **добавлены варианты прошивки для плат MKS Robin Nano S V1.3 и MKS Robin Nano V1.2**
-- [X] небольшие правки по режимам движения
-- [X] добавлен счетчик потраченного в процессе задания филамента, отображается в полосе прогрессе после процентов выполнения задания
-- [X] добавлен вывод значений калибровки тач-панели по команде M503
-- [X] ограничены максимальные значения в слайдерах настроек цифровых параметров
+- [X] **Добавлена поддержка WiFi (на основе исходников Сергея - https://github.com/Sergey1560)**
+- [X] **Добавлены варианты прошивки для плат MKS Robin Nano S V1.3 и MKS Robin Nano V1.2**
+- [X] Небольшие правки по режимам движения
+- [X] Добавлен счетчик потраченного в процессе задания филамента, отображается в полосе прогрессе после процентов выполнения задания
+- [X] Добавлен вывод значений калибровки тач-панели по команде M503
+- [X] Ограничены максимальные значения в слайдерах настроек цифровых параметров
 
 ### 26.10.2021
 **v1.1**
-- [X] **активирован Linear Advance, работающий в том числе с драйверами TMC2208/TMC2225 без необходимости каких-либо изменений в железе**
-- [X] **изменен дизайн и расширена функциональность главного экрана как в режиме ожидания, так и в режиме печати - фактически это теперь новый интерфейс**
-- [X] изменены лимиты скоростей по осям
-- [X] увеличены скорость и ускорение по умолчанию по Z
-- [X] настроены параметры датчика окончания филамента
-- [X] из меню убраны пункты возврата на предыдущий уровень, которые везде занимали верхнюю строчку, возврат теперь только по кнопке внизу в центре экрана
-- [X] из меню убраны пункты, дублирующие функциональность главного экрана и ненужные
-- [X] активирован пункт меню информации о принтере, в котором доступна основная версия Марлина с версией MarlinRB
+- [X] **Активирован Linear Advance, работающий в том числе с драйверами TMC2208/TMC2225 без необходимости каких-либо изменений в железе**
+- [X] **Изменен дизайн и расширена функциональность главного экрана как в режиме ожидания, так и в режиме печати - фактически это теперь новый интерфейс**
+- [X] Изменены лимиты скоростей по осям
+- [X] Увеличены скорость и ускорение по умолчанию по Z
+- [X] Настроены параметры датчика окончания филамента
+- [X] Из меню убраны пункты возврата на предыдущий уровень, которые везде занимали верхнюю строчку, возврат теперь только по кнопке внизу в центре экрана
+- [X] Из меню убраны пункты, дублирующие функциональность главного экрана и ненужные
+- [X] Активирован пункт меню информации о принтере, в котором доступна основная версия Марлина с версией MarlinRB
 
 ### 19.10.2021
 **v1.0**
-- [X] создана базовая конфигурация
-- [X] исправлены все недоработки по работе со строками в формате UTF8 в кириллице
-- [X] добавлены два шрифта Tahoma14 и Tahoma18 с кириллицей
-- [X] в меню движения поменяны местами кнопки Z+ и Z- для более логичного управления (нижняя кнопка двигает стол вниз, верхняя - вверх)
+- [X] Создана базовая конфигурация
+- [X] Исправлены все недоработки по работе со строками в формате UTF8 в кириллице
+- [X] Добавлены два шрифта Tahoma14 и Tahoma18 с кириллицей
+- [X] В меню движения поменяны местами кнопки Z+ и Z- для более логичного управления (нижняя кнопка двигает стол вниз, верхняя - вверх)
 
 
 
@@ -454,124 +454,124 @@ It is not necessary to specify all the parameters in the file, it can contain an
 **v2.1**
 - [X] Added the ability to save settings to the .ini configuration file on the SD card and load settings from it using the `M5000`, `M5001` commands and from the printer menu, almost 90 parameters are saved and loaded (more info)
 - [X] Added settings for extruder parking parameters when pausing or changing filament and parameters for changing filament in the menu `Settings` - `Advanced settings` - `Pause / Filament change`
-- [X] fixed output of some texts in the menu
-- [X] applied all the latest changes and bug fixes of the original Marlin up to 07/28/2022
+- [X] Fixed output of some texts in the menu
+- [X] Applied all the latest changes and bug fixes of the original Marlin up to 07/28/2022
 
 ### 07/23/2022
 **v2.0**
 - [X] [Timofey Titovets](https://github.com/Nefelim4ag) updated the Marlin base to the latest version 2.1 with a little help from me
-- [X] work with files on the SD card has been completely transferred to a more modern and convenient file library FatFS
-- [X] fixed the work of the WiFi module - now it correctly gives the status to the Beeprint interface
-- [X] improved utility [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - correct transmission of the file name from PrusaSlicer and the ability to send binary files to the printer
-- [X] added the ability to update the printer firmware via [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - when sending a firmware file named Robin_nano35.bin printer after successfully receiving this file, it will automatically reboot and update the firmware
-- [X] fixed translations into Russian of some settings items
-- [X] applied all the latest changes and bug fixes of the original Marlin up to 07/23/2022
+- [X] Work with files on the SD card has been completely transferred to a more modern and convenient file library FatFS
+- [X] Fixed the work of the WiFi module - now it correctly gives the status to the Beeprint interface
+- [X] Improved utility [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - correct transmission of the file name from PrusaSlicer and the ability to send binary files to the printer
+- [X] Added the ability to update the printer firmware via [MKS_WIFI_PS_upload](https://github.com/Andy-Big/MKS-WIFI_uploader/blob/main_uploader/src/dist/MKS_WIFI_PS_upload.exe) - when sending a firmware file named Robin_nano35.bin printer after successfully receiving this file, it will automatically reboot and update the firmware
+- [X] Fixed translations into Russian of some settings items
+- [X] Applied all the latest changes and bug fixes of the original Marlin up to 07/23/2022
 
 ### 06/29/2022
 **v1.9.1**
-- [X] added separate setting for the number of bed level grid points along the X and Y axes
-- [X] in the menu for editing the values of the bed level grid points, a color map of point heights has been added for clarity
-- [X] fixed a bug due to which, when 3D-touch was disabled, the bed level grid was built only by the maximum number of points
+- [X] Added separate setting for the number of bed level grid points along the X and Y axes
+- [X] In the menu for editing the values of the bed level grid points, a color map of point heights has been added for clarity
+- [X] Fixed a bug due to which, when 3D-touch was disabled, the bed level grid was built only by the maximum number of points
 
 ### 06/25/2022
 **v1.9**
 - [X] **\*** Added support for BL-touch (3D-touch), you can turn it on or off in the advanced settings, it's off by default; for connecting BL-touch, see above in the description
-- [X] **\*** table parking remains the same - by standard limit switches
-- [X] **\*** when BL-touch is turned off, all items related to its operation are hidden from the menu (except for the ability to turn it on)
-- [X] **\*** added BL-touch signal inversion setting
-- [X] **\*** added setting for the number of bed level points: 3x3, 4x4, 5x5 or 6x6
-- [X] **\*** bed level grid is built automatically if BL-touch is enabled in the settings, or manually if BL-touch is disabled
-- [X] **\*** the wizard for determining the Z-offset BL-touch from the nozzle is activated
+- [X] **\*** Table parking remains the same - by standard limit switches
+- [X] **\*** When BL-touch is turned off, all items related to its operation are hidden from the menu (except for the ability to turn it on)
+- [X] **\*** Added BL-touch signal inversion setting
+- [X] **\*** Added setting for the number of bed level points: 3x3, 4x4, 5x5 or 6x6
+- [X] **\*** Bed level grid is built automatically if BL-touch is enabled in the settings, or manually if BL-touch is disabled
+- [X] **\*** The wizard for determining the Z-offset BL-touch from the nozzle is activated
 - [X] **\*** BL-touch table corner alignment wizard activated (if enabled)
-- [X] **\*** in the corner alignment wizard added tips in which direction and how much to turn the screw
+- [X] **\*** In the corner alignment wizard added tips in which direction and how much to turn the screw
 - [X] [SkyAlexV](https://github.com/SkyAlexV) added Formbot b3950 100k thermistor (61) to the thermistor settings
-- [X] in the steps per mm settings, the maximum possible value for the Z axis has been increased from 1300 to 3200 steps per mm
-- [X] added support for M73 command with print progress and remaining time; a more detailed description of the logic of the firmware with this command, see above in the description
-- [X] removed parking along X/Y when printing is interrupted by the user, now the printer will simply raise the nozzle by 10 mm and stop when printing is interrupted
-- [X] when the printer is turned off using the PWC button (with this module connected), the printer does not turn off immediately, but after the nozzle cools down
+- [X] In the steps per mm settings, the maximum possible value for the Z axis has been increased from 1300 to 3200 steps per mm
+- [X] Added support for M73 command with print progress and remaining time; a more detailed description of the logic of the firmware with this command, see above in the description
+- [X] Removed parking along X/Y when printing is interrupted by the user, now the printer will simply raise the nozzle by 10 mm and stop when printing is interrupted
+- [X] When the printer is turned off using the PWC button (with this module connected), the printer does not turn off immediately, but after the nozzle cools down
 **\*** - only works with Robin Nano v1.3 and Robin Nano S v1.3 boards. On the red Robin Nano v1.1 boards (they are also Reborn 2.0), the BL-touch connection, unfortunately, is not provided.
 
 ### 02/19/2022
 **v1.8**
-- [X] fixed a bug in Marlin, due to which, if the calibration of the touch was unsuccessful, the display freeze on the screen with crosses in the upper left and lower right corners, not responding to pressing
-- [X] in the Advanced settings menu added setting for endstops inverting; this allows you to use non-stock endstop switches by setting their mode of operation
-- [X] added Pt1000 4.7kΩ pullup (1047) to the thermistor selection
-- [X] with a change in the type of hotend thermistor, changes the maximum temperature of the nozzle and the temperature of automatic activation of the radiator fan  (for each type of thermistor - its own)
-- [X] when selecting high temperature thermistors (D500 and PT-1000), additional functions are enabled to ensure their normal operation - MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED and MILLISECONDS_PREHEAT_TIME
-- [X] the temperature of the automatic activation of the radiator fan can be changed in the settings (Settings - Advanced settings - Temperature)
-- [X] the activation of the PSU module has been added to the settings; turning it off removes the menu items related to power management, and also blocks the power off button or command
-- [X] increased to 10 the number of cycles in the calibration of PID heaters
-- [X] from the main menu during printing, the Pause/Resume, Stop and Tuning items have been removed; these actions are available via buttons in the main window
+- [X] Fixed a bug in Marlin, due to which, if the calibration of the touch was unsuccessful, the display freeze on the screen with crosses in the upper left and lower right corners, not responding to pressing
+- [X] In the Advanced settings menu added setting for endstops inverting; this allows you to use non-stock endstop switches by setting their mode of operation
+- [X] Added Pt1000 4.7kΩ pullup (1047) to the thermistor selection
+- [X] With a change in the type of hotend thermistor, changes the maximum temperature of the nozzle and the temperature of automatic activation of the radiator fan  (for each type of thermistor - its own)
+- [X] When selecting high temperature thermistors (D500 and PT-1000), additional functions are enabled to ensure their normal operation - MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED and MILLISECONDS_PREHEAT_TIME
+- [X] The temperature of the automatic activation of the radiator fan can be changed in the settings (Settings - Advanced settings - Temperature)
+- [X] The activation of the PSU module has been added to the settings; turning it off removes the menu items related to power management, and also blocks the power off button or command
+- [X] Increased to 10 the number of cycles in the calibration of PID heaters
+- [X] From the main menu during printing, the Pause/Resume, Stop and Tuning items have been removed; these actions are available via buttons in the main window
 
 ### 01/29/2022
 **v1.7**
-- [X] buttons for quick access to the settings of the flow (flowrate) and speed (feedrate) have been added to the main screen, with showing the current value
-- [X] in the temperature settings menu, the setting of thermistor types for the nozzle and bed has been added; while there is a choice of 4 common types, requests for other types will be added
+- [X] Buttons for quick access to the settings of the flow (flowrate) and speed (feedrate) have been added to the main screen, with showing the current value
+- [X] In the temperature settings menu, the setting of thermistor types for the nozzle and bed has been added; while there is a choice of 4 common types, requests for other types will be added
 - [X] Marlin core updated to version 2.0.9.3
-- [X] save settings (EEPROM) transferred to external SPI-flash W25Q64
-- [X] the setting for turning off the power at the end of printing is duplicated in the "Tuning" menu, accessible from the status screen during printing
-- [X] fixed auto-shutdown on completion of printing - now the printer waits for the nozzle to cool down before turning off (if there is a PWC power control module)
-- [X] when homing, the y-axis now moves first
-- [X] fixed max values in feedrate, flowrate and retract settings
-- [X] in the tuning menu, the retract length setting has been added, the speed (feedrate) and flow (flowrate) settings have been removed, because they are now available directly from the status screen
+- [X] Save settings (EEPROM) transferred to external SPI-flash W25Q64
+- [X] The setting for turning off the power at the end of printing is duplicated in the "Tuning" menu, accessible from the status screen during printing
+- [X] Fixed auto-shutdown on completion of printing - now the printer waits for the nozzle to cool down before turning off (if there is a PWC power control module)
+- [X] When homing, the y-axis now moves first
+- [X] Fixed max values in feedrate, flowrate and retract settings
+- [X] In the tuning menu, the retract length setting has been added, the speed (feedrate) and flow (flowrate) settings have been removed, because they are now available directly from the status screen
 
 ### 01/17/2022
 **v1.6**
-- [X] the work of the firmware with the power control unit (PSU) MKS PWC is activated; if this module is present, the printer can automatically turn off the power when an error is detected - for example, uncontrolled heating of the hotend or table; turn off the printer on the command of the module is disabled so that the printer does not turn off by itself if there is no power management module
-- [X] added motor inversion settings to the settings menu
-- [X] changed the processing of the pause command (M25) - now this command by default brings the nozzle to the parking position and waits for the user to press the screen
-- [X] the function of forced switching on of the fan for blowing the model is activated - when turned on, the fan is supplied with full voltage for 0.05 seconds; this helps the fan to start at low speeds
-- [X] changed to 300 Hz the PWM frequency of the cooling fan of the model
-- [X] added setting to automatically turn off the printer at the end of printing (if the power management module PSU is installed); shutdown works only when printing is successfully completed if the corresponding setting is set in the settings menu (appears after printing starts); By default, auto power off is disabled
+- [X] The work of the firmware with the power control unit (PSU) MKS PWC is activated; if this module is present, the printer can automatically turn off the power when an error is detected - for example, uncontrolled heating of the hotend or table; turn off the printer on the command of the module is disabled so that the printer does not turn off by itself if there is no power management module
+- [X] Added motor inversion settings to the settings menu
+- [X] Changed the processing of the pause command (M25) - now this command by default brings the nozzle to the parking position and waits for the user to press the screen
+- [X] The function of forced switching on of the fan for blowing the model is activated - when turned on, the fan is supplied with full voltage for 0.05 seconds; this helps the fan to start at low speeds
+- [X] Changed to 300 Hz the PWM frequency of the cooling fan of the model
+- [X] Added setting to automatically turn off the printer at the end of printing (if the power management module PSU is installed); shutdown works only when printing is successfully completed if the corresponding setting is set in the settings menu (appears after printing starts); By default, auto power off is disabled
 
 ### 01/07/2022
 **v1.5**
-- [X] increased maximum nozzle temperature to 270° C
-- [X] by default, the value of the LINAER ADVANCE coefficient is set to 0, if necessary, it can always be changed in the settings menu
-- [X] small changes in the settings of the motors (MINIMUM_STEPPER_PULSE is set to 16 for microstep 16, and 8 for microstep 32)
-- [X] changed the variant name for the MKS Robin Nano v1.1 board from v_Robin_Nano_1.2_x16 to v_Robin_Nano_1.1_x16
-- [X] increased the control period for heating the table so that the printer does not give an error when heating slowly
-- [X] corrected the definition of the microcontroller pin MKS_WIFI_IO0
+- [X] Increased maximum nozzle temperature to 270° C
+- [X] By default, the value of the LINAER ADVANCE coefficient is set to 0, if necessary, it can always be changed in the settings menu
+- [X] Small changes in the settings of the motors (MINIMUM_STEPPER_PULSE is set to 16 for microstep 16, and 8 for microstep 32)
+- [X] Changed the variant name for the MKS Robin Nano v1.1 board from v_Robin_Nano_1.2_x16 to v_Robin_Nano_1.1_x16
+- [X] Increased the control period for heating the table so that the printer does not give an error when heating slowly
+- [X] Corrected the definition of the microcontroller pin MKS_WIFI_IO0
 
 ### 11/06/2021
 **v1.4**
 - [X] **(only for Robin Nano v1.3 and Robin Nano S v1.3 boards) added preview image display from g-code file; currently only the preview generated by Prusaslicer is supported**
-- [X] changed the operating conditions of motors at microstep 16 to facilitate the operation of Linear Advance on TMC2208/2225 drivers
-- [X] in the confirmation windows, the positions of the buttons-icons "Confirm" and "Cancel" have been changed to more familiar ones - "Confirm" on the left, "Cancel" on the right
-- [X] fixed display of print time on the main screen
+- [X] Changed the operating conditions of motors at microstep 16 to facilitate the operation of Linear Advance on TMC2208/2225 drivers
+- [X] In the confirmation windows, the positions of the buttons-icons "Confirm" and "Cancel" have been changed to more familiar ones - "Confirm" on the left, "Cancel" on the right
+- [X] Fixed display of print time on the main screen
 
 ### 11/02/2021
 **v1.3**
 - [X] **retracts are enabled in the firmware, the numbers in the settings of these retracts are given in convenient for use limits**
 - [X] **added parking nozzle on pause in the far right corner**
-- [X] added WiFi status info to info menu
-- [X] the building of all configurations is divided into two variants: for drivers with microstep 16 and for drivers with microstepping 32
+- [X] Added WiFi status info to info menu
+- [X] The building of all configurations is divided into two variants: for drivers with microstep 16 and for drivers with microstepping 32
 - [X] The Tune menu has been cleared of unnecessary items that are accessible from the main screen (temperature, cooling)
 
 ### 10/28/2021
 **v1.2**
 - [X] **added WiFi support (based on Sergey's sources - https://github.com/Sergey1560)**
 - [X] **added firmware options for MKS Robin Nano S V1.3 and MKS Robin Nano V1.2**
-- [X] minor edits for driving modes
-- [X] added a counter of the filament spent in the process of the task, it is displayed in the progress bar after the percentage of the task completion
-- [X] added display of touch panel calibration values ​​by command M503
-- [X] the maximum values ​​in the sliders of the digital parameters are limited
+- [X] Minor edits for driving modes
+- [X] Added a counter of the filament spent in the process of the task, it is displayed in the progress bar after the percentage of the task completion
+- [X] Added display of touch panel calibration values ​​by command M503
+- [X] The maximum values ​​in the sliders of the digital parameters are limited
 
 ### 10/26/2021
 **v1.1**
 - [X] **Linear Advance is activated, which also works with the TMC2208/TMC2225 drivers without the need for any hardware changes**
 - [X] **redesigned and expanded functionality of the main screen both in standby mode and in print mode - in fact, it is now a new interface**
-- [X] changed the limits of speeds along the axes
-- [X] increased speed and acceleration by default on Z
-- [X] adjusted parameters of the filament end sensor
-- [X] removed from the menu items for returning to the previous level, which occupied the top line everywhere, return now only by the button at the bottom in the center of the screen
-- [X] items that duplicate the functionality of the main screen and are unnecessary have been removed from the menu
-- [X] the menu item of information about the printer is activated, in which the main version of Marlin with the version of MarlinRB is available
+- [X] Changed the limits of speeds along the axes
+- [X] Increased speed and acceleration by default on Z
+- [X] Adjusted parameters of the filament end sensor
+- [X] Removed from the menu items for returning to the previous level, which occupied the top line everywhere, return now only by the button at the bottom in the center of the screen
+- [X] Items that duplicate the functionality of the main screen and are unnecessary have been removed from the menu
+- [X] The menu item of information about the printer is activated, in which the main version of Marlin with the version of MarlinRB is available
 
 ### 10/19/2021
 **v1.0**
-- [X] basic configuration created
-- [X] fixed all the flaws in working with strings in UTF8 format in Cyrillic
-- [X] added two fonts Tahoma14 and Tahoma18 with Cyrillic
-- [X] in the movement menu, the Z + and Z- buttons are swapped for more logical control (the lower button moves the table down, the upper one - up)
+- [X] Basic configuration created
+- [X] Fixed all the flaws in working with strings in UTF8 format in Cyrillic
+- [X] Added two fonts Tahoma14 and Tahoma18 with Cyrillic
+- [X] In the movement menu, the Z + and Z- buttons are swapped for more logical control (the lower button moves the table down, the upper one - up)
 
