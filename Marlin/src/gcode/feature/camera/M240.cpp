@@ -136,7 +136,7 @@ void GcodeSuite::M240() {
 
     #ifdef PHOTO_RETRACT_MM
       const float rval = parser.linearval('R', _PHOTO_RETRACT_MM);
-      const feedRate_t sval = parser.feedrateval('S', TERN(ADVANCED_PAUSE_FEATURE, PAUSE_PARK_RETRACT_FEEDRATE, TERN(FWRETRACT, RETRACT_FEEDRATE, 45)));
+      const feedRate_t sval = parser.feedrateval('S', TERN(ADVANCED_PAUSE_FEATURE, moving_settings.pause.retract_feedrate, TERN(FWRETRACT, RETRACT_FEEDRATE, 45)));
       e_move_m240(-rval, sval);
     #endif
 

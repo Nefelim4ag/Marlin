@@ -877,6 +877,21 @@ namespace Language_en {
   LSTR MSG_CFG_LOAD_ERROR                 = _UxGT("Error load settings from file \"%s\", in line %d");
   LSTR MSG_LOAD_SETTINGS_FROM_FILE        = _UxGT("Load settings from file");
 
+  LSTR MSG_PAUSE_CHANGE                   = _UxGT("Pause / Filament change");
+  LSTR MSG_PAUSE_HEATER_TIMEOUT           = _UxGT("Heat timeout, s");
+  LSTR MSG_PAUSE_PARK_X                   = _UxGT("Parking point X, mm");
+  LSTR MSG_PAUSE_PARK_Y                   = _UxGT("Parking point Y, mm");
+  LSTR MSG_PAUSE_PARK_Z                   = _UxGT("Lift before parking Z, mm");
+  LSTR MSG_PAUSE_MOVE_FEEDRATE            = _UxGT("Parking feedrate, mm/s");
+  LSTR MSG_PAUSE_RETRACT_FEEDRATE         = _UxGT("Retract feedrate, mm/s");
+  LSTR MSG_PAUSE_RETRACT_LENGTH           = _UxGT("Retract length, mm");
+  LSTR MSG_PAUSE_UNLOAD_FEEDRATE          = _UxGT("Unload feedrate, mm/s");
+  LSTR MSG_PAUSE_UNLOAD_LENGTH            = _UxGT("Unload length, mm");
+  LSTR MSG_PAUSE_SLOW_LOAD_FEEDRATE       = _UxGT("Slow load feedrate, mm/s");
+  LSTR MSG_PAUSE_SLOW_LOAD_LENGTH         = _UxGT("Slow load length, mm");
+  LSTR MSG_PAUSE_FAST_LOAD_FEEDRATE       = _UxGT("Fast load feedrate, mm/s");
+  LSTR MSG_PAUSE_FAST_LOAD_LENGTH         = _UxGT("Fast load length, mm");
+
 
   // These strings can be the same in all languages
   LSTR MSG_MARLIN                         = _UxGT("MarlinRB");

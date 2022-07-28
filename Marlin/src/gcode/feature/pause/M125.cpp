@@ -31,6 +31,7 @@
 #include "../../../module/motion.h"
 #include "../../../module/printcounter.h"
 #include "../../../sd/cardreader.h"
+#include "../../../module/settings.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
   #include "../../../feature/powerloss.h"
@@ -62,9 +63,10 @@
  */
 void GcodeSuite::M125() {
   // Initial retract before move to filament change position
-  const float retract = TERN0(HAS_EXTRUDERS, -ABS(parser.axisunitsval('L', E_AXIS, PAUSE_PARK_RETRACT_LENGTH)));
+  const float retract = TERN0(HAS_EXTRUDERS, -ABS(parser.axisunitsval('L', E_AXIS, moving_settings.pause.retract_length)));
 
-  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+//  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+  xyz_pos_t park_point = {moving_settings.pause.park_point_x, moving_settings.pause.park_point_y, moving_settings.pause.park_point_z};
 
   // Move to filament change position or given position
   NUM_AXIS_CODE(

@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../inc/MarlinConfig.h"
+#include "../module/settings.h"
 
 /**
  * @brief Nozzle class
@@ -84,7 +85,7 @@ class Nozzle {
   #if ENABLED(NOZZLE_PARK_FEATURE)
 
     static float park_mode_0_height(const_float_t park_z) __Os;
-    static void park(const uint8_t z_action, const xyz_pos_t &park=NOZZLE_PARK_POINT) __Os;
+    static void park(const uint8_t z_action, const xyz_pos_t &park={moving_settings.pause.park_point_x, moving_settings.pause.park_point_y, moving_settings.pause.park_point_z}) __Os;
 
   #endif
 };

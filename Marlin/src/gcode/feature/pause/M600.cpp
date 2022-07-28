@@ -118,9 +118,10 @@ void GcodeSuite::M600() {
   #endif
 
   // Initial retract before move to filament change position
-  const float retract = -ABS(parser.axisunitsval('E', E_AXIS, PAUSE_PARK_RETRACT_LENGTH));
+  const float retract = -ABS(parser.axisunitsval('E', E_AXIS, moving_settings.pause.retract_length));
 
-  xyz_pos_t park_point NOZZLE_PARK_POINT;
+//  xyz_pos_t park_point NOZZLE_PARK_POINT;
+  xyz_pos_t park_point {moving_settings.pause.park_point_x, moving_settings.pause.park_point_y, moving_settings.pause.park_point_z};
 
   // Move XY axes to filament change position or given position
   NUM_AXIS_CODE(
@@ -153,7 +154,7 @@ void GcodeSuite::M600() {
     if (standardM600) {
       wait_for_confirmation(true, beep_count DXC_PASS);
       resume_print(
-        FILAMENT_CHANGE_SLOW_LOAD_LENGTH,
+        moving_settings.filament_change.slow_load_length,
         ABS(parser.axisunitsval('L', E_AXIS, fc_settings[active_extruder].load_length)),
         ADVANCED_PAUSE_PURGE_LENGTH,
         beep_count,

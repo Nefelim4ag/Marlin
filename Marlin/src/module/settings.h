@@ -41,6 +41,30 @@ extern autooff_settings_t autooff_settings;
 
 typedef struct
 {
+    struct
+    {
+      float   park_point_x;
+      float   park_point_y;
+      float   park_point_z;
+      float   park_move_feedrate;
+      float   retract_feedrate;
+      float   retract_length;
+      uint32_t  heater_timeout;
+    } pause;
+    struct
+    {
+      float   unload_feedrate;
+      float   unload_length;
+      float   slow_load_feedrate;
+      float   slow_load_length;
+      float   fast_load_feedrate;
+      float   fast_load_length;
+    } filament_change;
+} moving_settings_t;
+extern moving_settings_t moving_settings;
+
+typedef struct
+{
     bool  psu_enabled;
 } psu_settings_t;
 extern psu_settings_t psu_settings;

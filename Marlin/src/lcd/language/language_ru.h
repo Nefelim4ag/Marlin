@@ -967,6 +967,21 @@ namespace Language_ru {
   LSTR MSG_CFG_LOAD_ERROR                 = _UxGT("Ошибка загрузки настроек из файла \"%s\", в строке %d");
   LSTR MSG_LOAD_SETTINGS_FROM_FILE        = _UxGT("Загрузить настройки из файла");
 
+  LSTR MSG_PAUSE_CHANGE                   = _UxGT("Пауза / Замена прутка");
+  LSTR MSG_PAUSE_HEATER_TIMEOUT           = _UxGT("Таймаут нагрева, сек");
+  LSTR MSG_PAUSE_PARK_X                   = _UxGT("Координаты парковки X, мм");
+  LSTR MSG_PAUSE_PARK_Y                   = _UxGT("Координаты парковки Y, мм");
+  LSTR MSG_PAUSE_PARK_Z                   = _UxGT("Подъем перед парковкой Z, мм");
+  LSTR MSG_PAUSE_MOVE_FEEDRATE            = _UxGT("Скорость на парковку, мм/с");
+  LSTR MSG_PAUSE_RETRACT_FEEDRATE         = _UxGT("Скорость ретракта, мм/с");
+  LSTR MSG_PAUSE_RETRACT_LENGTH           = _UxGT("Длина ретракта, мм");
+  LSTR MSG_PAUSE_UNLOAD_FEEDRATE          = _UxGT("Скорость выгрузки, мм/с");
+  LSTR MSG_PAUSE_UNLOAD_LENGTH            = _UxGT("Длина выгрузки, мм");
+  LSTR MSG_PAUSE_SLOW_LOAD_FEEDRATE       = _UxGT("Скорость медл.загрузки, мм/с");
+  LSTR MSG_PAUSE_SLOW_LOAD_LENGTH         = _UxGT("Длина медл.загрузки, мм");
+  LSTR MSG_PAUSE_FAST_LOAD_FEEDRATE       = _UxGT("Скорость быстр.загрузки, мм/с");
+  LSTR MSG_PAUSE_FAST_LOAD_LENGTH         = _UxGT("Длина быстр.загрузки, мм");
+
 
 }
 

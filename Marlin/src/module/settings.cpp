@@ -584,11 +584,13 @@ typedef struct SettingsDataStruct {
   psu_settings_t          psu_settings;
   endstop_settings_t      endstop_settings;
   bedlevel_settings_t     bedlevel_settings;
+  moving_settings_t       moving_settings;
 } SettingsData;
 
 autooff_settings_t    autooff_settings;
 psu_settings_t        psu_settings;
 bedlevel_settings_t   bedlevel_settings;
+moving_settings_t     moving_settings;
 
 //static_assert(sizeof(SettingsData) <= MARLIN_EEPROM_SIZE, "EEPROM too small to contain SettingsData!");
 
@@ -1637,6 +1639,9 @@ void MarlinSettings::postprocess() {
     // Bed leveling settings
     EEPROM_WRITE(bedlevel_settings);
 
+    // Moving settings
+    EEPROM_WRITE(moving_settings);
+
     //
     // Model predictive control
     //
@@ -2641,6 +2646,9 @@ void MarlinSettings::postprocess() {
         bedlevel_settings.bltouch_enabled = false;
       #endif
 
+      // Moving settings
+      EEPROM_READ((uint8_t *)&moving_settings, sizeof(moving_settings));
+
 
       DEBUG_ECHO_MSG("EEPROM Readed");
 
@@ -2983,6 +2991,22 @@ void MarlinSettings::reset() {
     bedlevel_settings.bltouch_enabled = false;
     bedlevel_settings.bedlevel_points.x = 4;
     bedlevel_settings.bedlevel_points.y = 4;
+
+    // Moving settings
+    xyz_pos_t park_point NOZZLE_PARK_POINT;
+    moving_settings.pause.heater_timeout = PAUSE_PARK_NOZZLE_TIMEOUT;
+    moving_settings.pause.park_move_feedrate = NOZZLE_PARK_XY_FEEDRATE;
+    moving_settings.pause.park_point_x = park_point[0];
+    moving_settings.pause.park_point_y = park_point[1];
+    moving_settings.pause.park_point_z = park_point[2];
+    moving_settings.pause.retract_feedrate = PAUSE_PARK_RETRACT_FEEDRATE;
+    moving_settings.pause.retract_length = PAUSE_PARK_RETRACT_LENGTH;
+    moving_settings.filament_change.fast_load_feedrate = FILAMENT_CHANGE_FAST_LOAD_FEEDRATE;
+    moving_settings.filament_change.fast_load_length = FILAMENT_CHANGE_FAST_LOAD_LENGTH;
+    moving_settings.filament_change.slow_load_feedrate = FILAMENT_CHANGE_SLOW_LOAD_FEEDRATE;
+    moving_settings.filament_change.slow_load_length = FILAMENT_CHANGE_SLOW_LOAD_LENGTH;
+    moving_settings.filament_change.unload_feedrate = FILAMENT_CHANGE_UNLOAD_FEEDRATE;
+    moving_settings.filament_change.unload_length = FILAMENT_CHANGE_UNLOAD_LENGTH;
   }
 
   planner.settings.min_segment_time_us = DEFAULT_MINSEGMENTTIME;
@@ -3441,8 +3465,8 @@ void MarlinSettings::reset() {
   //
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     EXTRUDER_LOOP() {
-      fc_settings[e].unload_length = FILAMENT_CHANGE_UNLOAD_LENGTH;
-      fc_settings[e].load_length = FILAMENT_CHANGE_FAST_LOAD_LENGTH;
+      fc_settings[e].unload_length = moving_settings.filament_change.unload_length;
+      fc_settings[e].load_length = moving_settings.filament_change.fast_load_length;
     }
   #endif
 

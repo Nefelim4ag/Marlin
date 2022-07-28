@@ -730,6 +730,27 @@ void menu_advanced_steps_per_mm() {
   END_MENU();
 }
 
+
+  void menu_pause_change() {
+    START_MENU();
+    EDIT_ITEM(long5_10, MSG_PAUSE_HEATER_TIMEOUT, &moving_settings.pause.heater_timeout, 0, 3600);
+    EDIT_ITEM(float4, MSG_PAUSE_PARK_X, &moving_settings.pause.park_point_x, 0, X_MAX_POS);
+    EDIT_ITEM(float4, MSG_PAUSE_PARK_Y, &moving_settings.pause.park_point_y, 0, Y_MAX_POS);
+    EDIT_ITEM(float4, MSG_PAUSE_PARK_Z, &moving_settings.pause.park_point_z, 0, Z_MAX_POS);
+    EDIT_ITEM(float4, MSG_PAUSE_MOVE_FEEDRATE, &moving_settings.pause.park_move_feedrate, 0, max(planner.settings.max_feedrate_mm_s[X_AXIS], planner.settings.max_feedrate_mm_s[X_AXIS]));
+    EDIT_ITEM(float61, MSG_PAUSE_RETRACT_LENGTH, &moving_settings.pause.retract_length, 0, 20);
+    EDIT_ITEM(float4, MSG_PAUSE_RETRACT_FEEDRATE, &moving_settings.pause.retract_feedrate, 0, planner.settings.max_feedrate_mm_s[E_AXIS]);
+    EDIT_ITEM(float4, MSG_PAUSE_UNLOAD_LENGTH, &moving_settings.filament_change.unload_length, 0, 200);
+    EDIT_ITEM(float4, MSG_PAUSE_UNLOAD_FEEDRATE, &moving_settings.filament_change.unload_feedrate, 0, planner.settings.max_feedrate_mm_s[E_AXIS]);
+    EDIT_ITEM(float4, MSG_PAUSE_SLOW_LOAD_LENGTH, &moving_settings.filament_change.fast_load_length, 0, 200);
+    EDIT_ITEM(float4, MSG_PAUSE_SLOW_LOAD_FEEDRATE, &moving_settings.filament_change.slow_load_feedrate, 0, planner.settings.max_feedrate_mm_s[E_AXIS]);
+    EDIT_ITEM(float4, MSG_PAUSE_FAST_LOAD_LENGTH, &moving_settings.filament_change.fast_load_length, 0, 200);
+    EDIT_ITEM(float4, MSG_PAUSE_FAST_LOAD_FEEDRATE, &moving_settings.filament_change.fast_load_feedrate, 0, planner.settings.max_feedrate_mm_s[E_AXIS]);
+
+    END_MENU();
+  }
+
+
 void menu_advanced_settings() {
   const bool is_busy = printer_busy();
 
@@ -775,6 +796,8 @@ void menu_advanced_settings() {
   // M92 - Steps Per mm
   if (!is_busy)
     SUBMENU(MSG_STEPS_PER_MM, menu_advanced_steps_per_mm);
+
+  SUBMENU(MSG_PAUSE_CHANGE, menu_pause_change);
 
   SUBMENU(MSG_AXIS_DIRECTION, menu_advanced_axesdir);
   SUBMENU(MSG_ENDSTOP_INVERTING, menu_advanced_endstop_inverting);

@@ -54,7 +54,8 @@
  *  Default values are used for omitted arguments.
  */
 void GcodeSuite::M701() {
-  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+//  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+  xyz_pos_t park_point = {moving_settings.pause.park_point_x, moving_settings.pause.park_point_y, moving_settings.pause.park_point_z};
 
   // Don't raise Z if the machine isn't homed
   if (TERN0(NO_MOTION_BEFORE_HOMING, axes_should_home())) park_point.z = 0;
@@ -105,7 +106,7 @@ void GcodeSuite::M701() {
     mmu2.load_filament_to_nozzle(target_extruder);
   #else
     constexpr float     purge_length = ADVANCED_PAUSE_PURGE_LENGTH,
-                    slow_load_length = FILAMENT_CHANGE_SLOW_LOAD_LENGTH;
+                    slow_load_length = moving_settings.filament_change.slow_load_length;
         const float fast_load_length = ABS(parser.seenval('L') ? parser.value_axis_units(E_AXIS)
                                                             : fc_settings[active_extruder].load_length);
     load_filament(
@@ -145,7 +146,8 @@ void GcodeSuite::M701() {
  *  Default values are used for omitted arguments.
  */
 void GcodeSuite::M702() {
-  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+//  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+  xyz_pos_t park_point = {moving_settings.pause.park_point_x, moving_settings.pause.park_point_y, moving_settings.pause.park_point_z};
 
   // Don't raise Z if the machine isn't homed
   if (TERN0(NO_MOTION_BEFORE_HOMING, axes_should_home())) park_point.z = 0;

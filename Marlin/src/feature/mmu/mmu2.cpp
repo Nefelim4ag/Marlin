@@ -829,7 +829,7 @@ void MMU2::manage_response(const bool move_axes, const bool turn_off_nozzle) {
 
       if (move_axes && all_axes_homed()) {
         // Move XY to starting position, then Z
-        do_blocking_move_to_xy(resume_position, feedRate_t(NOZZLE_PARK_XY_FEEDRATE));
+        do_blocking_move_to_xy(resume_position, feedRate_t(moving_settings.pause.park_move_feedrate));
 
         // Move Z_AXIS to saved position
         do_blocking_move_to_z(resume_position.z, feedRate_t(NOZZLE_PARK_Z_FEEDRATE));

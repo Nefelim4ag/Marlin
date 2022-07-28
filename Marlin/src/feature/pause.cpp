@@ -237,7 +237,7 @@ bool load_filament(const_float_t slow_load_length/*=0*/, const_float_t fast_load
   TERN_(BELTPRINTER, do_blocking_move_to_xy(0.00, 50.00));
 
   // Slow Load filament
-  if (slow_load_length) unscaled_e_move(slow_load_length, FILAMENT_CHANGE_SLOW_LOAD_FEEDRATE);
+  if (slow_load_length) unscaled_e_move(slow_load_length, moving_settings.filament_change.slow_load_feedrate);
 
   // Fast Load Filament
   if (fast_load_length) {
@@ -246,7 +246,7 @@ bool load_filament(const_float_t slow_load_length/*=0*/, const_float_t fast_load
       planner.settings.retract_acceleration = FILAMENT_CHANGE_FAST_LOAD_ACCEL;
     #endif
 
-    unscaled_e_move(fast_load_length, FILAMENT_CHANGE_FAST_LOAD_FEEDRATE);
+    unscaled_e_move(fast_load_length, moving_settings.filament_change.fast_load_feedrate);
 
     #if FILAMENT_CHANGE_FAST_LOAD_ACCEL > 0
       planner.settings.retract_acceleration = saved_acceleration;
@@ -351,7 +351,7 @@ bool unload_filament(const_float_t unload_length, const bool show_lcd/*=false*/,
   if (show_lcd) ui.pause_show_message(PAUSE_MESSAGE_UNLOAD, mode);
 
   // Retract filament
-  unscaled_e_move(-(FILAMENT_UNLOAD_PURGE_RETRACT) * mix_multiplier, (PAUSE_PARK_RETRACT_FEEDRATE) * mix_multiplier);
+  unscaled_e_move(-(FILAMENT_UNLOAD_PURGE_RETRACT) * mix_multiplier, (moving_settings.pause.retract_feedrate) * mix_multiplier);
 
   // Wait for filament to cool
   safe_delay(FILAMENT_UNLOAD_PURGE_DELAY);
@@ -366,7 +366,7 @@ bool unload_filament(const_float_t unload_length, const bool show_lcd/*=false*/,
     planner.settings.retract_acceleration = FILAMENT_CHANGE_UNLOAD_ACCEL;
   #endif
 
-  unscaled_e_move(unload_length * mix_multiplier, (FILAMENT_CHANGE_UNLOAD_FEEDRATE) * mix_multiplier);
+  unscaled_e_move(unload_length * mix_multiplier, (moving_settings.filament_change.unload_feedrate) * mix_multiplier);
 
   #if FILAMENT_CHANGE_FAST_LOAD_ACCEL > 0
     planner.settings.retract_acceleration = saved_acceleration;
@@ -456,7 +456,7 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
       set_bed_leveling_enabled(false);  // turn off leveling
     #endif
 
-    unscaled_e_move(retract, PAUSE_PARK_RETRACT_FEEDRATE);
+    unscaled_e_move(retract, moving_settings.pause.retract_feedrate);
 
     TERN_(AUTO_BED_LEVELING_UBL, set_bed_leveling_enabled(leveling_was_enabled)); // restore leveling
   }
@@ -517,7 +517,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
   first_impatient_beep(max_beep_count);
 
   // Start the heater idle timers
-  const millis_t nozzle_timeout = SEC_TO_MS(PAUSE_PARK_NOZZLE_TIMEOUT);
+  const millis_t nozzle_timeout = SEC_TO_MS(moving_settings.pause.heater_timeout);
 
   HOTEND_LOOP() thermalManager.heater_idle[e].start(nozzle_timeout);
 
@@ -567,7 +567,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
       show_continue_prompt(is_reload);
 
       // Start the heater idle timers
-      const millis_t nozzle_timeout = SEC_TO_MS(PAUSE_PARK_NOZZLE_TIMEOUT);
+      const millis_t nozzle_timeout = SEC_TO_MS(moving_settings.pause.heater_timeout);
 
       HOTEND_LOOP() thermalManager.heater_idle[e].start(nozzle_timeout);
 
@@ -646,12 +646,12 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
   ensure_safe_temperature(DISABLED(BELTPRINTER));
 
   // Retract to prevent oozing
-  unscaled_e_move(-(PAUSE_PARK_RETRACT_LENGTH), feedRate_t(PAUSE_PARK_RETRACT_FEEDRATE));
+  unscaled_e_move(-(moving_settings.pause.retract_length), feedRate_t(moving_settings.pause.retract_feedrate));
 
   if (!axes_should_home()) {
     // Move XY back to saved position
     destination.set(resume_position.x, resume_position.y, current_position.z, current_position.e);
-    prepare_internal_move_to_destination(NOZZLE_PARK_XY_FEEDRATE);
+    prepare_internal_move_to_destination(moving_settings.pause.park_move_feedrate);
 
     // Move Z back to saved position
     destination.z = resume_position.z;
@@ -664,7 +664,7 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
   #endif
 
   // Unretract
-  unscaled_e_move(PAUSE_PARK_RETRACT_LENGTH, feedRate_t(PAUSE_PARK_RETRACT_FEEDRATE));
+  unscaled_e_move(moving_settings.pause.retract_length, feedRate_t(moving_settings.pause.retract_feedrate));
 
   TERN_(AUTO_BED_LEVELING_UBL, set_bed_leveling_enabled(leveling_was_enabled)); // restore leveling
 
@@ -676,7 +676,7 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
   #endif
 
   // If resume_position is negative
-  if (resume_position.e < 0) unscaled_e_move(resume_position.e, feedRate_t(PAUSE_PARK_RETRACT_FEEDRATE));
+  if (resume_position.e < 0) unscaled_e_move(resume_position.e, feedRate_t(moving_settings.pause.retract_feedrate));
   #ifdef ADVANCED_PAUSE_RESUME_PRIME
     if (ADVANCED_PAUSE_RESUME_PRIME != 0)
       unscaled_e_move(ADVANCED_PAUSE_RESUME_PRIME, feedRate_t(ADVANCED_PAUSE_PURGE_FEEDRATE));
