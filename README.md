@@ -45,7 +45,7 @@
 - хранение настроек (EEPROM) во внешней SPI-флэш W25Q64
 - настраиваемое количества точек сетки выравнивания стола
 - цветовая карта высот сетки выравнивания стола
-- сохранение и загрузка настроек в файл .ini на SD-карте
+- сохранение и загрузка настроек в файл .ini на SD-карте ([подробнее]((#Сохранение-и-загрузка-параметров-в-файл-ini))
 
 ## Соответствие вариантов прошивки разным платам
 Прошивка собрана в нескольких вариантах, каждый из которых подходит к определенной плате, которая встречается в принтере Reborn.
@@ -165,7 +165,7 @@ BEDLEVEL_Z_VALUES = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
 ## История
 ### 29.07.2022
 **v2.1**
-- [X] Добавлена возможность выгрузки настроек в файл конфигурации .ini на SD-карте и загрузку настроек из него командами `M5000`, `M5001` и из меню принтера, сохраняется и загружается почти 90 параметров (подробнее)
+- [X] Добавлена возможность выгрузки настроек в файл конфигурации .ini на SD-карте и загрузку настроек из него командами `M5000`, `M5001` и из меню принтера, сохраняется и загружается почти 90 параметров ([подробнее]((#Сохранение-и-загрузка-параметров-в-файл-ini))
 - [X] Добавлены настройки параметров парковки экструдера при паузе или замене прутка и параметры замены прутка в меню `Настройки` - `Доп. настройки` - `Пауза / Замена прутка`
 - [X] Исправлен вывод некоторых текстов в меню
 - [X] Применены все последние изменения и багфиксы оригинального Марлина вплоть до 28.07.2022
@@ -333,7 +333,7 @@ Updated 07/29/2022
 - storage of settings (EEPROM) in an external SPI flash W25Q64
 - configurable number of bed leveling grid points
 - bed leveling grid height color map
-- save and load settings to .ini file on SD card
+- save and load settings to .ini file on SD card ([more]((#Saving-and-loading-parameters-to-ini-file)))
 
 ## Correspondence of firmware variants to different boards
 The firmware is assembled in several variants, each of which is suitable for a specific board that is found in the Reborn printer.
@@ -452,7 +452,7 @@ It is not necessary to specify all the parameters in the file, it can contain an
 
 ### 07/29/2022
 **v2.1**
-- [X] Added the ability to save settings to the .ini configuration file on the SD card and load settings from it using the `M5000`, `M5001` commands and from the printer menu, almost 90 parameters are saved and loaded (more info)
+- [X] Added the ability to save settings to the .ini configuration file on the SD card and load settings from it using the `M5000`, `M5001` commands and from the printer menu, almost 90 parameters are saved and loaded ([more]((#Saving-and-loading-parameters-to-ini-file)))
 - [X] Added settings for extruder parking parameters when pausing or changing filament and parameters for changing filament in the menu `Settings` - `Advanced settings` - `Pause / Filament change`
 - [X] Fixed output of some texts in the menu
 - [X] Applied all the latest changes and bug fixes of the original Marlin up to 07/28/2022
