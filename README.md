@@ -21,7 +21,7 @@
 * [Настройка WiFi](#настройка-WiFi)
 * [Подключение Z-зонда 3D-touch/BL-touch](#Подключение-Z-зонда-3D-touch-BL-touch)
 * [Работа прошивки с командой M73](#работа-прошивки-с-командой-M73)
-* [Сохранение и загрузка параметров в файл .ini](#Сохранение-и-загрузка-параметров-в-файл-.ini)
+* [Сохранение и загрузка параметров в файл .ini](#Сохранение-и-загрузка-параметров-в-файл-ini)
 * [История](#история)
 
 ## Главное
@@ -309,7 +309,7 @@ Based on [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin) 
 * [WiFi setup](#wifi-setup)
 * [Connecting the Z probe BL-touch (3D-touch)](#connecting-the-Z-probe-BL-touch-3D-touch)
 * [Firmware operation with **M73** command](#firmware-operation-with-M73-command)
-* [Saving and loading parameters to .ini file](#Saving-and-loading-parameters-to-.ini-file)
+* [Saving and loading parameters to .ini file](#Saving-and-loading-parameters-to-ini-file)
 * [Version history](#version-history)
 
 ## The main thing
