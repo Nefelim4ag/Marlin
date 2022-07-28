@@ -435,7 +435,7 @@ Examples of comments on separate lines:
 ####################################
 ```
 The parameters themselves are stored in the file as the parameter name and its value, separated by the `=` character. The order of the parameters in the file does not matter, as does the case of the letters in the name or value. Decimal values ​​in numbers are separated by a dot, not a comma. For example - 123.45, but not 123.45. The parameter name must consist of letters, numbers, and the underscore "_" character, and must not contain a space. Spaces and tabs at the beginning and end of the line, as well as between the parameter name and value, are ignored.
-An few examples of correctly specifying the value of the same parameter:
+Examples of correctly specifying parameter values::
 ```
 STEPS_PER_MM_X = 80.00 # here is comment for this perameter
   sTePs_PeR_mM_y=80.00#here is comment for this perameter
