@@ -69,9 +69,7 @@ GcodeSuite gcode;
   #include "../feature/fancheck.h"
 #endif
 
-#if ENABLED(MKS_WIFI)
 #include "../module/mks_wifi/mks_wifi_gcodes.h"
-#endif
 
 #include "../MarlinCore.h" // for idle, kill
 
@@ -330,9 +328,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
   TERN_(HAS_FANCHECK, fan_check.check_deferred_error());
 
   KEEPALIVE_STATE(IN_HANDLER);
-   #if ENABLED(MKS_WIFI)
-    serial_index_t port = queue.ring_buffer.command_port();
-  #endif
+  serial_index_t port = queue.ring_buffer.command_port();
 
  /**
   * Block all Gcodes except M511 Unlock Printer, if printer is locked
@@ -631,15 +627,14 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
 
       case 105: 
-        #if ENABLED(MKS_WIFI)
-          if(port.index == MKS_WIFI_SERIAL_NUM){
-            mks_m105();
-          }else{
-            M105(); 
-          }
-        #else
+        if(port.index == MKS_WIFI_SERIAL_NUM)
+        {
+          mks_m105();
+        }
+        else
+        {
           M105(); 
-        #endif
+        }
         return;                                   // M105: Report Temperatures (and say "ok")
 
       #if HAS_FAN
@@ -728,15 +723,14 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       case 92: M92(); break;                                      // M92: Set the steps-per-unit for one or more axes
       case 114: M114(); break;                                    // M114: Report current position
       case 115: 
-        #if ENABLED(MKS_WIFI)  
-          if(port.index == MKS_WIFI_SERIAL_NUM){
-            mks_m115();
-          }else{
-            M115(); 
-          }
-        #else
+        if(port.index == MKS_WIFI_SERIAL_NUM)
+        {
+          mks_m115();
+        }
+        else
+        {
           M115(); 
-        #endif
+        }
         break;                                    // M115: Report capabilities
 
       case 117: TERN_(HAS_STATUS_MESSAGE, M117()); break;         // M117: Set LCD message text, if possible
@@ -1120,45 +1114,39 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 995: M995(); break;                                  // M995: Touch screen calibration for TFT display
       #endif
 
-      #if ENABLED(MKS_WIFI)
-				case 991:
-          if(port.index == MKS_WIFI_SERIAL_NUM)
-          {
-            mks_m991();
-          };
-          return;
+      case 991:
+        if(port.index == MKS_WIFI_SERIAL_NUM)
+        {
+          mks_m991();
+        };
+        return;
 
-        case 992:
-          if(port.index == MKS_WIFI_SERIAL_NUM)
-          {
-            mks_m992();
-          };
-          return;
+      case 992:
+        if(port.index == MKS_WIFI_SERIAL_NUM)
+        {
+          mks_m992();
+        };
+        return;
 
-        case 994:
-          if(port.index == MKS_WIFI_SERIAL_NUM)
-          {
-            mks_m994();
-          };
-          return;
+      case 994:
+        if(port.index == MKS_WIFI_SERIAL_NUM)
+        {
+          mks_m994();
+        };
+        return;
 
-        case 997: 
-          if(port.index == MKS_WIFI_SERIAL_NUM)
-          {
-            mks_m997();
-          }
-          else
-          {
-            #if ENABLED(PLATFORM_M997_SUPPORT)
-              M997();
-            #endif
-          }; 
-          return;
-      #else
-        #if ENABLED(PLATFORM_M997_SUPPORT)
-          case 997: M997(); break;                                  // M997: Perform in-application firmware update
-        #endif
-      #endif
+      case 997: 
+        if(port.index == MKS_WIFI_SERIAL_NUM)
+        {
+          mks_m997();
+        }
+        else
+        {
+          #if ENABLED(PLATFORM_M997_SUPPORT)
+            M997();
+          #endif
+        }; 
+        return;
 
       case 999: M999(); break;                                    // M999: Restart after being Stopped
 

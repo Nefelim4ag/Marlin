@@ -9,7 +9,6 @@
 
 
 #include "diskio.h"		/* FatFs lower layer API */
-#ifdef MKS_WIFI
 
 volatile uint8_t __attribute__ ((aligned (4))) buf_copy[512];
 
@@ -26,9 +25,14 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-	if(pdrv == DEV_SD){
-	return RES_OK;	
+	if(pdrv == DEV_SD)
+	{
+		return RES_OK;	
+	} else 	if(pdrv == DEV_SD)
+	{
+		return RES_OK;	
 	};
+
 	return STA_NODISK;
 }
 
@@ -46,7 +50,8 @@ DSTATUS disk_initialize (
 		
 	if(pdrv == DEV_SD){
 		result=SD_Init();
-		if(result != 0) {
+		if(result != 0)
+		{
 			return STA_NOINIT;
 		};
 		return(0);
@@ -71,31 +76,38 @@ uint8_t res=0;
 	
 	if(pdrv == DEV_SD){
 	
-		if(((uint32_t)buff % 4) != 0){
+		if(((uint32_t)buff % 4) != 0)
+		{
 			DEBUG("Buffer not aligned");
-			while (count--){
-
-			res=SD_transfer((uint8_t *)buf_copy, (uint32_t) sector, 1, SD2UM);
-			if(res != 0){
+			while (count--)
+			{
 				res=SD_transfer((uint8_t *)buf_copy, (uint32_t) sector, 1, SD2UM);
-				if(res != 0){
+				if(res != 0)
+				{
+					res=SD_transfer((uint8_t *)buf_copy, (uint32_t) sector, 1, SD2UM);
+					if(res != 0)
+					{
+						return RES_ERROR;
+					};
+				};
+				memcpy((uint8_t *)buff,(uint8_t *)buf_copy,512);
+				buff += 512; //uint
+				sector++;
+			}
+
+		}
+		else
+		{
+			//1st read
+			res=SD_transfer((uint8_t *)buff, (uint32_t) sector, count, SD2UM);
+			if(res != 0)
+			{
+				res=SD_transfer((uint8_t *)buff, (uint32_t) sector, count, SD2UM);
+				if(res != 0)
+				{
 					return RES_ERROR;
 				};
 			};
-			memcpy((uint8_t *)buff,(uint8_t *)buf_copy,512);
-			buff+=512; //uint
-			sector++;
-			}
-
-		}else{
-		//1st read
-		res=SD_transfer((uint8_t *)buff, (uint32_t) sector, count, SD2UM);
-		if(res != 0){
-			res=SD_transfer((uint8_t *)buff, (uint32_t) sector, count, SD2UM);
-			if(res != 0){
-				return RES_ERROR;
-			};
-		};
 		};
 		return RES_OK;
 	};
@@ -115,32 +127,40 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-uint8_t res;
+	uint8_t res;
 
-	if(pdrv == DEV_SD){
-
-		if(((uint32_t)buff % 4) != 0){
+	if(pdrv == DEV_SD)
+	{
+		if(((uint32_t)buff % 4) != 0)
+		{
 			DEBUG("Buffer not aligned");
-			while (count--){
-				memcpy((uint8_t *)buf_copy,(uint8_t *)buff,512);
+			while (count--)
+			{
+				memcpy((uint8_t *)buf_copy,(uint8_t *)buff, 512);
 
 				res=SD_transfer((uint8_t *)buf_copy, (uint32_t) sector, 1, UM2SD);
-				if(res != 0){
+				if(res != 0)
+				{
 					res=SD_transfer((uint8_t *)buf_copy, (uint32_t) sector, 1, UM2SD);
-					if(res != 0){
+					if(res != 0)
+					{
 						return RES_ERROR;
 					};
 				};
 			
-				buff+=512;
+				buff += 512;
 				sector++;
 			}
 
-		}else{
+		}
+		else
+		{
 			res=SD_transfer((uint8_t *)buff, (uint32_t) sector, count, UM2SD);
-			if(res != 0){
+			if(res != 0)
+			{
 				res=SD_transfer((uint8_t *)buff, (uint32_t) sector, count, UM2SD);
-				if(res != 0){
+				if(res != 0)
+				{
 					return RES_ERROR;
 				};
 			};
@@ -148,7 +168,6 @@ uint8_t res;
 	
 		return RES_OK;
 	};
-
 
 return RES_PARERR;
 }
@@ -167,36 +186,36 @@ DRESULT disk_ioctl (
 {
 	DRESULT res = RES_ERROR; 
 
-	if(pdrv == DEV_SD){
-
-	switch (cmd)
-  {
-
-	case CTRL_SYNC:
-      res = RES_OK;
-      break;
- 
-    case GET_SECTOR_SIZE:
-      *(DWORD*)buff = 512;
-      res= RES_OK;
-      break;
- 
-    case GET_BLOCK_SIZE:
-      *(DWORD*)buff = 512;
-      res= RES_OK;
-      break;
-  }
- 
-	return res;
-};
+	if(pdrv == DEV_SD)
+	{
+		switch (cmd)
+		{
+			case CTRL_SYNC:
+				res = RES_OK;
+				break;
+	
+			case GET_SECTOR_SIZE:
+				*(DWORD*)buff = 512;
+				res= RES_OK;
+				break;
+	
+			case GET_BLOCK_SIZE:
+				*(DWORD*)buff = 512;
+				res= RES_OK;
+				break;
+		}
+	
+		return res;
+	};
 	return(RES_OK);
 };
 
-DWORD get_fattime (void) {
+DWORD get_fattime (void)
+{
 	
 	uint32_t  d,ret;
 		
-	d=2022-1980;
+	d = 2022 - 1980;
 	ret=(d << 25);
 	
 	d=04;
@@ -222,4 +241,3 @@ DWORD get_fattime (void) {
 };
 
 
-#endif

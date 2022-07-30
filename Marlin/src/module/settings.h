@@ -111,7 +111,8 @@ class MarlinSettings {
 
       static void first_load() {
         static bool loaded = false;
-        if (!loaded && load()) loaded = true;
+        if (!loaded && load())
+          loaded = true;
       }
 
       #if ENABLED(AUTO_BED_LEVELING_UBL) // Eventually make these available if any leveling system

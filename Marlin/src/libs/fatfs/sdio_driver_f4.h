@@ -3,7 +3,6 @@
 
 #include "../../module/mks_wifi/mks_wifi.h"
 
-#ifdef MKS_WIFI
 #ifdef STM32F4
 // SD card description
 typedef struct {
@@ -201,6 +200,5 @@ uint32_t SD_transfer(uint8_t *buf, uint32_t blk, uint32_t cnt, uint32_t dir);
 uint8_t SD_Init(void);
 //void SDIO_Config(void);
 
-#endif
 #endif
 #endif

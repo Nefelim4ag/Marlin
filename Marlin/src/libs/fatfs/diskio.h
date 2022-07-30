@@ -24,7 +24,6 @@
 
 #include "../../MarlinCore.h"
 
-#ifdef MKS_WIFI
 
 /* Status of Disk Functions */
 typedef BYTE	DSTATUS;
@@ -91,6 +90,5 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 // }
 // #endif
 
-#endif
 
 #endif

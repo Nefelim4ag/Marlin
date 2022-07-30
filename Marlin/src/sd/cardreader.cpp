@@ -93,7 +93,7 @@ char CardReader::proc_filenames[SD_PROCEDURE_DEPTH][MAXPATHNAMELENGTH];
 CardReader::CardReader()
 {
     flag.sdprinting = flag.sdprintdone = flag.saving = flag.logging = false;
-    FATFS_sd.fs_type = 0;
+    FS_sd.fs_type = 0;
     curfile.obj.fs = 0;
     curfilinfo.fname[0] = 0;
     curfilinfo.altname[0] = 0;
@@ -393,15 +393,13 @@ void CardReader::ls(bool includeLongNames /*=true*/)
 {
     if (isMounted())
     {
-#if ENABLED(MKS_WIFI)
-        serial_index_t port = queue.ring_buffer.command_port();
-        if (port.index == MKS_WIFI_SERIAL_NUM)
-            printListing(includeLongNames);
-        else
-            printListing(includeLongNames);
-#else
-        printListing(root OPTARG(LONG_FILENAME_HOST_SUPPORT, includeLongNames));
-#endif
+    serial_index_t port = queue.ring_buffer.command_port();
+    if (port.index == MKS_WIFI_SERIAL_NUM)
+        printListing(includeLongNames);
+    else
+        printListing(includeLongNames);
+
+//    printListing(root OPTARG(LONG_FILENAME_HOST_SUPPORT, includeLongNames));
     }
 }
 
@@ -983,7 +981,7 @@ bool CardReader::mount(bool wifi)
 {
     FRESULT res = FR_OK;
 
-    if ((res = f_mount(&FATFS_sd, DISK_SD, 1)) != FR_OK)
+    if ((res = f_mount(&FS_sd, DISK_SD, 1)) != FR_OK)
     {
         if (wifi)
             SERIAL_ECHO_MSG("WIFI: " STR_SD_INIT_FAIL);

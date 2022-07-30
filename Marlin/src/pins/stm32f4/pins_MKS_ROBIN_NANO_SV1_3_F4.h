@@ -48,10 +48,6 @@
 Модуль MKS WIFI
 */
 
-// #define MKS_WIFI
-
-// #ifdef MKS_WIFI
-
 //  #define MKS_WIFI_SERIAL_NUM                SERIAL_PORT_2
 //  #define MKS_WIFI_UART                      USART1
 //   #undef PLATFORM_M997_SUPPORT
@@ -62,7 +58,6 @@
 #endif
 //  #define MKS_WIFI_IO4                       PC7
 //  #define MKS_WIFI_IO_RST                    PA5
-// #endif
 
 //
 // Servos

@@ -3,7 +3,6 @@
 
 #include "../../module/mks_wifi/mks_wifi.h"
 
-#ifdef MKS_WIFI
 #ifdef STM32F1
 
 // SD card description
@@ -158,5 +157,4 @@ uint8_t SD_Init(void);
 
 #endif
 
-#endif
 #endif

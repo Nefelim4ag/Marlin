@@ -9,7 +9,6 @@
 #include "uart.h"
 #include "../../libs/numtostr.h"
 
-#ifdef MKS_WIFI
 
 #if ENABLED(TFT_480x320) || ENABLED(TFT_480x320_SPI)
 #include "mks_wifi_ui.h"
@@ -549,4 +548,3 @@ extern "C" void DMA2_Stream5_IRQHandler(void){
 }
 #endif
 
-#endif

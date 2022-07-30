@@ -4,7 +4,6 @@
 #include "../../sd/cardreader.h"
 #include "../shared_mem/shared_mem.h"
 
-#ifdef MKS_WIFI
 
 
 #define DMA_TIMEOUT 0x1ffffff
@@ -35,7 +34,12 @@
 #endif
 
 //Под буфер для DMA два последних КБ из буфера
-#define ESP_FILE_BUFF_COUNT (SHARED_MEM_1KB_COUNT-2)
+//#define ESP_FILE_BUFF_COUNT (SHARED_MEM_1KB_COUNT-2)
+#ifdef STM32F1
+	#define ESP_FILE_BUFF_COUNT 2
+#else
+	#define ESP_FILE_BUFF_COUNT 4
+#endif
 //Под буфер для записи в файл все оставшееся с начала
 #define FILE_BUFFER_SIZE  ESP_PACKET_SIZE*ESP_FILE_BUFF_COUNT
 
@@ -51,4 +55,3 @@ void mks_wifi_start_file_upload(ESP_PROTOC_FRAME *packet);
 
 #endif
 
-#endif

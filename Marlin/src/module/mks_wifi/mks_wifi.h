@@ -8,7 +8,6 @@
 
 void mks_wifi_out_add(uint8_t *data, uint32_t size);
 
-#ifdef MKS_WIFI
 
 #define MKS_OUT_BUFF_SIZE (ESP_PACKET_DATA_MAX_SIZE)
 #define MKS_IN_BUFF_SIZE (ESP_PACKET_DATA_MAX_SIZE + 30)
@@ -66,5 +65,4 @@ uint8_t check_char_allowed(char data);
 
 void mks_wifi_send(uint8_t *packet, uint16_t size);
 
-#endif
 #endif

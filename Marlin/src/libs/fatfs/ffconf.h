@@ -30,7 +30,7 @@
 /  f_findnext(). (0:Disable, 1:Enable 2:Enable with matching altname[] too) */
 
 
-#define FF_USE_MKFS		0
+#define FF_USE_MKFS		1
 /* This option switches f_mkfs() function. (0:Disable or 1:Enable) */
 
 
@@ -57,7 +57,7 @@
 
 
 #define FF_USE_STRFUNC	0
-#define FF_PRINT_LLI	0
+#define FF_PRINT_LLI	   0
 #define FF_PRINT_FLOAT	0
 #define FF_STRF_ENCODE	3
 /* FF_USE_STRFUNC switches string functions, f_gets(), f_putc(), f_puts() and
@@ -166,7 +166,7 @@
 / Drive/Volume Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_VOLUMES		1
+#define FF_VOLUMES		2
 /* Number of volumes (logical drives) to be used. (1-10) */
 
 
@@ -193,8 +193,8 @@
 /  funciton will be available. */
 
 
-#define FF_MIN_SS		512
-#define FF_MAX_SS		512
+#define FF_MIN_SS		 512
+#define FF_MAX_SS	   4096
 /* This set of options configures the range of sector size to be supported. (512,
 /  1024, 2048 or 4096) Always set both 512 for most systems, generic memory card and
 /  harddisk, but a larger value may be required for on-board flash memory and some
@@ -240,7 +240,7 @@
 #define FF_FS_NORTC		0
 #define FF_NORTC_MON	   1
 #define FF_NORTC_MDAY	1
-#define FF_NORTC_YEAR	2020
+#define FF_NORTC_YEAR	2022
 /* The option FF_FS_NORTC switches timestamp functiton. If the system does not have
 /  any RTC function or valid timestamp is not needed, set FF_FS_NORTC = 1 to disable
 /  the timestamp function. Every object modified by FatFs will have a fixed timestamp

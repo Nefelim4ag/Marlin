@@ -7,7 +7,6 @@
 #include "mks_wifi.h"
 #include "mks_wifi_sd.h"
 
-#ifdef MKS_WIFI
 
 void mks_m20(bool longnames = false);
 void mks_m23(char *filename);
@@ -25,4 +24,3 @@ void mks_printLongPath(char * const path);
 
 #endif
 
-#endif

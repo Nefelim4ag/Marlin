@@ -70,7 +70,7 @@ public:
 
   static bool mount(bool wifi = false);
   static void release();
-  static bool isMounted() { return FATFS_sd.fs_type != 0; }
+  static bool isMounted() { return FS_sd.fs_type != 0; }
   static bool isRootDir();
 
   // Handle media insert/remove

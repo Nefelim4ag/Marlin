@@ -8,9 +8,10 @@
 
 
 #define     DISK_SD     "0"
-#define     DISK_FLADH  "1"
+#define     DISK_FLASH  "1"
 
-extern FATFS FATFS_sd;
+extern FATFS FS_sd;
+extern FATFS FS_flash;
 
 
 char*		FATFS_GetFileExtension(char *fname);

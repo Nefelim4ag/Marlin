@@ -1,5 +1,4 @@
 #include "sdio_driver_f4.h"
-#ifdef MKS_WIFI
 #ifdef STM32F4
 
 volatile SDCard_TypeDef SDCard;
@@ -267,5 +266,4 @@ void SD_parse_CSD(uint32_t* reg){
 	SDCard.BlockCount=tmp*1000;
 	SDCard.Capacity=(tmp+1)*512;
 };
-#endif
 #endif

@@ -272,8 +272,6 @@ void menu_info_board() {
     STATIC_ITEM_F(F(MACHINE_NAME), SS_DEFAULT|SS_INVERT);         // My3DPrinter
     STATIC_ITEM_F(F(WEBSITE_URL));                                // www.my3dprinter.com
     PSTRING_ITEM(MSG_INFO_EXTRUDERS, STRINGIFY(EXTRUDERS), SS_CENTER); // Extruders: 2
-    #ifdef MKS_WIFI                                             // WiFi info
-    #endif
     #if HAS_LEVELING
       STATIC_ITEM(
         TERN_(AUTO_BED_LEVELING_3POINT, MSG_3POINT_LEVELING)      // 3-Point Leveling
@@ -286,7 +284,6 @@ void menu_info_board() {
     END_SCREEN();
   }
 
-#ifdef MKS_WIFI                                             // WiFi info
   void menu_info_wifi() {
       if (ui.use_click()) return ui.go_back();
       START_SCREEN();
@@ -311,7 +308,6 @@ void menu_info_board() {
 
       END_SCREEN();
     }
-#endif
 
 #endif
 
@@ -331,9 +327,7 @@ void menu_info() {
     #endif
   #endif
 
-  #ifdef MKS_WIFI                                             // WiFi info
     SUBMENU(MSG_INFO_WIFI_MENU, menu_info_wifi);           // Printer Info >
-  #endif
   #if ENABLED(PRINTCOUNTER)
     SUBMENU(MSG_INFO_STATS_MENU, menu_info_stats);               // Printer Stats >
   #endif
