@@ -43,11 +43,12 @@
 //#define DEBUG_OUT 1
 #include "../../core/debug_out.h"
 
-static float z_measured[G35_PROBE_COUNT];
+static float    z_measured[G35_PROBE_COUNT];
 static Flags<G35_PROBE_COUNT> z_isvalid;
-static uint8_t tram_index = 0;
-static int8_t reference_index; // = 0
-static char turn_screw_msg[64];
+static uint8_t  tram_index = 0;
+static bool     ismoved = false;
+static int8_t   reference_index; // = 0
+static char     turn_screw_msg[64];
 
 #if HAS_LEVELING
   #include "../../feature/bedlevel/bedlevel.h"
@@ -56,7 +57,9 @@ static char turn_screw_msg[64];
 static bool probe_single_point() {
   do_blocking_move_to_z(TERN(BLTOUCH, Z_CLEARANCE_DEPLOY_PROBE, Z_CLEARANCE_BETWEEN_PROBES));
   // Stow after each point with BLTouch "HIGH SPEED" mode for push-pin safety
+  set_bed_leveling_enabled(false);
   const float z_probed_height = probe.probe_at_point(tramming_points[tram_index], TERN0(BLTOUCH, bltouch.high_speed_mode) ? PROBE_PT_STOW : PROBE_PT_RAISE, 0, true);
+  set_bed_leveling_enabled(true);
   z_measured[tram_index] = z_probed_height;
   if (reference_index < 0) reference_index = tram_index;
   move_to_tramming_wait_pos();
@@ -66,7 +69,9 @@ static bool probe_single_point() {
   const bool v = !isnan(z_probed_height);
   z_isvalid.set(tram_index, v);
 
-  float z_val = z_measured[reference_index] - z_measured[tram_index];
+//  float z_val = z_measured[reference_index] - z_measured[tram_index];
+  z_measured[tram_index] *= -1;
+  float z_val = z_measured[tram_index];
   float turns = 0;
   turn_screw_msg[0] = 0;
   if (z_val > 0.02)
@@ -128,24 +133,45 @@ static bool probe_single_point() {
   return (z_isvalid[tram_index]);
 }
 
-static void _menu_single_probe() {
+static void _menu_single_probe()
+{
   DEBUG_ECHOLNPGM("Screen: single probe screen Arg:", tram_index);
   START_MENU();
   STATIC_ITEM(MSG_BED_TRAMMING, SS_LEFT);
+/*
   STATIC_ITEM(MSG_LAST_VALUE_SP, SS_LEFT, z_isvalid[tram_index] ? ftostr42_52(z_measured[reference_index] - z_measured[tram_index]) : "---");
   if (turn_screw_msg[0] != 0)
     STATIC_ITEM_F(FPSTR(turn_screw_msg), SS_LEFT);
   else
     STATIC_ITEM_F(FPSTR("--"), SS_LEFT);
+*/
+
+  STATIC_ITEM(MSG_LAST_VALUE_SP, SS_LEFT, z_isvalid[tram_index] ? ftostr42_52(z_measured[tram_index]) : "---");
+  if (turn_screw_msg[0] != 0)
+    STATIC_ITEM_F(FPSTR(turn_screw_msg), SS_LEFT);
+  else
+    STATIC_ITEM_F(FPSTR("--"), SS_LEFT);
+
   ACTION_ITEM(MSG_UBL_BC_INSERT2, []{ if (probe_single_point()) ui.refresh(); });
   ACTION_ITEM(MSG_BUTTON_DONE, ui.goto_previous_screen);
   END_MENU();
+  if (ismoved == false)
+  {
+    ismoved = true;
+//    ui.refresh();
+    probe_single_point();
+    ui.refresh();
+  }
+
 }
 
-static void tramming_wizard_menu() {
+static void tramming_wizard_menu()
+{
+  ismoved = false;
   START_MENU();
   STATIC_ITEM(MSG_SELECT_ORIGIN);
 
+  turn_screw_msg[0] = 0;
   // Draw a menu item for each tramming point
   for (tram_index = 0; tram_index < G35_PROBE_COUNT; tram_index++)
     SUBMENU_F(FPSTR(pgm_read_ptr(&tramming_point_name[tram_index])), _menu_single_probe);
@@ -173,7 +199,10 @@ void goto_tramming_wizard() {
   ui.goto_screen([]{
     _lcd_draw_homing();
     if (all_axes_homed())
+    {
+      set_bed_leveling_enabled(false);
       ui.goto_screen(tramming_wizard_menu);
+    }
   });
 }
 
