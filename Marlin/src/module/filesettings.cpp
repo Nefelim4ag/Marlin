@@ -324,11 +324,13 @@ bool FileSettings::SaveSettings(char *fname /*= NULL*/)
     if (card.write(curline, len) != len)
       break;
     lines++;
-    sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_Z2, (planner.invert_axis.z2_vs_z_dir ? "Yes" : "No"), FSSC_STEPPER_INVERT_Z2);
-    len = strlen(curline);
-    if (card.write(curline, len) != len)
-      break;
-    lines++;
+    #if NUM_Z_STEPPERS == 2
+      sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_Z2, (planner.invert_axis.z2_vs_z_dir ? "Yes" : "No"), FSSC_STEPPER_INVERT_Z2);
+      len = strlen(curline);
+      if (card.write(curline, len) != len)
+        break;
+      lines++;
+    #endif
     sprintf(curline, "%s = %s %s\r\n", FSS_STEPPER_INVERT_E, (planner.invert_axis.invert_axis[E_AXIS] ? "Yes" : "No"), FSSC_STEPPER_INVERT_E);
     len = strlen(curline);
     if (card.write(curline, len) != len)
@@ -465,16 +467,18 @@ bool FileSettings::SaveSettings(char *fname /*= NULL*/)
     if (card.write(curline, len) != len)
       break;
     lines++;
-    sprintf(curline, "%s = %s %s\r\n", FSS_ENDSTOP_INVERT_Z2, (endstop_settings.Z2_MIN_INVERTING ? "Yes" : "No"), FSSC_ENDSTOP_INVERT_Z2);
-    len = strlen(curline);
-    if (card.write(curline, len) != len)
-      break;
-    lines++;
-    sprintf(curline, "%s = %0.3f %s\r\n", FSS_ENDSTOP_ADJUST_Z2, endstops.z2_endstop_adj, FSSC_ENDSTOP_ADJUST_Z2);
-    len = strlen(curline);
-    if (card.write(curline, len) != len)
-      break;
-    lines++;
+    #if HAS_Z2_MIN
+      sprintf(curline, "%s = %s %s\r\n", FSS_ENDSTOP_INVERT_Z2, (endstop_settings.Z2_MIN_INVERTING ? "Yes" : "No"), FSSC_ENDSTOP_INVERT_Z2);
+      len = strlen(curline);
+      if (card.write(curline, len) != len)
+        break;
+      lines++;
+      sprintf(curline, "%s = %0.3f %s\r\n", FSS_ENDSTOP_ADJUST_Z2, endstops.z2_endstop_adj, FSSC_ENDSTOP_ADJUST_Z2);
+      len = strlen(curline);
+      if (card.write(curline, len) != len)
+        break;
+      lines++;
+    #endif
     
     /******** TEMPERATURE ***********/
     sprintf(curline, "%s", (char*)"\r\n# ====== TEMPERATURE ======\r\n");
@@ -1117,28 +1121,30 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           params++;
           break;
         }
-        if (strcmp(lexem, FSS_ENDSTOP_INVERT_Z2) == 0)
-        {
-          if (pval.type != PARAMVAL_BOOL)
+        #if HAS_Z2_MIN
+          if (strcmp(lexem, FSS_ENDSTOP_INVERT_Z2) == 0)
           {
-            wres = false;
+            if (pval.type != PARAMVAL_BOOL)
+            {
+              wres = false;
+              break;
+            }
+            endstop_settings.Z2_MIN_INVERTING = pval.bool_val;
+            params++;
             break;
           }
-          endstop_settings.Z2_MIN_INVERTING = pval.bool_val;
-          params++;
-          break;
-        }
-        if (strcmp(lexem, FSS_ENDSTOP_ADJUST_Z2) == 0)
-        {
-          if (pval.type != PARAMVAL_NUMERIC)
+          if (strcmp(lexem, FSS_ENDSTOP_ADJUST_Z2) == 0)
           {
-            wres = false;
+            if (pval.type != PARAMVAL_NUMERIC)
+            {
+              wres = false;
+              break;
+            }
+            endstops.z2_endstop_adj = pval.float_val;
+            params++;
             break;
           }
-          endstops.z2_endstop_adj = pval.float_val;
-          params++;
-          break;
-        }
+        #endif
         break;
 
       case 'F':   // ***************************  FFF  ********************************
@@ -1917,17 +1923,19 @@ bool FileSettings::LoadSettings(char *fname /*= NULL*/)
           params++;
           break;
         }
-        if (strcmp(lexem, FSS_STEPPER_INVERT_Z2) == 0)
-        {
-          if (pval.type != PARAMVAL_BOOL)
+        #if NUM_Z_STEPPERS == 2
+          if (strcmp(lexem, FSS_STEPPER_INVERT_Z2) == 0)
           {
-            wres = false;
+            if (pval.type != PARAMVAL_BOOL)
+            {
+              wres = false;
+              break;
+            }
+            planner.invert_axis.z2_vs_z_dir = pval.bool_val;
+            params++;
             break;
           }
-          planner.invert_axis.z2_vs_z_dir = pval.bool_val;
-          params++;
-          break;
-        }
+        #endif
         if (strcmp(lexem, FSS_STEPPER_INVERT_E) == 0)
         {
           if (pval.type != PARAMVAL_BOOL)

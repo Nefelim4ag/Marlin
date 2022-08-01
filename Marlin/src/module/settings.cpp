@@ -3016,7 +3016,9 @@ void MarlinSettings::reset() {
   planner.settings.min_feedrate_mm_s = feedRate_t(DEFAULT_MINIMUMFEEDRATE);
   planner.settings.min_travel_feedrate_mm_s = feedRate_t(DEFAULT_MINTRAVELFEEDRATE);
 
-  planner.invert_axis.z2_vs_z_dir = ENABLED(INVERT_Z2_VS_Z_DIR);
+  #if NUM_Z_STEPPERS == 2
+    planner.invert_axis.z2_vs_z_dir = ENABLED(INVERT_Z2_VS_Z_DIR);
+  #endif
 
   #if HAS_CLASSIC_JERK
     #ifndef DEFAULT_XJERK

@@ -322,7 +322,9 @@ typedef struct {
 
 typedef struct {
   bool  invert_axis[DISTINCT_AXES];
-  bool  z2_vs_z_dir;
+  #if HAS_Z2_MIN
+    bool  z2_vs_z_dir;
+  #endif
 } planner_axinvert_t;
 
 

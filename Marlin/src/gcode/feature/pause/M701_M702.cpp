@@ -105,7 +105,7 @@ void GcodeSuite::M701() {
   #if HAS_PRUSA_MMU2
     mmu2.load_filament_to_nozzle(target_extruder);
   #else
-    constexpr float     purge_length = ADVANCED_PAUSE_PURGE_LENGTH,
+    const float     purge_length = ADVANCED_PAUSE_PURGE_LENGTH,
                     slow_load_length = moving_settings.filament_change.slow_load_length;
         const float fast_load_length = ABS(parser.seenval('L') ? parser.value_axis_units(E_AXIS)
                                                             : fc_settings[active_extruder].load_length);
