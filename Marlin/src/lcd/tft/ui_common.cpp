@@ -206,7 +206,7 @@ void MarlinUI::init_lcd() {
   #ifdef SYMBOLS_FONT_NAME
     tft.add_glyphs(SYMBOLS_FONT_NAME);
   #endif
-//  TERN_(TOUCH_SCREEN, touch.init());
+  TERN_(TOUCH_SCREEN, touch.init());
   clear_lcd();
 }
 

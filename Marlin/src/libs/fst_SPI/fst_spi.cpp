@@ -2,6 +2,7 @@
 
 
 
+uint8_t					_touch_buff[TOUCH_BUFF_SIZE];
 
 FastSpi   			fstspi;
 
@@ -251,23 +252,24 @@ void		FastSpi::TouchDisable()
 
 
 
-void		FastSpi::TouchStartRead()
+bool		FastSpi::TouchStartRead()
 {
 	if (((GetFlags() & SPI_FLAG_BSY) || (GetFlags() & SPI_FLAG_TXE) == 0 || hFstSpi.State != HAL_SPI_STATE_READY) ||  IsDMAReady() == 0)
-		return;
+		return false;
 	if (current_mode != FST_MODE_TOUCH)
 	{
 		 TouchEnable();
 	}
 	_touch_CS_Enable();
-	memset(touch_buff, 0, TOUCH_BUFF_SIZE);
+	memset(_touch_buff, 0, TOUCH_BUFF_SIZE);
 	
 	for (uint8_t i = 0; i < TOUCH_BUFF_SIZE; i+=6)
-		touch_buff[i] = 0x90;
+		_touch_buff[i] = 0x90;
 	for (uint8_t i = 3; i < TOUCH_BUFF_SIZE; i+=6)
-		touch_buff[i] = 0xD0;
+		_touch_buff[i] = 0xD0;
 
-	HAL_SPI_TransmitReceive_DMA(&hFstSpi, touch_buff, touch_buff, sizeof(touch_buff));
+	HAL_SPI_TransmitReceive_DMA(&hFstSpi, _touch_buff, _touch_buff, sizeof(_touch_buff));
+	return true;
 }
 //==============================================================================
 

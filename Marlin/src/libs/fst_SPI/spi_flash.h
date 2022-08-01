@@ -28,13 +28,13 @@ typedef struct
 	uint32_t	sector_size;
 	uint32_t	sectors_count;
 	uint32_t	page_size;
-} INFO;
+} w25q_info_t;
 	
 
 class	W25Q_storage
 {
 	private:
-		INFO	_info = {0, 0};
+		w25q_info_t	_info = {0, 0};
 		uint32_t		_bust_counts;
 		static inline void		_wait_cs() { volatile uint8_t i = 100; while (i)	i--; };
 

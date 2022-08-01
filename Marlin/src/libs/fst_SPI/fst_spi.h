@@ -64,7 +64,6 @@ class FastSpi
 {
 
   private:
-    uint8_t						  touch_buff[TOUCH_BUFF_SIZE];
     static fst_mode_t		current_mode;
     static bool         inited;
 
@@ -83,7 +82,7 @@ class FastSpi
 
     void		      TouchEnable();
     void		      TouchDisable();
-    void		      TouchStartRead();
+    bool		      TouchStartRead();
 
 
 

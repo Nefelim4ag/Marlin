@@ -194,7 +194,6 @@ uint32_t		W25Q_storage::GetSectorsCount()
 uint32_t		W25Q_storage::ReadID()
 {
 	uint32_t	retval = 0;
-	uint32_t	rxval = 0;
 
 	while ((fstspi.GetFlags() & SPI_FLAG_BSY) || (fstspi.GetFlags() & SPI_FLAG_TXE) == 0 || fstspi.hFstSpi.State != HAL_SPI_STATE_READY);
 	_WaitBusy();
