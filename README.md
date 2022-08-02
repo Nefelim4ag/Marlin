@@ -25,7 +25,8 @@
 * [История](#история)
 
 ## Главное
-Обновлено 28.07.2022
+Обновлено 02.08.2022
+- **полностью исправлена работа Linear Advance с драйверами TMC2208/TMC2225** ([коммит в Марлине](https://github.com/MarlinFirmware/Marlin/commit/232a104a927988c63f8c0c53a8c2e26005166e2d))
 - работа с файловой системой на SD-карте производится с помощью быстрой и гибкой библиотеки FatFS
 - каталоги в списке файлов выводятся вверху списка
 - сохранение и загрузка настроек в файл .ini на SD-карте ([подробнее](#Сохранение-и-загрузка-параметров-в-файл-ini))
@@ -166,6 +167,11 @@ BEDLEVEL_Z_VALUES = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
 
 
 ## История
+### 02.08.2022
+**v2.1.1**
+- [X] **полностью и окончательно исправлена работа Linear Advance со всеми драйверами, включая TMC2208/TMC2225** ([коммит в Марлине](https://github.com/MarlinFirmware/Marlin/commit/232a104a927988c63f8c0c53a8c2e26005166e2d))
+- [X] подправлена работа помощника выравнивания углов стола (меню `Мастер уровня стола`), теперь там отображается абсолютная высота углов и автоматически производится замер при переходе в другой угол
+
 ### 29.07.2022
 **v2.1**
 - [X] Добавлена возможность выгрузки настроек в файл конфигурации .ini на SD-карте и загрузку настроек из него командами `M5000`, `M5001` и из меню принтера, сохраняется и загружается почти 90 параметров ([подробнее](#Сохранение-и-загрузка-параметров-в-файл-ini)) 
@@ -316,7 +322,8 @@ Based on [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin) 
 * [Version history](#version-history)
 
 ## The main thing
-Updated 07/29/2022
+Updated 08/02/2022
+- **Linear Advance with TMC2208/TMC2225 drivers has been completely fixed** ([commit in Marlin](https://github.com/MarlinFirmware/Marlin/commit/232a104a927988c63f8c0c53a8c2e26005166e2d))
 - work with the file system on the SD card is done using the fast and flexible FatFS library
 - directories in the list of files are displayed at the top of the list
 - saving and loading settings to the .ini file on the SD card ([more](#Saving-and-loading-parameters-to-ini-file))
@@ -455,6 +462,11 @@ BEDLEVEL_Z_VALUES = 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
 It is not necessary to specify all the parameters in the file, it can contain any number of necessary parameters, even just one.
 
 ## Version history
+
+### 08.02.2022
+**v2.1.1**
+- [X] **Fully and permanently fixed Linear Advance with all drivers, including TMC2208/TMC2225** ([commit in Marlin](https://github.com/MarlinFirmware/Marlin/commit/232a104a927988c63f8c0c53a8c2e26005166e2d))
+- [X] corrected the work of the table corners alignment assistant (`Tramming Wizard` menu), now it displays the absolute height of the corners and automatically measures when moving to another corner
 
 ### 07/29/2022
 **v2.1**
