@@ -1677,7 +1677,7 @@
 // :[-1,1]
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
-#define Z_HOME_DIR -1 
+#define Z_HOME_DIR -1
 //#define I_HOME_DIR -1
 //#define J_HOME_DIR -1
 //#define K_HOME_DIR -1
@@ -1688,8 +1688,12 @@
 // @section machine
 
 // The size of the printable area
+#ifndef X_BED_SIZE
 #define X_BED_SIZE 350
+#endif
+#ifndef Y_BED_SIZE
 #define Y_BED_SIZE 310
+#endif
 
 // Travel limits (linear=mm, rotational=°) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -3088,13 +3092,13 @@ EEPROM_W25Q
 //
 // Generic TFT with detailed options
 //
-#define MKS_ROBIN_TFT35
+// #define MKS_ROBIN_TFT35
 #if ENABLED(TFT_GENERIC)
   // :[ 'AUTO', 'ST7735', 'ST7789', 'ST7796', 'R61505', 'ILI9328', 'ILI9341', 'ILI9488' ]
   #define TFT_DRIVER AUTO
 
   // Interface. Enable one of the following options:
-  #define TFT_INTERFACE_FSMC
+  //#define TFT_INTERFACE_FSMC
   //#define TFT_INTERFACE_SPI
 
   // TFT Resolution. Enable one of the following options:
@@ -3130,8 +3134,12 @@ EEPROM_W25Q
  *   TFT_ROTATE_270, TFT_ROTATE_270_MIRROR_X, TFT_ROTATE_270_MIRROR_Y,
  *   TFT_MIRROR_X, TFT_MIRROR_Y, TFT_NO_ROTATION
  */
+#ifndef TFT_ROTATION
 #define TFT_ROTATION TFT_ROTATE_180
-
+#elif TFT_ROTATION == 0
+#undef TFT_ROTATION
+#define TFT_ROTATION TFT_NO_ROTATION
+#endif
 //=============================================================================
 //============================  Other Controllers  ============================
 //=============================================================================
