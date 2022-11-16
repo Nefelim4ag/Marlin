@@ -24,6 +24,8 @@
 #define ALLOW_STM32DUINO
 #include "env_validate.h"
 
+#define SDCARD_CONNECTION ONBOARD
+
 #include "pins_MKS_ROBIN_NANO_V3_common.h"
 
 #if HOTENDS > 2 || E_STEPPERS > 2
@@ -76,12 +78,11 @@
 // #define E2_STEP_PIN                         PE1
 // #define E2_DIR_PIN                          PB2
 
-#define HAS_Z_MIN 1
-
 #define Z2_ENABLE_PIN                       E1_ENABLE_PIN
 #define Z2_STEP_PIN                         E1_STEP_PIN
 #define Z2_DIR_PIN                          E1_DIR_PIN
 
+// Swap Fan Pins
 // hotend fan
 #undef FAN1_PIN
 #define FAN1_PIN PC14
@@ -91,11 +92,11 @@
 #undef FAN_PIN
 #define FAN_PIN PB1
 
-#undef HEATER_0_PIN
-#undef HEATER_1_PIN
+// #undef HEATER_0_PIN
+// #undef HEATER_1_PIN
 // Swap heaters pin
-#define HEATER_0_PIN                        PB0   // HEATER1
-#define HEATER_1_PIN                        PE5   // HEATER2
+// #define HEATER_0_PIN                        PB0   // HEATER1
+// #define HEATER_1_PIN                        PE5   // HEATER2
 
 //
 // Software SPI pins for TMC2130 stepper drivers
@@ -116,16 +117,12 @@
   #endif
 #endif
 
-#define Z_MIN_PROBE_PIN                    Z_MIN_PIN
+#define Z_MIN_PROBE_PIN                    PE6
 
 #define MKS_WIFI_SERIAL_NUM                SERIAL_PORT_2
 #define MKS_WIFI_UART                      USART1
 
-#define MKS_WIFI_IO0                       PC13
+#define MKS_WIFI_IO0 PC13
 #define MKS_WIFI_IO1 PC7
 #define MKS_WIFI_IO4 PC7 // backward compatibility
 #define MKS_WIFI_IO_RST PE9
-
-// Z2
-#undef Z_MAX_PIN
-#define Z_MAX_PIN PC4
